@@ -103,6 +103,46 @@ import type {
 } from '@umituz/web-design-system/types';
 ```
 
+### Security (Security & Validation)
+```tsx
+import {
+  validateInput,
+  validateEmail,
+  validateUrl,
+  sanitizeInput,
+  validateFileName,
+  CSP_CONFIG,
+  SECURITY_HEADERS,
+  VALIDATION_CONFIGS
+} from '@umituz/web-design-system/security';
+
+import { useFormValidation, COMMON_RULES } from '@umituz/web-design-system/security';
+```
+
+### Performance (Performance Optimization)
+```tsx
+import {
+  usePerformanceMonitor,
+  useLazyLoading,
+  useMemoryOptimization,
+  useLazyImage,
+  useLazyComponent,
+  useVirtualList
+} from '@umituz/web-design-system/performance';
+```
+
+### Error (Error Handling & Boundaries)
+```tsx
+import {
+  ErrorBoundary,
+  ErrorDisplay,
+  SuspenseWrapper,
+  NetworkError,
+  NotFoundError,
+  ApiError
+} from '@umituz/web-design-system/error';
+```
+
 ## 🎨 Component Examples
 
 ### Button
@@ -190,6 +230,147 @@ import { fontSizes, fontWeights } from '@umituz/web-design-system/tokens';
 
 const fontSize = fontSizes['lg']; // '1.125rem'
 const fontWeight = fontWeights['semibold']; // '600'
+```
+
+## 🔒 Security Features
+
+### Input Validation
+```tsx
+import { validateEmail, sanitizeInput, validateFileName } from '@umituz/web-design-system/security';
+
+// Validate email
+const result = validateEmail('user@example.com');
+if (result.isValid) {
+  // Email is valid
+}
+
+// Sanitize user input
+const clean = sanitizeInput(userInput);
+
+// Validate file names
+const fileResult = validateFileName(fileName);
+```
+
+### Form Validation Hook
+```tsx
+import { useFormValidation, COMMON_RULES } from '@umituz/web-design-system/security';
+
+const MyForm = () => {
+  const { formData, errors, updateField, validateAllFields, isFormValid } = useFormValidation(
+    { name: '', email: '' },
+    {
+      name: COMMON_RULES.name,
+      email: COMMON_RULES.email
+    }
+  );
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={formData.name}
+        onChange={(e) => updateField('name', e.target.value)}
+      />
+      {errors.name && <span className="error">{errors.name}</span>}
+    </form>
+  );
+};
+```
+
+## ⚡ Performance Features
+
+### Performance Monitoring
+```tsx
+import { usePerformanceMonitor } from '@umituz/web-design-system/performance';
+
+const MyComponent = () => {
+  const { metrics, getPerformanceReport } = usePerformanceMonitor({
+    componentName: 'MyComponent',
+    trackRenders: true,
+    trackMemory: true
+  });
+
+  return <div>Render time: {metrics.renderTime}ms</div>;
+};
+```
+
+### Lazy Loading
+```tsx
+import { useLazyLoading, useLazyImage } from '@umituz/web-design-system/performance';
+
+const LazyImage = () => {
+  const { targetRef, imageSrc, isLoaded } = useLazyImage('/large-image.jpg');
+
+  return (
+    <div ref={targetRef}>
+      {isLoaded ? <img src={imageSrc} alt="Lazy loaded" /> : <div>Loading...</div>}
+    </div>
+  );
+};
+```
+
+### Memory Optimization
+```tsx
+import { useMemoryOptimization } from '@umituz/web-design-system/performance';
+
+const MyComponent = () => {
+  const { addEventListener, setTimeout, addCleanup, getMemoryStats } = useMemoryOptimization();
+
+  useEffect(() => {
+    const cleanup = addEventListener(window, 'resize', handleResize);
+    const timerId = setTimeout(() => {}, 1000);
+
+    return () => {
+      cleanup();
+      // Automatic cleanup on unmount
+    };
+  }, []);
+
+  return <div>Memory stats: {getMemoryStats().totalTrackedItems} items</div>;
+};
+```
+
+## 🚨 Error Handling
+
+### Error Boundary
+```tsx
+import { ErrorBoundary } from '@umituz/web-design-system/error';
+
+<ErrorBoundary
+  level="page"
+  showDetails={true}
+  onError={(error, errorInfo) => console.error(error)}
+>
+  <MyComponent />
+</ErrorBoundary>
+```
+
+### Error Display
+```tsx
+import { ErrorDisplay, NetworkError, ApiError } from '@umituz/web-design-system/error';
+
+<ErrorDisplay
+  error={error}
+  title="Something went wrong"
+  severity="error"
+  showRetry={true}
+  onRetry={retryFunction}
+/>
+
+<NetworkError onRetry={retry} />
+<ApiError error={apiError} onRetry={retry} />
+```
+
+### Suspense Wrapper
+```tsx
+import { SuspenseWrapper, PageSuspense } from '@umituz/web-design-system/error';
+
+<PageSuspense loadingText="Loading page...">
+  <MyLazyComponent />
+</PageSuspense>
+
+<SuspenseWrapper variant="card" errorBoundaryLevel="feature">
+  <AsyncComponent />
+</SuspenseWrapper>
 ```
 
 ## 📐 Atomic Design Principles

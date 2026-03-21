@@ -16,6 +16,9 @@
     "./constants": "./src/infrastructure/constants/index.ts",
     "./tokens": "./src/domain/tokens/index.ts",
     "./types": "./src/domain/types/index.ts",
+    "./security": "./src/infrastructure/security/index.ts",
+    "./performance": "./src/infrastructure/performance/index.ts",
+    "./error": "./src/infrastructure/error/index.ts",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -34,13 +37,18 @@
     "atoms",
     "molecules",
     "organisms",
-    "tailwind"
+    "tailwind",
+    "security",
+    "performance",
+    "error-handling",
+    "validation",
+    "optimization"
   ],
   "author": "umituz",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/umituz/web-design-system"
+    "url": "git+https://github.com/umituz/web-design-system.git"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
