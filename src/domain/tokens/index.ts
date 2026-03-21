@@ -42,3 +42,14 @@ export type {
 export {
   shadows,
 } from './shadow.tokens';
+
+export type {
+  DurationToken,
+  EasingToken,
+} from './animation.tokens';
+export {
+  durations,
+  easings,
+  animations,
+  keyframes,
+} from './animation.tokens';
