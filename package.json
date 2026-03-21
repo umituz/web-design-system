@@ -1,6 +1,6 @@
 {
   "name": "@umituz/web-design-system",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Web Design System - Atomic Design components (Atoms, Molecules, Organisms) for React applications",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
