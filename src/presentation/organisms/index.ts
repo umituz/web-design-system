@@ -49,5 +49,22 @@ export {
 export { Breadcrumbs } from './Breadcrumb';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 
+export { Popover, PopoverTrigger, PopoverContent } from './Popover';
+
+export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './Collapsible';
+
+export {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetOverlay,
+  SheetPortal,
+  SheetTitle,
+  SheetTrigger,
+} from './Sheet';
+
 export { Footer } from './Footer';
 export type { FooterProps } from './Footer';
