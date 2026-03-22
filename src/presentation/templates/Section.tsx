@@ -7,7 +7,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface SectionProps extends HTMLAttributes<HTMLElement>, BaseProps, ChildrenProps {
+export interface SectionProps extends HTMLAttributes<HTMLElement>, BaseProps {
   title?: string;
   description?: string;
 }

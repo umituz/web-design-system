@@ -15,7 +15,7 @@ export interface CheckboxOption {
   disabled?: boolean;
 }
 
-export interface CheckboxGroupProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
+export interface CheckboxGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>, BaseProps {
   options: CheckboxOption[];
   value?: string[];
   onChange?: (values: string[]) => void;

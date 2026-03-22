@@ -7,7 +7,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface TableProps extends HTMLAttributes<HTMLTableElement>, BaseProps, ChildrenProps {}
+export interface TableProps extends HTMLAttributes<HTMLTableElement>, BaseProps {}
 
 export const Table = forwardRef<HTMLTableElement, TableProps>(
   ({ className, children, ...props }, ref) => {

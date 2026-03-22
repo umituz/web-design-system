@@ -9,7 +9,7 @@ import type { BaseProps, ChildrenProps } from '../../domain/types';
 
 export type MaxWidth = '4xl' | '7xl' | 'full';
 
-export interface PageLayoutProps extends HTMLAttributes<HTMLDivElement>, BaseProps, ChildrenProps {
+export interface PageLayoutProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   maxWidth?: MaxWidth;
 }
 

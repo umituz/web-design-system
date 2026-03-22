@@ -249,7 +249,7 @@ export const useMemoryOptimization = (config: MemoryOptimizationConfig = {}) => 
 };
 
 export const useMemoryLeakDetector = (componentName?: string) => {
-  const mountTime = useRef<number>(() => Date.now());
+  const mountTime = useRef<number>(Date.now());
   const [renderCount, setRenderCount] = useState<number>(0);
   const [lifespan, setLifespan] = useState<number>(0);
 

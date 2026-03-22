@@ -7,7 +7,7 @@ import { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement>, BaseProps {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
   error?: boolean;
   size?: Extract<SizeVariant, 'sm' | 'md' | 'lg'>;
 }

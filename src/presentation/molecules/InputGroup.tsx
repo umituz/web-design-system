@@ -8,7 +8,7 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 import { Input } from '../atoms/Input';
 
-export interface InputGroupProps extends HTMLAttributes<HTMLDivElement>, BaseProps, ChildrenProps {
+export interface InputGroupProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   leftElement?: ReactNode;
   rightElement?: ReactNode;
 }

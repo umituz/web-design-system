@@ -7,7 +7,7 @@ import { forwardRef, type HTMLAttributes, type ReactNode, useState, useRef, useE
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface TooltipProps extends HTMLAttributes<HTMLDivElement>, BaseProps, ChildrenProps {
+export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'>, BaseProps {
   content: ReactNode;
   placement?: 'top' | 'bottom' | 'left' | 'right';
   delay?: number;
@@ -23,7 +23,7 @@ const placementStyles: Record<'top' | 'bottom' | 'left' | 'right', string> = {
 export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
   ({ className, children, content, placement = 'top', delay = 200, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
-    const timeoutRef = useRef<NodeJS.Timeout>();
+    const timeoutRef = useRef<number>();
 
     const handleMouseEnter = () => {
       timeoutRef.current = setTimeout(() => {

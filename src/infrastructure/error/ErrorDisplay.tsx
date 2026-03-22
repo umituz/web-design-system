@@ -55,13 +55,9 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   const errorMessage = error instanceof Error ? error.message : (error || 'Unknown error');
   const errorStack = error instanceof Error ? error.stack : undefined;
 
-  const containerStyle: React.CSSProperties = {
-    className
-  };
-
   if (variant === 'minimal') {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: config.color, ...containerStyle }}>
+      <div className={className} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: config.color }}>
         <span>{config.icon}</span>
         <span>{errorMessage}</span>
       </div>
@@ -70,12 +66,11 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
   if (variant === 'inline') {
     return (
-      <div style={{
+      <div className={className} style={{
         padding: '12px 16px',
         background: config.bgColor,
         border: `1px solid ${config.borderColor}`,
-        borderRadius: '6px',
-        ...containerStyle
+        borderRadius: '6px'
       }}>
         <span style={{ marginRight: '8px' }}>{config.icon}</span>
         <span style={{ fontWeight: 500 }}>{title}:</span> {errorMessage}
@@ -85,12 +80,11 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
   if (variant === 'card') {
     return (
-      <div style={{
+      <div className={className} style={{
         background: 'white',
         borderRadius: '8px',
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        border: 'none',
-        ...containerStyle
+        border: 'none'
       }}>
         <div style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -209,7 +203,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
   // Default variant
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px', ...containerStyle }}>
+    <div className={className} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px' }}>
       <div style={{
         width: '100%',
         maxWidth: '448px',

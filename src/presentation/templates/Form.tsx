@@ -3,11 +3,11 @@
  * @description Complete form structure
  */
 
-import { forwardRef, type FormHTMLAttributes } from 'react';
+import { forwardRef, type FormHTMLAttributes, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface FormProps extends FormHTMLAttributes<HTMLFormElement>, BaseProps, ChildrenProps {
+export interface FormProps extends FormHTMLAttributes<HTMLFormElement>, BaseProps {
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
