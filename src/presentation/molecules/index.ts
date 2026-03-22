@@ -10,8 +10,8 @@ export type { FormFieldProps } from './FormField';
 export { SearchBox } from './SearchBox';
 export type { SearchBoxProps } from './SearchBox';
 
-export { Avatar } from './Avatar';
-export type { AvatarProps } from './Avatar';
+export { Avatar, AvatarImage, AvatarFallback } from './Avatar';
+export type { AvatarProps, AvatarImageProps, AvatarFallbackProps } from './Avatar';
 
 export { Chip } from './Chip';
 export type { ChipProps } from './Chip';
@@ -19,7 +19,7 @@ export type { ChipProps } from './Chip';
 export { Toggle } from './Toggle';
 export type { ToggleProps } from './Toggle';
 
-export { Select } from './Select';
+export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton } from './Select';
 export type { SelectProps } from './Select';
 
 export { Textarea } from './Textarea';

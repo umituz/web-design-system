@@ -1,16 +1,13 @@
 /**
  * Avatar Component (Molecule)
- * @description User avatar with fallback
+ * @description User avatar with image and fallback (shadcn/ui compatible)
  */
 
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type HTMLAttributes, type ElementType, type ComponentPropsWithoutRef } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
-  src?: string;
-  alt?: string;
-  fallback?: string;
   size?: Extract<SizeVariant, 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'>;
 }
 
@@ -23,30 +20,61 @@ const sizeStyles: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl', string> = {
   '2xl': 'h-20 w-20 text-2xl',
 };
 
-export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-  ({ className, src, alt, fallback, size = 'md', ...props }, ref) => {
-    const hasError = !src;
-
+const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
+  ({ className, size = 'md', ...props }, ref) => {
     return (
       <div
         ref={ref}
         className={cn(
-          'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted',
+          'relative flex shrink-0 overflow-hidden rounded-full',
           sizeStyles[size],
           className
         )}
         {...props}
-      >
-        {hasError ? (
-          <span className="font-medium text-muted-foreground">
-            {fallback || '?'}
-          </span>
-        ) : (
-          <img src={src} alt={alt || 'Avatar'} className="h-full w-full object-cover" />
-        )}
-      </div>
+      />
     );
   }
 );
 
 Avatar.displayName = 'Avatar';
+
+export interface AvatarImageProps extends ComponentPropsWithoutRef<'img'> {
+  asChild?: boolean;
+}
+
+const AvatarImage = forwardRef<HTMLImageElement, AvatarImageProps>(
+  ({ className, src, alt, ...props }, ref) => {
+    return (
+      <img
+        ref={ref}
+        src={src}
+        alt={alt}
+        className={cn('aspect-square h-full w-full object-cover', className)}
+        {...props}
+      />
+    );
+  }
+);
+
+AvatarImage.displayName = 'AvatarImage';
+
+export interface AvatarFallbackProps extends HTMLAttributes<HTMLDivElement> {}
+
+const AvatarFallback = forwardRef<HTMLDivElement, AvatarFallbackProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'flex h-full w-full items-center justify-center rounded-full bg-muted',
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
+AvatarFallback.displayName = 'AvatarFallback';
+
+export { Avatar, AvatarImage, AvatarFallback };

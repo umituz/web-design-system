@@ -1,6 +1,6 @@
 {
   "name": "@umituz/web-design-system",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "private": false,
   "description": "Web Design System - Atomic Design components (Atoms, Molecules, Organisms, Templates) for React applications",
   "main": "./src/index.ts",
@@ -52,15 +52,20 @@
     "url": "git+https://github.com/umituz/web-design-system.git"
   },
   "peerDependencies": {
+    "@radix-ui/react-accordion": ">=1.0.0",
+    "@radix-ui/react-select": ">=2.0.0",
+    "clsx": ">=2.0.0",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
-    "clsx": ">=2.0.0",
     "tailwind-merge": ">=2.0.0"
   },
   "devDependencies": {
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-select": "^2.2.6",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "clsx": "^2.1.1",
+    "lucide-react": "^0.577.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "tailwind-merge": "^3.5.0",
