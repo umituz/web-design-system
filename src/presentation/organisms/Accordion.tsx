@@ -1,117 +1,59 @@
 /**
  * Accordion Component (Organism)
- * @description Collapsible content sections
+ * @description Collapsible content sections (Shadcn/ui compatible)
  */
 
-import { useState, useCallback, type ReactNode, type HTMLAttributes } from 'react';
+import * as React from 'react';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { ChevronDown } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps } from '../../domain/types';
-import { Icon } from '../atoms/Icon';
 
-export interface AccordionItem {
-  value: string;
-  title: string;
-  content: ReactNode;
-  disabled?: boolean;
-}
+const Accordion = AccordionPrimitive.Root;
 
-export interface AccordionProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
-  items: AccordionItem[];
-  allowMultiple?: boolean;
-  defaultValue?: string[];
-  variant?: 'default' | 'bordered' | 'ghost';
-}
+const AccordionItem = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
+>(({ className, ...props }, ref) => (
+  <AccordionPrimitive.Item
+    ref={ref}
+    className={cn('border-b', className)}
+    {...props}
+  />
+));
+AccordionItem.displayName = 'AccordionItem';
 
-const variantStyles: Record<'default' | 'bordered' | 'ghost', string> = {
-  default: 'border-b',
-  bordered: 'border rounded-lg mb-2',
-  ghost: 'border-0',
-};
+const AccordionTrigger = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <AccordionPrimitive.Header className="flex">
+    <AccordionPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        'flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+    </AccordionPrimitive.Trigger>
+  </AccordionPrimitive.Header>
+));
+AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
 
-export function Accordion({
-  items,
-  allowMultiple = false,
-  defaultValue = [],
-  variant = 'default',
-  className,
-  ...props
-}: AccordionProps) {
-  const [openItems, setOpenItems] = useState<string[]>(defaultValue);
+const AccordionContent = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <AccordionPrimitive.Content
+    ref={ref}
+    className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    {...props}
+  >
+    <div className={cn('pb-4 pt-0', className)}>{children}</div>
+  </AccordionPrimitive.Content>
+));
+AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-  const toggleItem = useCallback((value: string) => {
-    setOpenItems((prev) => {
-      const isOpen = prev.includes(value);
-
-      if (allowMultiple) {
-        return isOpen
-          ? prev.filter((v) => v !== value)
-          : [...prev, value];
-      } else {
-        return isOpen ? [] : [value];
-      }
-    });
-  }, [allowMultiple]);
-
-  return (
-    <div className={cn('w-full', className)} {...props}>
-      {items.map((item, index) => {
-        const isOpen = openItems.includes(item.value);
-
-        return (
-          <div
-            key={item.value}
-            className={cn(
-              'group',
-              variantStyles[variant],
-              variant === 'bordered' && isOpen && 'ring-1 ring-ring'
-            )}
-          >
-            {/* Header */}
-            <button
-              onClick={() => toggleItem(item.value)}
-              disabled={item.disabled}
-              className={cn(
-                'flex w-full items-center justify-between py-4 font-medium transition-all',
-                'hover:text-foreground',
-                item.disabled && 'opacity-50 cursor-not-allowed',
-                variant === 'bordered' && 'px-4'
-              )}
-            >
-              <span>{item.title}</span>
-              <Icon
-                className={cn(
-                  'transition-transform duration-200',
-                  isOpen && 'rotate-180'
-                )}
-                size="sm"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                />
-              </Icon>
-            </button>
-
-            {/* Content */}
-            {isOpen && (
-              <div
-                className={cn(
-                  'overflow-hidden',
-                  'animate-accordion-down',
-                  variant === 'bordered' && 'px-4 pb-4'
-                )}
-              >
-                <div className="pb-4 text-sm text-muted-foreground">
-                  {item.content}
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-Accordion.displayName = 'Accordion';
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
