@@ -33,3 +33,5 @@ export type { CheckboxGroupProps, CheckboxOption } from './CheckboxGroup';
 
 export { InputGroup, GroupedInput } from './InputGroup';
 export type { InputGroupProps } from './InputGroup';
+
+export { ScrollArea, ScrollBar } from './ScrollArea';
