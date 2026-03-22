@@ -7,7 +7,7 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface FooterProps extends HTMLAttributes<HTMLElement>, BaseProps, ChildrenProps {
+export interface FooterProps extends HTMLAttributes<HTMLElement>, BaseProps {
   brand?: {
     name: string;
     description?: string;

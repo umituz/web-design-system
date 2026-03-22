@@ -7,7 +7,7 @@ import { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
-export interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
+export interface SliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'>, BaseProps {
   min?: number;
   max?: number;
   step?: number;

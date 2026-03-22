@@ -15,7 +15,7 @@ export interface RadioOption {
   disabled?: boolean;
 }
 
-export interface RadioGroupProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
+export interface RadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'>, BaseProps {
   name: string;
   options: RadioOption[];
   value?: string;

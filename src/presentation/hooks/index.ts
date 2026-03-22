@@ -15,11 +15,12 @@ export { useLocalStorage } from './useLocalStorage';
 export { useClickOutside } from './useClickOutside';
 
 export { useKeyboard, useEscape } from './useKeyboard';
-export type { KeyboardKey, KeyboardModifier, KeyboardOptions, UseClipboardReturn } from './useKeyboard';
+export type { KeyboardKey, KeyboardModifier, KeyboardOptions } from './useKeyboard';
 
 export { useDebounce } from './useDebounce';
 
 export { useClipboard } from './useClipboard';
+export type { UseClipboardReturn } from './useClipboard';
 
 export { useToggle } from './useToggle';
 

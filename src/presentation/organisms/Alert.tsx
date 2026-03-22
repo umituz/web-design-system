@@ -10,7 +10,7 @@ import { Icon } from '../atoms/Icon';
 
 export type AlertVariant = Extract<ColorVariant, 'success' | 'warning' | 'destructive'> | 'info';
 
-export interface AlertProps extends HTMLAttributes<HTMLDivElement>, BaseProps, ChildrenProps {
+export interface AlertProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: AlertVariant;
   showIcon?: boolean;
 }

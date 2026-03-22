@@ -7,7 +7,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps, ChildrenProps {
+export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'outlined' | 'elevated';
 }
 

@@ -8,6 +8,7 @@ export interface SuspenseWrapperProps {
   loadingText?: string;
   variant?: 'default' | 'minimal' | 'card';
   className?: string;
+  style?: React.CSSProperties;
   showErrorBoundary?: boolean;
   errorBoundaryLevel?: 'page' | 'component' | 'feature';
 }
@@ -41,6 +42,7 @@ export const SuspenseWrapper: React.FC<SuspenseWrapperProps> = ({
   loadingText = 'Loading...',
   variant = 'default',
   className = '',
+  style,
   showErrorBoundary = true,
   errorBoundaryLevel = 'component'
 }) => {
@@ -57,18 +59,21 @@ export const SuspenseWrapper: React.FC<SuspenseWrapperProps> = ({
     </Suspense>
   );
 
-  if (showErrorBoundary) {
-    return (
-      <ErrorBoundary
-        level={errorBoundaryLevel}
-        fallback={errorFallback}
-      >
-        {suspenseContent}
-      </ErrorBoundary>
-    );
+  const content = showErrorBoundary ? (
+    <ErrorBoundary
+      level={errorBoundaryLevel}
+      fallback={errorFallback}
+    >
+      {suspenseContent}
+    </ErrorBoundary>
+  ) : suspenseContent;
+
+  // Wrap in div if className or style is provided
+  if (className || style) {
+    return <div className={className} style={style}>{content}</div>;
   }
 
-  return suspenseContent;
+  return content;
 };
 
 // Specialized Suspense wrappers

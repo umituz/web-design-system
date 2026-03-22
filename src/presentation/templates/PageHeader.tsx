@@ -11,7 +11,7 @@ import type { BaseProps } from '../../domain/types';
 export type TextAlign = 'left' | 'center' | 'right';
 export type HeaderSize = 'small' | 'medium' | 'large';
 
-export interface PageHeaderProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
+export interface PageHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>, BaseProps {
   title: ReactNode;
   subtitle?: string;
   align?: TextAlign;

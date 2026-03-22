@@ -7,7 +7,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
-export interface ListProps extends HTMLAttributes<HTMLUListElement>, BaseProps, ChildrenProps {
+export interface ListProps extends HTMLAttributes<HTMLUListElement>, BaseProps {
   variant?: 'default' | 'bordered' | 'spaced';
 }
 

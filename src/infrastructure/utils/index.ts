@@ -6,5 +6,5 @@
 
 export {
   cn,
-  type ClassName,
 } from './cn.util';
+export type { ClassValue } from './cn.util';

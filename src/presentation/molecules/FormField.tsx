@@ -27,10 +27,10 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
     return (
       <div className={cn('space-y-1.5', className)} {...props}>
         {label && (
-          <Text as="label" variant="label" size="sm" htmlFor={fieldId}>
+          <label htmlFor={fieldId} className="text-sm font-medium">
             {label}
             {required && <span className="text-destructive ml-1">*</span>}
-          </Text>
+          </label>
         )}
 
         <Input
