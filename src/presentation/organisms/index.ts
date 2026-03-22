@@ -33,6 +33,19 @@ export type { TabsProps, Tab } from './Tabs';
 
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './Accordion';
 
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './Dialog';
+
 export { Breadcrumbs } from './Breadcrumb';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 
