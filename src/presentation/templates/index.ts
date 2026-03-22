@@ -12,3 +12,12 @@ export type { ListProps } from './List';
 
 export { Section } from './Section';
 export type { SectionProps } from './Section';
+
+export { PageLayout } from './PageLayout';
+export type { PageLayoutProps, MaxWidth } from './PageLayout';
+
+export { PageHeader } from './PageHeader';
+export type { PageHeaderProps, TextAlign, HeaderSize } from './PageHeader';
+
+export { ProjectSkeleton } from './ProjectSkeleton';
+export type { ProjectSkeletonProps } from './ProjectSkeleton';

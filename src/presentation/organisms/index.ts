@@ -36,3 +36,6 @@ export type { AccordionProps, AccordionItem } from './Accordion';
 
 export { Breadcrumbs } from './Breadcrumb';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
+
+export { Footer } from './Footer';
+export type { FooterProps } from './Footer';

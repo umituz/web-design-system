@@ -1,13 +1,11 @@
 /**
  * cn Utility
- * @description Conditional className utility (clsx + tailwind-merge alternative)
+ * @description Conditional className utility using clsx + tailwind-merge for proper Tailwind class merging
  */
 
-export type ClassName = string | undefined | null | false | ClassName[];
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-export function cn(...classes: ClassName[]): string {
-  return classes
-    .flat(Infinity as any)
-    .filter(Boolean)
-    .join(' ');
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
 }
