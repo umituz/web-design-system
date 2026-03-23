@@ -21,3 +21,6 @@ export type { PageHeaderProps, TextAlign, HeaderSize } from './PageHeader';
 
 export { ProjectSkeleton } from './ProjectSkeleton';
 export type { ProjectSkeletonProps } from './ProjectSkeleton';
+
+export { ResponsiveContainer } from './ResponsiveContainer';
+export type { ResponsiveContainerProps, ResponsiveSize } from './ResponsiveContainer';

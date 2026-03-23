@@ -25,3 +25,6 @@ export type { UseClipboardReturn } from './useClipboard';
 export { useToggle } from './useToggle';
 
 export { useScrollLock } from './useScrollLock';
+
+export { useLanguage } from './useLanguage';
+export type { Language, SupportedLanguage, UseLanguageReturn } from './useLanguage';
