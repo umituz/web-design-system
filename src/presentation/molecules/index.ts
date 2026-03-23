@@ -35,3 +35,6 @@ export { InputGroup, GroupedInput } from './InputGroup';
 export type { InputGroupProps } from './InputGroup';
 
 export { ScrollArea, ScrollBar } from './ScrollArea';
+
+export { ListItem } from './ListItem';
+export type { ListItemProps } from './ListItem';
