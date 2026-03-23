@@ -5,7 +5,7 @@
  */
 
 import { forwardRef, type ComponentType } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import { Card, CardContent } from './Card';
 import { Progress } from '../atoms';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';

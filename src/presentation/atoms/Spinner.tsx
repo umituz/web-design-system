@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface SpinnerProps extends HTMLAttributes<HTMLDivElement>, BaseProps {

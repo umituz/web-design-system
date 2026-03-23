@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type ReactNode } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import { Badge } from '../atoms/Badge';
 import { Icon } from '../atoms/Icon';

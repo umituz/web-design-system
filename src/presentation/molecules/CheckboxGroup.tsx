@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps } from '../../domain/types';
 import { Checkbox } from '../atoms/Checkbox';
 import { Text } from '../atoms/Text';

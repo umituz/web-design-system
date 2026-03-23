@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import {
   Table,
   TableHeader,

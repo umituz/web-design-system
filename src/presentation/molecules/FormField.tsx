@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type ReactNode } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps } from '../../domain/types';
 import { Input } from '../atoms/Input';
 import { Text } from '../atoms/Text';

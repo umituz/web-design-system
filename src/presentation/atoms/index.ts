@@ -47,3 +47,6 @@ export { Progress } from './Progress';
 export type { ProgressProps } from './Progress';
 
 export { Label } from './Label';
+
+export { AspectRatio } from './AspectRatio';
+export type { AspectRatioProps } from './AspectRatio';

@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type InputHTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps } from '../../domain/types';
 
 export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
