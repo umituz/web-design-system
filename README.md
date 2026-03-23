@@ -68,7 +68,11 @@ import {
 import {
   Form,
   List,
-  Section
+  Section,
+  PageLayout,
+  PageHeader,
+  ResponsiveContainer,
+  ProjectSkeleton
 } from '@umituz/web-design-system/templates';
 ```
 
@@ -78,7 +82,15 @@ import {
   useTheme,
   useMediaQuery,
   useBreakpoint,
-  useLocalStorage
+  useLocalStorage,
+  useLanguage,
+  useClickOutside,
+  useKeyboard,
+  useEscape,
+  useDebounce,
+  useClipboard,
+  useToggle,
+  useScrollLock
 } from '@umituz/web-design-system/hooks';
 ```
 
@@ -194,6 +206,81 @@ function ThemeToggle() {
     </Button>
   );
 }
+```
+
+### Language Hook
+
+```tsx
+import { useLanguage } from '@umituz/web-design-system/hooks';
+
+function LanguageSelector() {
+  const { currentLanguage, changeLanguage, t, supportedLanguages } = useLanguage({
+    defaultLanguage: 'en-US',
+    supportedLanguages: {
+      'en-US': { name: 'English', flag: '🇺🇸' },
+      'tr-TR': { name: 'Türkçe', flag: '🇹🇷' },
+      'de-DE': { name: 'Deutsch', flag: '🇩🇪' },
+    }
+  });
+
+  return (
+    <select value={currentLanguage} onChange={(e) => changeLanguage(e.target.value)}>
+      {Object.entries(supportedLanguages).map(([code, { name, flag }]) => (
+        <option key={code} value={code}>{flag} {name}</option>
+      ))}
+    </select>
+  );
+}
+```
+
+### Breakpoint Hook
+
+```tsx
+import { useBreakpoint, useMediaQuery } from '@umituz/web-design-system/hooks';
+
+function ResponsiveComponent() {
+  const breakpoint = useBreakpoint();
+  const isDesktop = useMediaQuery('lg');
+  const isTablet = useMediaQuery('md');
+
+  return (
+    <div>
+      Current breakpoint: {breakpoint || 'mobile'}
+      {isDesktop && <DesktopNavigation />}
+      {isTablet && !isDesktop && <TabletNavigation />}
+    </div>
+  );
+}
+```
+
+## 📱 Responsive Templates
+
+### ResponsiveContainer
+
+```tsx
+import { ResponsiveContainer } from '@umituz/web-design-system/templates';
+
+// Auto-responsive container with different max widths per device
+<ResponsiveContainer
+  mobileMaxWidth="full"
+  tabletMaxWidth="lg"
+  desktopMaxWidth="xl"
+  gradient
+  minHeight="screen"
+>
+  <h1>Auto-responsive content</h1>
+  <p>This container automatically adjusts based on screen size</p>
+</ResponsiveContainer>
+
+// Custom responsive container
+<ResponsiveContainer
+  mobilePadding={false}
+  tabletPadding={true}
+  desktopPadding={true}
+  centered={false}
+>
+  <div>Custom responsive layout</div>
+</ResponsiveContainer>
 ```
 
 ## 🎯 Design Tokens

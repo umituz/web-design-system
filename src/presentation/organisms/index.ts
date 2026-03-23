@@ -111,3 +111,25 @@ export {
   AlertDialogAction,
   AlertDialogCancel,
 } from './AlertDialog';
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+} from './DropdownMenu';
+export type { DropdownMenuProps, DropdownMenuContentProps } from './DropdownMenu';
+
+export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
+export type { ToggleGroupProps, ToggleGroupItemProps } from './ToggleGroup';

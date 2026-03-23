@@ -50,3 +50,12 @@ export { Label } from './Label';
 
 export { AspectRatio } from './AspectRatio';
 export type { AspectRatioProps } from './AspectRatio';
+
+export { Switch } from './Switch';
+export type { SwitchProps } from './Switch';
+
+export { Separator } from './Separator';
+export type { SeparatorProps } from './Separator';
+
+export { Toggle, toggleVariants } from './Toggle';
+export type { ToggleProps } from './Toggle';
