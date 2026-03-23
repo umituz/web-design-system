@@ -51,8 +51,6 @@ export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 
 export { Popover, PopoverTrigger, PopoverContent } from './Popover';
 
-export { HoverCard, HoverCardTrigger, HoverCardContent } from './HoverCard';
-
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './Collapsible';
 
 export {
@@ -85,3 +83,12 @@ export type { LoadingStateProps } from './LoadingState';
 
 export { DataTable } from './DataTable';
 export type { DataTableProps, Column } from './DataTable';
+
+export { StatCard } from './StatCard';
+export type { StatCardProps } from './StatCard';
+
+export { FormModal } from './FormModal';
+export type { FormModalProps } from './FormModal';
+
+export { ConfirmDialog } from './ConfirmDialog';
+export type { ConfirmDialogProps } from './ConfirmDialog';
