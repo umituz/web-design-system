@@ -5,7 +5,7 @@
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { type ReactNode } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export type TextAlign = 'left' | 'center' | 'right';

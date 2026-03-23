@@ -5,7 +5,7 @@
  */
 
 import { forwardRef, type ReactNode, type MouseEvent } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import { Button } from '../atoms';
 import type { BaseProps } from '../../domain/types';
 

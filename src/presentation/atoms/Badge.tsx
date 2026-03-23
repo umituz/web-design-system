@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ColorVariant, SizeVariant } from '../../domain/types';
 
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {

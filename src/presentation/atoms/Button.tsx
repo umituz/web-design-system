@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant, ColorVariant } from '../../domain/types';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, BaseProps {

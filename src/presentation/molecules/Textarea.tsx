@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type TextareaHTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement>, BaseProps {

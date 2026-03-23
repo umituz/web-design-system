@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {

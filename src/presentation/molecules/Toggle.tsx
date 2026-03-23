@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface ToggleProps extends ButtonHTMLAttributes<HTMLButtonElement>, BaseProps {

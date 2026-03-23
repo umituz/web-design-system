@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ChildrenProps } from '../../domain/types';
 
 export interface FooterProps extends HTMLAttributes<HTMLElement>, BaseProps {
