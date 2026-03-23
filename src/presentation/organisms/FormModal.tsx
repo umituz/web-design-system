@@ -5,7 +5,7 @@
  */
 
 import { forwardRef, type ComponentType, type ReactNode } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import {
   Dialog,
   DialogContent,

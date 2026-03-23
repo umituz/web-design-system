@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps } from '../../domain/types';
 import { Radio } from '../atoms/Radio';
 import { Text } from '../atoms/Text';

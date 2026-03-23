@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes, type ElementType, type ComponentPropsWithoutRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement>, BaseProps {

@@ -49,6 +49,8 @@ export {
 export { Breadcrumbs } from './Breadcrumb';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 
+export { HoverCard, HoverCardTrigger, HoverCardContent } from './HoverCard';
+
 export { Popover, PopoverTrigger, PopoverContent } from './Popover';
 
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './Collapsible';
@@ -92,3 +94,20 @@ export type { FormModalProps } from './FormModal';
 
 export { ConfirmDialog } from './ConfirmDialog';
 export type { ConfirmDialogProps } from './ConfirmDialog';
+
+export { Calendar } from './Calendar';
+export type { CalendarProps } from './Calendar';
+
+export {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from './AlertDialog';

@@ -4,7 +4,7 @@
  */
 
 import { forwardRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn } from '../../infrastructure/utils/cn';
 import { Spinner } from '../atoms/Spinner';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
