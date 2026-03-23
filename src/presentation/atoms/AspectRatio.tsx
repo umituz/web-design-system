@@ -11,7 +11,7 @@
 
 import * as React from "react";
 
-import { cn } from "../../infrastructure/utils/cn";
+import { cn } from "../../infrastructure/utils";
 
 interface AspectRatioProps extends React.HTMLAttributes<HTMLDivElement> {
   ratio?: number;
