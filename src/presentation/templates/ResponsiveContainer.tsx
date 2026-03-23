@@ -3,17 +3,17 @@
  * @description Responsive wrapper with mobile/desktop optimizations
  */
 
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
 import { useBreakpoint } from '../hooks/useMediaQuery';
-import type { BaseProps, ChildrenProps } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 
 export type ResponsiveSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
 export interface ResponsiveContainerProps
-  extends HTMLAttributes<HTMLDivElement>,
-    BaseProps,
-    ChildrenProps {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
+    BaseProps {
+  children?: ReactNode;
   /**
    * Maximum width on mobile devices
    * @default 'full'
@@ -75,12 +75,6 @@ const maxWidthClasses: Record<ResponsiveSize, string> = {
   lg: 'max-w-lg',
   xl: 'max-w-xl',
   full: 'max-w-full',
-};
-
-const sizeBreakpointMap: Record<string, ResponsiveSize> = {
-  sm: 'mobileMaxWidth',
-  md: 'tabletMaxWidth',
-  lg: 'desktopMaxWidth',
 };
 
 export const ResponsiveContainer = forwardRef<

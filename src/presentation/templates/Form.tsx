@@ -5,7 +5,7 @@
 
 import { forwardRef, type FormHTMLAttributes, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, ChildrenProps } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 
 export interface FormProps extends FormHTMLAttributes<HTMLFormElement>, BaseProps {
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
