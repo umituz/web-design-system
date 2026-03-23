@@ -14,6 +14,7 @@
     "./templates": "./src/presentation/templates/index.ts",
     "./hooks": "./src/presentation/hooks/index.ts",
     "./utils": "./src/infrastructure/utils/index.ts",
+    "./utils/cn": "./src/infrastructure/utils/cn.util.ts",
     "./constants": "./src/infrastructure/constants/index.ts",
     "./tokens": "./src/domain/tokens/index.ts",
     "./types": "./src/domain/types/index.ts",
