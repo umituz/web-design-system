@@ -4,7 +4,7 @@
  */
 
 import { forwardRef } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface EmptyStateProps extends BaseProps {

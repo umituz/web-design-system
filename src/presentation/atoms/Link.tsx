@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type AnchorHTMLAttributes } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, BaseProps {

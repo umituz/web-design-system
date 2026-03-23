@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type ComponentProps } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import { Card, CardContent } from './Card';
 import type { BaseProps, ColorVariant, SizeVariant } from '../../domain/types';
 

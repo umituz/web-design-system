@@ -4,7 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { cn } from '../../infrastructure/utils/cn';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import { Icon } from '../atoms/Icon';
 import { Link } from '../atoms/Link';
