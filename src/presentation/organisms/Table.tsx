@@ -92,7 +92,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTab
 
 TableHead.displayName = 'TableHead';
 
-export const TableCell = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement>>(
+export const TableCell = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement> & { colSpan?: number }>(
   ({ className, ...props }, ref) => (
     <td
       ref={ref}
