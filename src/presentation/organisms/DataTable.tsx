@@ -84,8 +84,9 @@ export function DataTable<T extends Record<string, unknown>>({
       const bValue = typeof column.accessor === 'function' ? column.accessor(b) : b[column.accessor];
 
       if (aValue === bValue) return 0;
+      if (aValue == null || bValue == null) return 0;
 
-      const comparison = aValue < bValue ? -1 : 1;
+      const comparison = (aValue as string | number) < (bValue as string | number) ? -1 : 1;
       return sortDirection === 'asc' ? comparison : -comparison;
     });
   }, [data, sortColumn, sortDirection, columns, sortable]);

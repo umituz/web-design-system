@@ -14,14 +14,13 @@ export interface SuspenseWrapperProps {
 }
 
 const DefaultLoadingSpinner: React.FC<{ text?: string; className?: string }> = ({ text, className }) => (
-  <div style={{
+  <div className={className} style={{
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '16px',
-    padding: '32px',
-    ...({ className } as any)
+    padding: '32px'
   }}>
     <div style={{
       width: '40px',

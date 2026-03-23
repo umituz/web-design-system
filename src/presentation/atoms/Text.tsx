@@ -43,6 +43,8 @@ const weightStyles: Record<'normal' | 'medium' | 'semibold' | 'bold', string> = 
   bold: 'font-bold',
 };
 
+// NOTE: "as any" is used here for the polymorphic ref, which is a necessary workaround
+// for TypeScript's limitations in typing polymorphic components properly.
 export const Text = forwardRef<HTMLElement, TextProps>(
   ({ className, as = 'p', variant = 'body', size = 'md', weight = 'normal', ...props }, ref) => {
     const Tag = as as any;

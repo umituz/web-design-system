@@ -23,7 +23,7 @@ const placementStyles: Record<'top' | 'bottom' | 'left' | 'right', string> = {
 export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
   ({ className, children, content, placement = 'top', delay = 200, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
-    const timeoutRef = useRef<number>();
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const handleMouseEnter = () => {
       timeoutRef.current = setTimeout(() => {

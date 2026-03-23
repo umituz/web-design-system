@@ -129,7 +129,5 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
 } from './DropdownMenu';
-export type { DropdownMenuProps, DropdownMenuContentProps } from './DropdownMenu';
 
 export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
-export type { ToggleGroupProps, ToggleGroupItemProps } from './ToggleGroup';

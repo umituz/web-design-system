@@ -4,7 +4,7 @@
  * Reduces boilerplate in list components throughout the app
  */
 
-import { forwardRef, type ReactNode, type MouseEvent } from 'react';
+import { forwardRef, type ReactNode, type HTMLAttributes, type AnchorHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import { Button } from '../atoms';
 import type { BaseProps } from '../../domain/types';
@@ -22,6 +22,8 @@ export interface ListItemProps extends BaseProps {
   selected?: boolean;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'bordered' | 'ghost';
+  className?: string;
+  id?: string;
 }
 
 const sizeStyles = {
@@ -64,7 +66,7 @@ export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
       selected = false,
       size = 'md',
       variant = 'default',
-      ...props
+      id,
     },
     ref
   ) => {
@@ -104,9 +106,11 @@ export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
       </>
     );
 
+    // NOTE: Polymorphic component - renders as anchor when href is provided
+    // "ref as any" is necessary due to TypeScript limitations with polymorphic refs
     if (href && !disabled) {
       return (
-        <a href={href} ref={ref as any} className={baseClasses} {...(props as any)}>
+        <a href={href} className={baseClasses} id={id} ref={ref as any}>
           {content}
         </a>
       );
@@ -117,7 +121,7 @@ export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
         ref={ref}
         className={baseClasses}
         onClick={disabled ? undefined : onClick}
-        {...props}
+        id={id}
       >
         {content}
       </div>
