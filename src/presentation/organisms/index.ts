@@ -51,6 +51,8 @@ export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 
 export { Popover, PopoverTrigger, PopoverContent } from './Popover';
 
+export { HoverCard, HoverCardTrigger, HoverCardContent } from './HoverCard';
+
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './Collapsible';
 
 export {
@@ -68,3 +70,18 @@ export {
 
 export { Footer } from './Footer';
 export type { FooterProps } from './Footer';
+
+export { MetricCard } from './MetricCard';
+export type { MetricCardProps } from './MetricCard';
+
+export { QuickActionCard } from './QuickActionCard';
+export type { QuickActionCardProps } from './QuickActionCard';
+
+export { EmptyState } from './EmptyState';
+export type { EmptyStateProps } from './EmptyState';
+
+export { LoadingState } from './LoadingState';
+export type { LoadingStateProps } from './LoadingState';
+
+export { DataTable } from './DataTable';
+export type { DataTableProps, Column } from './DataTable';
