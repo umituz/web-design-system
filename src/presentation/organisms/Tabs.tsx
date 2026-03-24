@@ -5,7 +5,7 @@
 
 import { useState, useCallback, type ReactNode, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, ChildrenProps } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 
 export interface Tab {
   value: string;

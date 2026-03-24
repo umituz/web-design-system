@@ -5,7 +5,7 @@
 
 import { forwardRef, type HTMLAttributes, type ReactNode, useState, useRef, useEffect } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, ChildrenProps } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'>, BaseProps {
   content: ReactNode;

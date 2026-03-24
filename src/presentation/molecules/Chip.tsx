@@ -3,7 +3,7 @@
  * @description Selectable/removable tag
  */
 
-import { forwardRef, type ReactNode } from 'react';
+import { forwardRef } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import { Badge } from '../atoms/Badge';

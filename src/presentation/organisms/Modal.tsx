@@ -3,9 +3,9 @@
  * @description Dialog/overlay container
  */
 
-import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, ChildrenProps } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 
 export interface ModalProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   open?: boolean;

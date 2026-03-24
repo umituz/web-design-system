@@ -3,7 +3,7 @@
  * @description User avatar with image and fallback (shadcn/ui compatible)
  */
 
-import { forwardRef, type HTMLAttributes, type ElementType, type ComponentPropsWithoutRef } from 'react';
+import { forwardRef, type HTMLAttributes, type ComponentPropsWithoutRef } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 

@@ -3,7 +3,7 @@
  * @description Card component for displaying metrics and statistics with trend indicators
  */
 
-import { forwardRef, type ComponentProps } from 'react';
+import { forwardRef } from 'react';
 import { cn } from '../../infrastructure/utils';
 import { Card, CardContent } from './Card';
 import type { BaseProps, ColorVariant, SizeVariant } from '../../domain/types';
