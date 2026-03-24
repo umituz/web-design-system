@@ -29,36 +29,58 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
     return (
       <footer
         ref={ref}
-        className={cn('relative mt-20 transition-theme', className)}
+        className={cn('relative mt-20 transition-theme overflow-hidden', className)}
         {...props}
       >
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-card via-bg-card to-bg-secondary opacity-50"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent"></div>
+        <style>{`
+          @keyframes gradient-shift {
+            0%, 100% { opacity: 0.3; transform: scale(1) translate(0, 0); }
+            50% { opacity: 0.5; transform: scale(1.1) translate(-10px, -10px); }
+          }
+          .animate-gradient-shift {
+            animation: gradient-shift 8s ease-in-out infinite;
+          }
+        `}</style>
+
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-bg-card via-bg-secondary/30 to-bg-card"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-primary/5"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent animate-gradient-shift"></div>
+
+        {/* Gradient Top Border */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Brand Section - Prominent */}
             {brand && (
-              <div className="lg:col-span-1">
-                <h3 className="text-2xl font-bold text-text-primary mb-4 tracking-tight">{brand.name}</h3>
-                {brand.description && (
-                  <p className="text-text-secondary text-base leading-relaxed mb-6">{brand.description}</p>
-                )}
-                {/* Social Icons in Brand Section */}
+              <div className="lg:col-span-1 space-y-6">
+                <div className="space-y-3">
+                  <h3 className="text-3xl font-bold text-text-primary tracking-tight bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
+                    {brand.name}
+                  </h3>
+                  {brand.description && (
+                    <p className="text-text-secondary text-base leading-relaxed">{brand.description}</p>
+                  )}
+                </div>
+
+                {/* Social Icons - Enhanced */}
                 {social && social.length > 0 && (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     {social.map((item, index) => (
                       <a
                         key={index}
                         href={item.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center w-12 h-12 rounded-xl bg-bg-secondary text-text-secondary hover:bg-primary-gradient hover:text-text-primary border border-border hover:border-transparent transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-primary/20"
+                        className="group relative flex items-center justify-center w-14 h-14 rounded-2xl bg-bg-secondary/50 text-text-secondary hover:bg-primary-gradient hover:text-white border border-border/50 hover:border-transparent transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-1"
                         aria-label={item.name}
                         title={item.name}
                       >
-                        {item.icon}
+                        {/* Glow effect */}
+                        <span className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        {/* Icon */}
+                        <span className="relative">{item.icon}</span>
                       </a>
                     ))}
                   </div>
@@ -68,19 +90,19 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
 
             {/* Links Sections */}
             <div className="md:col-span-1 lg:col-span-2">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-10">
                 {sections?.map((section, index) => (
-                  <div key={index}>
-                    <h4 className="font-semibold text-text-primary mb-4 text-sm uppercase tracking-wider">{section.title}</h4>
+                  <div key={index} className="space-y-4">
+                    <h4 className="font-bold text-text-primary text-sm uppercase tracking-widest">{section.title}</h4>
                     <ul className="space-y-3">
                       {section.links.map((link, linkIndex) => (
                         <li key={linkIndex}>
                           <a
                             href={link.href}
-                            className="text-text-secondary text-base hover:text-primary-light transition-colors duration-200 inline-flex items-center gap-2 group"
+                            className="text-text-secondary text-base hover:text-primary-light transition-all duration-200 inline-flex items-center gap-2 group"
                           >
-                            <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
-                            {link.label}
+                            <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2 transition-all duration-200 text-primary-light">→</span>
+                            <span className="group-hover:translate-x-1 transition-transform duration-200">{link.label}</span>
                           </a>
                         </li>
                       ))}
@@ -91,13 +113,11 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
             </div>
           </div>
 
-          {/* Copyright Bar */}
+          {/* Copyright Bar - Clean */}
           {copyright && (
-            <div className="border-t border-border/50 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-sm text-text-secondary">{copyright}</p>
-              <div className="flex items-center gap-6 text-sm text-text-secondary">
-                <a href="#" className="hover:text-primary-light transition-colors">Privacy</a>
-                <a href="#" className="hover:text-primary-light transition-colors">Terms</a>
+            <div className="border-t border-border/30 mt-16 pt-8">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+                <p className="text-sm text-text-secondary/80">{copyright}</p>
               </div>
             </div>
           )}
