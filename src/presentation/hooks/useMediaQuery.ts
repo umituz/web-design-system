@@ -1,28 +1,39 @@
 /**
- * useMediaQuery Hook
- * @description Responsive breakpoint detection
+ * useMediaQuery & useBreakpoint Hooks
+ * @description Enhanced responsive breakpoint detection with helper functions
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import type {
+  Breakpoint,
+  UseBreakpointReturn,
+} from '../../domain/types/breakpoint.types';
+import {
+  BREAKPOINTS,
+  createMediaQuery,
+  isBreakpointGreaterThan,
+  isBreakpointLessThan,
+} from '../../infrastructure/constants/breakpoint.constants';
 
-export type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-
-const breakpointValues: Record<Breakpoint, number> = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  '2xl': 1536,
-};
-
+/**
+ * Simple media query hook for a single breakpoint
+ * @param breakpoint - The breakpoint to check
+ * @returns Whether the media query matches
+ *
+ * @example
+ * ```tsx
+ * const isDesktop = useMediaQuery('lg') // true on lg screens and above
+ * ```
+ */
 export function useMediaQuery(breakpoint: Breakpoint): boolean {
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia(`(min-width: ${breakpointValues[breakpoint]}px)`);
+    const query = createMediaQuery(breakpoint);
+    const media = window.matchMedia(query);
     setMatches(media.matches);
 
-    const listener = () => setMatches(media.matches);
+    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
     media.addEventListener('change', listener);
     return () => media.removeEventListener('change', listener);
   }, [breakpoint]);
@@ -30,17 +41,118 @@ export function useMediaQuery(breakpoint: Breakpoint): boolean {
   return matches;
 }
 
-export function useBreakpoint(): Breakpoint | null {
-  const isSm = useMediaQuery('sm');
-  const isMd = useMediaQuery('md');
-  const isLg = useMediaQuery('lg');
-  const isXl = useMediaQuery('xl');
-  const is2xl = useMediaQuery('2xl');
+/**
+ * Enhanced breakpoint hook with helper functions
+ * @returns Object containing current breakpoint and helper functions
+ *
+ * @example
+ * ```tsx
+ * const { currentBreakpoint, isMobile, isDesktop } = useBreakpoint()
+ *
+ * return (
+ *   <div>
+ *     {isMobile && <MobileNav />}
+ *     {isDesktop && <DesktopNav />}
+ *   </div>
+ * )
+ * ```
+ */
+export function useBreakpoint(): UseBreakpointReturn {
+  const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>(() => {
+    // Initialize with current window size
+    if (typeof window === 'undefined') return 'lg';
 
-  if (is2xl) return '2xl';
-  if (isXl) return 'xl';
-  if (isLg) return 'lg';
-  if (isMd) return 'md';
-  if (isSm) return 'sm';
-  return null;
+    const width = window.innerWidth;
+    for (const [bp, value] of Object.entries(BREAKPOINTS).reverse()) {
+      if (width >= value.min) return bp as Breakpoint;
+    }
+    return 'xs';
+  });
+
+  useEffect(() => {
+    // More efficient: track window resize with debounce
+    const updateBreakpoint = () => {
+      const width = window.innerWidth;
+      const sortedBreakpoints = Object.entries(BREAKPOINTS).sort(
+        ([, a], [, b]) => b.min - a.min
+      );
+
+      for (const [bp, value] of sortedBreakpoints) {
+        if (width >= value.min) {
+          setCurrentBreakpoint(bp as Breakpoint);
+          break;
+        }
+      }
+    };
+
+    // Initial check
+    updateBreakpoint();
+
+    // Debounced resize listener
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateBreakpoint, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
+  }, []);
+
+  // Helper functions
+  const matches = useCallback(
+    (breakpoint: Breakpoint | Breakpoint[]): boolean => {
+      if (Array.isArray(breakpoint)) {
+        return breakpoint.includes(currentBreakpoint);
+      }
+      return currentBreakpoint === breakpoint;
+    },
+    [currentBreakpoint]
+  );
+
+  const isGreaterThan = useCallback(
+    (breakpoint: Breakpoint): boolean => {
+      return isBreakpointGreaterThan(currentBreakpoint, breakpoint);
+    },
+    [currentBreakpoint]
+  );
+
+  const isLessThan = useCallback(
+    (breakpoint: Breakpoint): boolean => {
+      return isBreakpointLessThan(currentBreakpoint, breakpoint);
+    },
+    [currentBreakpoint]
+  );
+
+  // Computed values
+  const isXs = currentBreakpoint === 'xs';
+  const isSm = currentBreakpoint === 'sm';
+  const isMd = currentBreakpoint === 'md';
+  const isLg = currentBreakpoint === 'lg';
+  const isXl = currentBreakpoint === 'xl';
+  const is2Xl = currentBreakpoint === '2xl';
+
+  const isMobile = isXs || isSm;
+  const isTablet = isMd || isLg;
+  const isDesktop = isXl || is2Xl;
+
+  return {
+    currentBreakpoint,
+    isXs,
+    isSm,
+    isMd,
+    isLg,
+    isXl,
+    is2Xl,
+    isMobile,
+    isTablet,
+    isDesktop,
+    matches,
+    isGreaterThan,
+    isLessThan,
+  };
 }

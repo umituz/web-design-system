@@ -8,7 +8,7 @@ export { useTheme } from './useTheme';
 export type { Theme, UseThemeReturn } from './useTheme';
 
 export { useMediaQuery, useBreakpoint } from './useMediaQuery';
-export type { Breakpoint } from './useMediaQuery';
+export type { Breakpoint, UseBreakpointReturn } from '../../domain/types/breakpoint.types';
 
 export { useLocalStorage } from './useLocalStorage';
 
