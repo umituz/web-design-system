@@ -20,9 +20,15 @@ export interface FooterProps extends HTMLAttributes<HTMLElement>, BaseProps {
   copyright?: string;
 }
 
+type SocialItem = {
+  name: string;
+  href: string;
+  icon: ReactNode;
+};
+
 // Memoize social icon component to prevent unnecessary re-renders
 const SocialIcon = memo<{
-  item: NonNullable<FooterProps['social']>[number];
+  item: SocialItem;
 }>(({ item }) => (
   <a
     href={item.href}
