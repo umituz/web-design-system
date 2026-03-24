@@ -37,3 +37,13 @@ export { ScrollArea, ScrollBar } from './ScrollArea';
 
 export { ListItem } from './ListItem';
 export type { ListItemProps } from './ListItem';
+
+// NEW: Filter & Navigation Components
+export { ActiveFilterTags } from './ActiveFilterTags';
+export type { ActiveFilterTagsProps } from './ActiveFilterTags';
+
+export { Breadcrumb } from './Breadcrumb';
+export type { BreadcrumbProps, BreadcrumbItem } from './Breadcrumb';
+
+export { CodeBlock } from './CodeBlock';
+export type { CodeBlockProps } from './CodeBlock';

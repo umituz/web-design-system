@@ -26,7 +26,6 @@ export const ImageLightbox = ({
   initialIndex = 0,
   isOpen,
   onClose,
-  className,
 }: ImageLightboxProps) => {
   // Early return if closed
   if (!isOpen) return null;
