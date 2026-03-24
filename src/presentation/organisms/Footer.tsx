@@ -29,17 +29,17 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
     return (
       <footer
         ref={ref}
-        className={cn('bg-bg-primary border-t border-border mt-20 transition-theme', className)}
+        className={cn('bg-bg-card border-t border-border mt-20 transition-theme', className)}
         {...props}
       >
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {/* Brand */}
             {brand && (
-              <div>
-                <h3 className="text-xl font-bold text-text-primary mb-3">{brand.name}</h3>
+              <div className="lg:col-span-1">
+                <h3 className="text-xl font-bold text-text-primary mb-4">{brand.name}</h3>
                 {brand.description && (
-                  <p className="text-text-secondary text-sm">{brand.description}</p>
+                  <p className="text-text-secondary text-sm leading-relaxed">{brand.description}</p>
                 )}
               </div>
             )}
@@ -47,13 +47,13 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
             {/* Sections */}
             {sections?.map((section, index) => (
               <div key={index}>
-                <h4 className="font-semibold text-text-primary mb-3">{section.title}</h4>
-                <ul className="space-y-2 text-sm">
+                <h4 className="font-semibold text-text-primary mb-4 text-sm uppercase tracking-wide">{section.title}</h4>
+                <ul className="space-y-3">
                   {section.links.map((link, linkIndex) => (
                     <li key={linkIndex}>
                       <a
                         href={link.href}
-                        className="text-text-secondary hover:text-primary-light transition-colors"
+                        className="text-text-secondary text-sm hover:text-primary-light transition-colors duration-200 hover:underline"
                       >
                         {link.label}
                       </a>
@@ -64,17 +64,19 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
             ))}
 
             {/* Social */}
-            {social && (
+            {social && social.length > 0 && (
               <div>
-                <h4 className="font-semibold text-text-primary mb-3">Connect</h4>
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <h4 className="font-semibold text-text-primary mb-4 text-sm uppercase tracking-wide">Connect</h4>
+                <div className="flex flex-wrap gap-3">
                   {social.map((item, index) => (
                     <a
                       key={index}
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-text-secondary hover:text-primary-light transition-colors"
+                      className="flex items-center justify-center w-10 h-10 rounded-lg bg-bg-secondary text-text-secondary hover:bg-primary-gradient hover:text-text-primary border border-border hover:border-transparent transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                      aria-label={item.name}
+                      title={item.name}
                     >
                       {item.icon}
                     </a>
@@ -86,8 +88,8 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
 
           {/* Copyright */}
           {copyright && (
-            <div className="border-t border-border mt-8 pt-8 text-center text-sm text-text-secondary">
-              <p>{copyright}</p>
+            <div className="border-t border-border mt-10 pt-8 text-center">
+              <p className="text-sm text-text-secondary">{copyright}</p>
             </div>
           )}
         </div>
