@@ -22,7 +22,7 @@ export interface FooterProps extends HTMLAttributes<HTMLElement>, BaseProps {
 
 // Memoize social icon component to prevent unnecessary re-renders
 const SocialIcon = memo<{
-  item: FooterProps['social'][number];
+  item: NonNullable<FooterProps['social']>[number];
 }>(({ item }) => (
   <a
     href={item.href}
