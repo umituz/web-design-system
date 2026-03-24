@@ -49,15 +49,17 @@ export const performanceUtils = {
     }
 
     // performance.memory is not in standard TypeScript lib but available in Chrome-based browsers
-    type PerformanceWithMemory = typeof performance & {
-      memory?: {
-        usedJSHeapSize: number;
-        totalJSHeapSize: number;
-        jsHeapSizeLimit: number;
-      };
-    };
+    interface PerformanceMemory {
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    }
 
-    const mem = (performance as PerformanceWithMemory).memory;
+    interface PerformanceWithMemory extends Performance {
+      memory?: PerformanceMemory;
+    }
+
+    const mem = (performance as unknown as PerformanceWithMemory).memory;
     if (!mem) {
       return null;
     }
