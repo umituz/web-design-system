@@ -38,22 +38,22 @@ export const validateInput = (
 
   // HTML tag check for non-HTML content
   if (!config?.allowHtml) {
-    if (/<[^>]*>/.test(trimmed)) {
-      return { isValid: false, error: "HTML tags are not allowed" };
-    }
-
-    // Check for suspicious patterns
-    const suspiciousPatterns = [
-      /javascript:/gi,
-      /vbscript:/gi,
-      /data:text\/html/gi,
-      /data:application\/javascript/gi,
-      /on\w+\s*=/gi,
+    // FIX: Better HTML detection that catches encoded variations
+    const htmlPatterns = [
+      /<[^>]*>/gi,           // Standard HTML tags
+      /&lt;[^&]*&gt;/gi,      // HTML encoded tags
+      /&lt;[a-z]/gi,         // Partial encoded tags
+      /javascript:/gi,        // JavaScript protocol
+      /vbscript:/gi,          // VBScript protocol
+      /data:text\/html/gi,    // Data URI with HTML
+      /on\w+\s*=/gi,          // Inline event handlers
+      /<script/gi,            // Script tags (case-insensitive)
+      /<\/script>/gi,         // Closing script tags
     ];
 
-    for (const pattern of suspiciousPatterns) {
+    for (const pattern of htmlPatterns) {
       if (pattern.test(trimmed)) {
-        return { isValid: false, error: "Potentially unsafe content detected" };
+        return { isValid: false, error: "HTML tags or scripts are not allowed" };
       }
     }
   }
@@ -180,19 +180,20 @@ export const validateFileName = (fileName: string): ValidationResult => {
     return { isValid: false, error: "File name is required" };
   }
 
-  // Check for dangerous patterns
+  // FIX: Remove global flag from regex patterns to prevent lastIndex issues
+  // Each pattern is tested once and should not have global flag
   const dangerousPatterns = [
-    /\.\./g, // Directory traversal
-    /[<>:"|?*]/g, // Invalid file name characters
-    /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i, // Windows reserved names
-    /^\./g, // Hidden files starting with dot
-    /\.$/, // Files ending with dot
-    /\s+$/ // Trailing whitespace
+    { pattern: /\.\./, name: 'Directory traversal' },
+    { pattern: /[<>:"|?*]/, name: 'Invalid characters' },
+    { pattern: /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i, name: 'Windows reserved' },
+    { pattern: /^\./, name: 'Hidden file' },
+    { pattern: /\.$/, name: 'Trailing dot' },
+    { pattern: /\s+$/, name: 'Trailing whitespace' }
   ];
 
-  for (const pattern of dangerousPatterns) {
+  for (const { pattern, name } of dangerousPatterns) {
     if (pattern.test(trimmed)) {
-      return { isValid: false, error: "Invalid file name format" };
+      return { isValid: false, error: `Invalid file name: ${name}` };
     }
   }
 
@@ -211,24 +212,27 @@ export const validateFileName = (fileName: string): ValidationResult => {
 export const validateCSPCompliance = (content: string): ValidationResult => {
   const violations = [];
 
-  // Check for inline scripts
-  if (/<script[^>]*>/.test(content)) {
-    violations.push("Inline scripts not allowed");
+  // FIX: Enhanced script detection - catch more variations
+  const scriptPatterns = [
+    /<script[^>]*>/gi,
+    /<script/gi,
+    /<\/script>/gi,
+    /javascript:/gi,
+    /vbscript:/gi,
+    /data:\s*text\/html/gi,
+    /data:\s*application\/javascript/gi
+  ];
+
+  for (const pattern of scriptPatterns) {
+    if (pattern.test(content)) {
+      violations.push("Potentially dangerous script content detected");
+      break;
+    }
   }
 
-  // Check for inline styles
-  if (/style\s*=/.test(content)) {
-    violations.push("Inline styles not allowed");
-  }
-
-  // Check for javascript: URLs
-  if (/javascript:/gi.test(content)) {
-    violations.push("JavaScript URLs not allowed");
-  }
-
-  // Check for data: URLs with dangerous content
-  if (/data:(?:text\/html|application\/javascript)/gi.test(content)) {
-    violations.push("Dangerous data URLs not allowed");
+  // Check for inline styles (more lenient - styles are often used legitimately)
+  if (/<style[^>]*>[\s\S]*?<\/style>/gi.test(content)) {
+    violations.push("Inline style blocks not allowed");
   }
 
   if (violations.length > 0) {

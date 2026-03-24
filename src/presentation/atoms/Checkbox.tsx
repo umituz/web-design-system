@@ -3,7 +3,7 @@
  * @description Checkbox input element
  */
 
-import { forwardRef, type InputHTMLAttributes } from 'react';
+import { forwardRef, type InputHTMLAttributes, useCallback } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -20,11 +20,12 @@ const sizeStyles = {
 };
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, checked, onCheckedChange, size = 'md', disabled, ...props }, ref) => {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  ({ className, checked, onCheckedChange, size = 'md', disabled, onChange, ...props }, ref) => {
+    // FIX: Memoize handleChange to prevent re-renders
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       onCheckedChange?.(e.target.checked);
-      props.onChange?.(e);
-    };
+      onChange?.(e);
+    }, [onCheckedChange, onChange]);
 
     return (
       <input

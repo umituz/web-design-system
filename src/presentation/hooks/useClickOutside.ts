@@ -15,7 +15,9 @@ export function useClickOutside<T extends HTMLElement>(
     if (!enabled) return;
 
     const handleClick = (event: Event) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      // FIX: Safe null check and type guard
+      const target = event.target as Node;
+      if (ref.current && target && !ref.current.contains(target)) {
         callback();
       }
     };

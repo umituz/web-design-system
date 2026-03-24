@@ -12,8 +12,8 @@ export function useScrollLock(enabled: boolean = true) {
     const originalStyle = window.getComputedStyle(document.body).overflow;
     const originalPaddingRight = window.getComputedStyle(document.body).paddingRight;
 
-    // Calculate scrollbar width
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    // FIX: Ensure scrollbar width is never negative
+    const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
 
     document.body.style.overflow = 'hidden';
     document.body.style.paddingRight = `${scrollbarWidth}px`;
