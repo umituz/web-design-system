@@ -94,14 +94,14 @@ export const MainNavbar = ({
 
           {/* Desktop Menu */}
           <Show above="lg">
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center gap-6 lg:gap-8">
               {navItemsMemo.map((item) => {
                 const isActive = location.pathname === item.path;
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`font-medium transition-colors transition-theme ${
+                    className={`font-medium transition-colors transition-theme whitespace-nowrap ${
                       isActive ? 'text-primary-light' : 'text-text-secondary hover:text-primary-light'
                     }`}
                   >

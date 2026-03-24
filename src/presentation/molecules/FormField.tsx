@@ -1,10 +1,10 @@
 /**
  * FormField Component (Molecule)
- * @description Label + Input combination
+ * @description Label + Input combination (Responsive)
  */
 
 import { forwardRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn, getSpaceY } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import { Input } from '../atoms/Input';
 import { Text } from '../atoms/Text';
@@ -16,20 +16,21 @@ export interface FormFieldProps extends BaseProps {
   required?: boolean;
   id?: string;
   inputProps?: React.ComponentProps<typeof Input>;
+  fullWidth?: boolean; // Enable responsive full width
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ label, error, helperText, required, id, className, inputProps, ...props }, ref) => {
+  ({ label, error, helperText, required, id, className, inputProps, fullWidth = true, ...props }, ref) => {
     const fieldId = id || inputProps?.id || inputProps?.name;
     const errorId = error ? `${fieldId}-error` : undefined;
     const helperId = helperText ? `${fieldId}-helper` : undefined;
 
     return (
-      <div className={cn('space-y-1.5', className)} {...props}>
+      <div className={cn(getSpaceY('sm'), fullWidth && 'w-full', className)} {...props}>
         {label && (
-          <label htmlFor={fieldId} className="text-sm font-medium">
+          <label htmlFor={fieldId} className="text-sm font-medium block">
             {label}
-            {required && <span className="text-destructive ml-1">*</span>}
+            {required && <span className="text-destructive ml-1" aria-label="required">*</span>}
           </label>
         )}
 

@@ -5,14 +5,15 @@
 
 import { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, SizeVariant } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
+import type { MediumSizes } from '../../infrastructure/constants';
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
   error?: boolean;
-  size?: Extract<SizeVariant, 'sm' | 'md' | 'lg'>;
+  size?: MediumSizes;
 }
 
-const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
+const sizeStyles: Record<MediumSizes, string> = {
   sm: 'h-8 px-3 text-sm',
   md: 'h-9 px-3 text-sm',
   lg: 'h-10 px-4 text-base',

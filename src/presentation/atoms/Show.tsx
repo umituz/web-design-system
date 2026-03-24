@@ -4,7 +4,7 @@
  */
 
 import { useBreakpoint } from '../hooks/useMediaQuery';
-import type { Breakpoint, ShowProps } from '../../domain/types/breakpoint.types';
+import type { ShowProps } from '../../domain/types/breakpoint.types';
 import type { BaseProps } from '../../domain/types';
 
 export interface ShowComponentProps extends BaseProps, ShowProps {

@@ -4,7 +4,7 @@
  */
 
 import { useBreakpoint } from '../hooks/useMediaQuery';
-import type { Breakpoint, HideProps } from '../../domain/types/breakpoint.types';
+import type { HideProps } from '../../domain/types/breakpoint.types';
 import type { BaseProps } from '../../domain/types';
 
 export interface HideComponentProps extends BaseProps, HideProps {

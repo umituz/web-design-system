@@ -5,13 +5,14 @@
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, SizeVariant } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
+import type { RegularSizes } from '../../infrastructure/constants';
 
 export interface SpinnerProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
-  size?: Extract<SizeVariant, 'sm' | 'md' | 'lg' | 'xl'>;
+  size?: RegularSizes;
 }
 
-const sizeStyles: Record<'sm' | 'md' | 'lg' | 'xl', string> = {
+const sizeStyles: Record<RegularSizes, string> = {
   sm: 'h-4 w-4 border-2',
   md: 'h-6 w-6 border-2',
   lg: 'h-8 w-8 border-3',
