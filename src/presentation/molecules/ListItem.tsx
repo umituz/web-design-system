@@ -4,9 +4,8 @@
  * Reduces boilerplate in list components throughout the app
  */
 
-import { forwardRef, type ReactNode, type HTMLAttributes, type AnchorHTMLAttributes } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
-import { Button } from '../atoms';
 import type { BaseProps } from '../../domain/types';
 
 export interface ListItemProps extends BaseProps {

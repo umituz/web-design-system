@@ -5,7 +5,7 @@
 
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, ChildrenProps } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 import { Input } from '../atoms/Input';
 
 export interface InputGroupProps extends HTMLAttributes<HTMLDivElement>, BaseProps {

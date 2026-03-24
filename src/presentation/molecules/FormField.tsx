@@ -3,7 +3,7 @@
  * @description Label + Input combination
  */
 
-import { forwardRef, type ReactNode } from 'react';
+import { forwardRef } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import { Input } from '../atoms/Input';

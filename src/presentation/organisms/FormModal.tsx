@@ -4,7 +4,7 @@
  * Reduces boilerplate in modal components like CampaignModal, ProjectListModal
  */
 
-import { forwardRef, type ComponentType, type ReactNode } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
 import {
   Dialog,
