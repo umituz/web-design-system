@@ -90,7 +90,7 @@ export const MainNavbar = ({
           {/* Logo + App Name */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3">
             {logo}
-            <span className="text-xl font-bold text-text-primary hidden xs:block">{appName}</span>
+            <span className="text-xl font-bold text-text-primary">{appName}</span>
           </Link>
 
           {/* Desktop Menu */}
