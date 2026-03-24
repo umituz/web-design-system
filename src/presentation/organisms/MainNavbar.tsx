@@ -199,7 +199,7 @@ export const MainNavbar = ({
             {/* Mobile Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden text-text-secondary"
+              className="max-md:flex text-text-secondary hidden"
               type="button"
               aria-label="Toggle menu"
             >
