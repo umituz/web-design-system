@@ -3,7 +3,7 @@
  * @description Enhanced responsive breakpoint detection with helper functions
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import type {
   Breakpoint,
   UseBreakpointReturn,
@@ -29,6 +29,9 @@ export function useMediaQuery(breakpoint: Breakpoint): boolean {
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
+    // FIX: SSR-safe check
+    if (typeof window === 'undefined') return;
+
     const query = createMediaQuery(breakpoint);
     const media = window.matchMedia(query);
     setMatches(media.matches);
@@ -58,24 +61,30 @@ export function useMediaQuery(breakpoint: Breakpoint): boolean {
  * ```
  */
 export function useBreakpoint(): UseBreakpointReturn {
+  // FIX: Sort breakpoints once and memoize
+  const sortedBreakpoints = useMemo(() => {
+    return Object.entries(BREAKPOINTS).sort(
+      ([, a], [, b]) => b.min - a.min
+    );
+  }, []);
+
   const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>(() => {
-    // Initialize with current window size
+    // FIX: SSR-safe initialization
     if (typeof window === 'undefined') return 'lg';
 
     const width = window.innerWidth;
-    for (const [bp, value] of Object.entries(BREAKPOINTS).reverse()) {
+    for (const [bp, value] of sortedBreakpoints) {
       if (width >= value.min) return bp as Breakpoint;
     }
     return 'xs';
   });
 
+  // FIX: Use useRef for resize timer to prevent timer issues
+  const resizeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
   useEffect(() => {
-    // More efficient: track window resize with debounce
     const updateBreakpoint = () => {
       const width = window.innerWidth;
-      const sortedBreakpoints = Object.entries(BREAKPOINTS).sort(
-        ([, a], [, b]) => b.min - a.min
-      );
 
       for (const [bp, value] of sortedBreakpoints) {
         if (width >= value.min) {
@@ -89,19 +98,22 @@ export function useBreakpoint(): UseBreakpointReturn {
     updateBreakpoint();
 
     // Debounced resize listener
-    let resizeTimer: ReturnType<typeof setTimeout>;
     const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(updateBreakpoint, 100);
+      if (resizeTimerRef.current) {
+        clearTimeout(resizeTimerRef.current);
+      }
+      resizeTimerRef.current = setTimeout(updateBreakpoint, 100);
     };
 
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      clearTimeout(resizeTimer);
+      if (resizeTimerRef.current) {
+        clearTimeout(resizeTimerRef.current);
+      }
     };
-  }, []);
+  }, [sortedBreakpoints]);
 
   // Helper functions
   const matches = useCallback(

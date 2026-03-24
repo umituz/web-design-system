@@ -25,7 +25,8 @@ export function useLocalStorage<T>(
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       try {
-        const valueToStore = value instanceof Function ? value(valueRef.current) : value;
+        // FIX: Use typeof instead of instanceof for better React functional update support
+        const valueToStore = typeof value === 'function' ? (value as (prev: T) => T)(valueRef.current) : value;
         setStoredValue(valueToStore);
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       } catch (error) {

@@ -14,9 +14,9 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 }
 
 const sizeStyles: Record<MediumSizes, string> = {
-  sm: 'h-8 px-3 text-sm',
-  md: 'h-9 px-3 text-sm',
-  lg: 'h-10 px-4 text-base',
+  sm: 'h-8 text-sm',
+  md: 'h-9 text-sm',
+  lg: 'h-10 text-base',
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -26,7 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         type={type}
         className={cn(
-          'flex w-full rounded-md border bg-background px-3 py-2',
+          'flex w-full rounded-md border bg-background py-2',
           'text-sm ring-offset-background',
           'file:border-0 file:bg-transparent file:text-sm file:font-medium',
           'placeholder:text-muted-foreground',

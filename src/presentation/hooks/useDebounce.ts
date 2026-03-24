@@ -3,7 +3,7 @@
  * @description Debounce a value with optimized performance
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 export function useDebounce<T>(value: T, delay: number = 500): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -55,11 +55,11 @@ export function useThrottle<T extends (...args: any[]) => any>(
       clearTimeout(timeoutRef.current);
     }
 
+    // FIX: Ensure delay is never negative
+    const delayUntilNextExecution = Math.max(0, delay - timeSinceLastRun);
     timeoutRef.current = window.setTimeout(() => {
       lastRun.current = new Date();
       func(...args);
-    }, delay - timeSinceLastRun);
+    }, delayUntilNextExecution);
   }, [func, delay]) as T;
 }
-
-import { useCallback } from 'react';

@@ -3,7 +3,7 @@
  * @description Dialog/overlay container with optimized transitions
  */
 
-import { forwardRef, type HTMLAttributes, useEffect, useState } from 'react';
+import { forwardRef, type HTMLAttributes, useEffect, useState, useRef } from 'react';
 import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
@@ -27,22 +27,33 @@ export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
   ({ open = false, onClose, showCloseButton = true, size = 'md', className, children, ...props }, ref) => {
     const [shouldRender, setShouldRender] = useState(open);
     const [isAnimating, setIsAnimating] = useState(false);
+    const rafRef = useRef<number>();
+    const timerRef = useRef<number>();
 
     useEffect(() => {
       if (open) {
         setShouldRender(true);
-        // Small delay to trigger animation
-        requestAnimationFrame(() => {
+        // FIX: Store rafId and cleanup properly
+        rafRef.current = requestAnimationFrame(() => {
           setIsAnimating(true);
         });
       } else {
         setIsAnimating(false);
         // Wait for animation to complete before unmounting
-        const timer = setTimeout(() => {
+        timerRef.current = window.setTimeout(() => {
           setShouldRender(false);
         }, 200); // Match animation duration
-        return () => clearTimeout(timer);
       }
+
+      // FIX: Proper cleanup for both animation frame and timeout
+      return () => {
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current);
+        }
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+      };
     }, [open]);
 
     if (!shouldRender) return null;
