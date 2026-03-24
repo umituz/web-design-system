@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-// @ts-expect-error - react-router-dom is a peer dependency
+// @ts-ignore - react-router-dom is a peer dependency, may not be available during package build
 import { Link, useLocation } from 'react-router-dom';
 import React from 'react';
 import type { BaseProps } from '../../domain/types';

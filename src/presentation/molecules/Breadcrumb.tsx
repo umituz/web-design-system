@@ -3,7 +3,7 @@
  * @description Navigation breadcrumb with home icon
  */
 
-// @ts-expect-error - react-router-dom is a peer dependency
+// @ts-ignore - react-router-dom is a peer dependency, may not be available during package build
 import { Link } from 'react-router-dom';
 import type { BaseProps } from '../../domain/types';
 
