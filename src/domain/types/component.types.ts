@@ -4,8 +4,8 @@
  */
 
 import type { ReactNode } from 'react';
+export type { SizeVariant } from '../../infrastructure/constants/size-variant.constants';
 
-export type SizeVariant = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type ColorVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive';
 export type ColorScheme = 'light' | 'dark';
 

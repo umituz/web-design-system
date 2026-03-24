@@ -1,10 +1,10 @@
 /**
  * MetricCard Component (Organism)
- * @description Card component for displaying metrics and statistics with trend indicators
+ * @description Card component for displaying metrics and statistics with trend indicators (Responsive)
  */
 
 import { forwardRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn, getSpacing, getIconSize, getTextSize, getGap } from '../../infrastructure/utils';
 import { Card, CardContent } from './Card';
 import type { BaseProps, ColorVariant, SizeVariant } from '../../domain/types';
 
@@ -21,31 +21,8 @@ export interface MetricCardProps extends BaseProps {
   variant?: ColorVariant;
   trendValueFormatter?: (value: number) => string;
   onClick?: () => void;
+  responsiveLayout?: boolean; // Enable responsive layout changes
 }
-
-const sizeStyles = {
-  sm: 'p-3',
-  md: 'p-4',
-  lg: 'p-5',
-};
-
-const valueSizeStyles = {
-  sm: 'text-lg',
-  md: 'text-2xl',
-  lg: 'text-3xl',
-};
-
-const iconSizeStyles = {
-  sm: 'h-4 w-4',
-  md: 'h-8 w-8',
-  lg: 'h-10 w-10',
-};
-
-const labelSizeStyles = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-};
 
 const trendColors: Record<ColorVariant, { positive: string; negative: string; bg: string }> = {
   primary: { positive: 'text-primary', negative: 'text-destructive', bg: 'bg-primary' },
@@ -68,6 +45,7 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
       variant = 'primary',
       trendValueFormatter = (v) => `${v > 0 ? '+' : ''}${v}%`,
       onClick,
+      responsiveLayout = true,
       ...props
     },
     ref
@@ -87,34 +65,48 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
         onClick={onClick}
         {...props}
       >
-        <CardContent className={cn(sizeStyles[size])}>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <p className={cn('text-muted-foreground font-medium', labelSizeStyles[size])}>{title}</p>
-              <p className={cn('font-bold text-foreground', valueSizeStyles[size])}>
+        <CardContent className={getSpacing('p', size)}>
+          <div className={cn(
+            'flex items-center justify-between',
+            getGap('md'),
+            responsiveLayout && 'flex-col sm:flex-row'
+          )}>
+            <div className={cn(
+              'flex-1',
+              responsiveLayout && 'text-center sm:text-left w-full sm:w-auto'
+            )}>
+              <p className={cn('text-muted-foreground font-medium', getTextSize(size))}>{title}</p>
+              <p className={cn('font-bold text-foreground mt-1', size === 'sm' ? 'text-lg sm:text-xl' : size === 'md' ? 'text-2xl' : 'text-3xl sm:text-4xl')}>
                 {typeof value === 'number' ? value.toLocaleString() : value}
               </p>
               {trend && (
-                <div className="flex items-center gap-1 mt-1">
+                <div className={cn(
+                  'flex items-center gap-1 mt-1',
+                  responsiveLayout ? 'justify-center sm:justify-start' : ''
+                )}>
                   <span
                     className={cn(
-                      'text-xs font-medium',
+                      'text-xs sm:text-sm font-medium',
                       isPositive ? colors.positive : colors.negative
                     )}
                   >
                     {TrendIcon}
                   </span>
-                  <p className={cn('text-xs', isPositive ? colors.positive : colors.negative)}>
+                  <p className={cn('text-xs sm:text-sm', isPositive ? colors.positive : colors.negative)}>
                     {trendValueFormatter(trend.value)}
                   </p>
                   {trend.label && (
-                    <p className="text-xs text-muted-foreground ml-1">{trend.label}</p>
+                    <p className="text-xs text-muted-foreground ml-1 hidden sm:inline">{trend.label}</p>
                   )}
                 </div>
               )}
             </div>
             {Icon && (
-              <Icon className={cn(iconSizeStyles[size], iconColor, 'flex-shrink-0')} />
+              <div className={cn(
+                responsiveLayout ? 'sm:self-auto' : ''
+              )}>
+                <Icon className={cn(getIconSize(size), iconColor, 'flex-shrink-0')} />
+              </div>
             )}
           </div>
         </CardContent>

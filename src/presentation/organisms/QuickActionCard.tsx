@@ -1,10 +1,10 @@
 /**
  * QuickActionCard Component (Organism)
- * @description Card component for quick navigation actions with icon
+ * @description Card component for quick navigation actions with icon (Responsive)
  */
 
 import { forwardRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn, getSpacing, getIconSize, getContainerSize, getTextSize, getGap } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface QuickActionCardProps extends BaseProps {
@@ -16,31 +16,8 @@ export interface QuickActionCardProps extends BaseProps {
   href?: string;
   size?: Extract<SizeVariant, 'sm' | 'md' | 'lg'>;
   target?: '_blank' | '_self' | '_parent' | '_top';
+  responsiveLayout?: boolean; // Enable responsive layout changes
 }
-
-const sizeStyles = {
-  sm: 'p-3 gap-2',
-  md: 'p-4 gap-3',
-  lg: 'p-5 gap-4',
-};
-
-const iconSizeStyles = {
-  sm: 'w-8 h-8',
-  md: 'w-10 h-10',
-  lg: 'w-12 h-12',
-};
-
-const iconInnerSizeStyles = {
-  sm: 'h-4 w-4',
-  md: 'h-5 w-5',
-  lg: 'h-6 w-6',
-};
-
-const labelSizeStyles = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-};
 
 export const QuickActionCard = forwardRef<HTMLAnchorElement | HTMLDivElement, QuickActionCardProps>(
   (
@@ -54,6 +31,7 @@ export const QuickActionCard = forwardRef<HTMLAnchorElement | HTMLDivElement, Qu
       href,
       size = 'md',
       target = '_self',
+      responsiveLayout = true,
       ...props
     },
     ref
@@ -61,11 +39,15 @@ export const QuickActionCard = forwardRef<HTMLAnchorElement | HTMLDivElement, Qu
     const content = (
       <>
         {Icon && (
-          <div className={cn(iconSizeStyles[size], 'rounded-lg flex items-center justify-center flex-shrink-0', iconBgColor)}>
-            <Icon className={cn(iconInnerSizeStyles[size], iconColor)} />
+          <div className={cn(getContainerSize(size), 'rounded-lg flex items-center justify-center flex-shrink-0', iconBgColor)}>
+            <Icon className={cn(getIconSize(size), iconColor)} />
           </div>
         )}
-        <span className={cn('font-medium text-foreground group-hover:text-primary transition-colors', labelSizeStyles[size])}>
+        <span className={cn(
+          'font-medium text-foreground group-hover:text-primary transition-colors',
+          getTextSize(size),
+          responsiveLayout && 'text-center sm:text-left'
+        )}>
           {label}
         </span>
       </>
@@ -73,9 +55,10 @@ export const QuickActionCard = forwardRef<HTMLAnchorElement | HTMLDivElement, Qu
 
     const baseClasses = cn(
       'bg-card border border-border rounded-xl',
-      'flex items-center',
-      'hover:border-primary/50 transition-colors group',
-      sizeStyles[size],
+      responsiveLayout ? 'flex flex-col sm:flex-row items-center justify-center sm:justify-start' : 'flex items-center',
+      'hover:border-primary/50 hover:shadow-md transition-all duration-200 group',
+      getSpacing('p', size),
+      getGap(size === 'sm' ? 'sm' : size),
       className
     );
 

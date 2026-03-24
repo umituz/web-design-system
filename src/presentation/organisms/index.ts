@@ -92,6 +92,9 @@ export type { StatCardProps } from './StatCard';
 export { FormModal } from './FormModal';
 export type { FormModalProps } from './FormModal';
 
+export { Grid, GridItem } from './Grid';
+export type { GridProps, GridItemProps } from './Grid';
+
 export { ConfirmDialog } from './ConfirmDialog';
 export type { ConfirmDialogProps } from './ConfirmDialog';
 

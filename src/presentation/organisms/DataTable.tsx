@@ -17,7 +17,8 @@ import {
 } from './Table';
 import { Button } from '../atoms/Button';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import type { BaseProps, SizeVariant, ColorVariant } from '../../domain/types';
+import type { BaseProps, ColorVariant } from '../../domain/types';
+import type { MediumSizes } from '../../infrastructure/constants';
 
 export interface Column<T> {
   id: string;
@@ -32,7 +33,7 @@ export interface DataTableProps<T> extends BaseProps {
   data: T[];
   columns: Column<T>[];
   caption?: string;
-  size?: Extract<SizeVariant, 'sm' | 'md' | 'lg'>;
+  size?: MediumSizes;
   variant?: ColorVariant;
   sortable?: boolean;
   paginated?: boolean;
@@ -110,13 +111,13 @@ export function DataTable<T extends Record<string, unknown>>({
     return value as React.ReactNode;
   };
 
-  const sizeStyles = {
+  const sizeStyles: Record<MediumSizes, string> = {
     sm: 'text-xs',
     md: 'text-sm',
     lg: 'text-base',
   };
 
-  const paddingStyles = {
+  const paddingStyles: Record<MediumSizes, string> = {
     sm: 'px-2 py-2',
     md: 'px-4 py-3',
     lg: 'px-6 py-4',

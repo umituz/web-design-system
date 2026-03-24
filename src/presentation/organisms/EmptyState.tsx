@@ -1,10 +1,10 @@
 /**
  * EmptyState Component (Organism)
- * @description Component for displaying empty states with optional actions
+ * @description Component for displaying empty states with optional actions (Responsive)
  */
 
 import { forwardRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn, getSpacing, getGap } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface EmptyStateProps extends BaseProps {
@@ -16,35 +16,8 @@ export interface EmptyStateProps extends BaseProps {
     onClick: () => void;
   };
   size?: Extract<SizeVariant, 'sm' | 'md' | 'lg' | 'xl'>;
+  centered?: boolean;
 }
-
-const sizeStyles = {
-  sm: 'p-6 gap-3',
-  md: 'p-8 gap-4',
-  lg: 'p-12 gap-5',
-  xl: 'p-16 gap-6',
-};
-
-const iconSizeStyles = {
-  sm: 'h-8 w-8',
-  md: 'h-12 w-12',
-  lg: 'h-16 w-16',
-  xl: 'h-20 w-20',
-};
-
-const titleSizeStyles = {
-  sm: 'text-sm',
-  md: 'text-base',
-  lg: 'text-lg',
-  xl: 'text-xl',
-};
-
-const descriptionSizeStyles = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-  xl: 'text-lg',
-};
 
 export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
   (
@@ -64,17 +37,18 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
         ref={ref}
         className={cn(
           'flex flex-col items-center justify-center text-center',
-          sizeStyles[size],
+          getSpacing('p', size),
+          getGap(size === 'xl' ? 'lg' : size),
           className
         )}
         {...props}
       >
         {Icon && (
-          <Icon className={cn(iconSizeStyles[size], 'text-muted-foreground/50 mx-auto mb-2')} />
+          <Icon className={cn(size === 'sm' ? 'h-8 w-8 sm:h-10 sm:w-10' : size === 'md' ? 'h-12 w-12 sm:h-14 sm:w-14' : size === 'lg' ? 'h-16 w-16 sm:h-20 sm:w-20' : 'h-20 w-20 sm:h-24 sm:w-24', 'text-muted-foreground/50 mx-auto mb-2')} />
         )}
-        <h3 className={cn('font-semibold text-foreground', titleSizeStyles[size])}>{title}</h3>
+        <h3 className={cn('font-semibold text-foreground', size === 'sm' ? 'text-sm sm:text-base' : size === 'md' ? 'text-base sm:text-lg' : size === 'lg' ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl')}>{title}</h3>
         {description && (
-          <p className={cn('text-muted-foreground max-w-md', descriptionSizeStyles[size])}>
+          <p className={cn('text-muted-foreground max-w-md', size === 'sm' ? 'text-xs sm:text-sm' : size === 'md' ? 'text-sm sm:text-base' : size === 'lg' ? 'text-base sm:text-lg' : 'text-lg sm:text-xl')}>
             {description}
           </p>
         )}

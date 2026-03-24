@@ -5,11 +5,12 @@
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, ColorVariant, SizeVariant } from '../../domain/types';
+import type { BaseProps, ColorVariant } from '../../domain/types';
+import type { MediumSizes } from '../../infrastructure/constants';
 
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: ColorVariant;
-  size?: Extract<SizeVariant, 'sm' | 'md' | 'lg'>;
+  size?: MediumSizes;
 }
 
 const variantStyles: Record<ColorVariant, string> = {
@@ -20,7 +21,7 @@ const variantStyles: Record<ColorVariant, string> = {
   destructive: 'bg-destructive text-destructive-foreground border-destructive',
 };
 
-const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
+const sizeStyles: Record<MediumSizes, string> = {
   sm: 'px-2 py-0.5 text-xs',
   md: 'px-2.5 py-1 text-sm',
   lg: 'px-3 py-1.5 text-base',

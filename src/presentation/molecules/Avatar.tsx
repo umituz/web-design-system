@@ -5,13 +5,14 @@
 
 import { forwardRef, type HTMLAttributes, type ComponentPropsWithoutRef } from 'react';
 import { cn } from '../../infrastructure/utils';
-import type { BaseProps, SizeVariant } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
+import type { ExtendedSizes } from '../../infrastructure/constants';
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
-  size?: Extract<SizeVariant, 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'>;
+  size?: ExtendedSizes;
 }
 
-const sizeStyles: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl', string> = {
+const sizeStyles: Record<ExtendedSizes, string> = {
   xs: 'h-6 w-6 text-xs',
   sm: 'h-8 w-8 text-sm',
   md: 'h-10 w-10 text-base',
