@@ -12,3 +12,14 @@ export type {
   ChildrenProps,
   PolymorphicProps,
 } from './component.types';
+
+export type {
+  Breakpoint,
+  ScreenSize,
+  BreakpointValue,
+  ResponsiveProps,
+  ShowProps,
+  HideProps,
+  BreakpointState,
+  UseBreakpointReturn,
+} from './breakpoint.types';

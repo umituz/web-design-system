@@ -98,7 +98,7 @@ export const ResponsiveContainer = forwardRef<
     },
     ref
   ) => {
-    const breakpoint = useBreakpoint();
+    const { currentBreakpoint: breakpoint } = useBreakpoint();
 
     // Determine current max width based on breakpoint
     const getCurrentMaxWidth = (): string => {

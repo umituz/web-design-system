@@ -11,3 +11,13 @@ export {
   SIZE_MAP,
   COLOR_MAP,
 } from './component.constants';
+
+export {
+  BREAKPOINTS,
+  createMediaQuery,
+  createMaxMediaQuery,
+  BREAKPOINT_ORDER,
+  compareBreakpoints,
+  isBreakpointGreaterThan,
+  isBreakpointLessThan,
+} from './breakpoint.constants';

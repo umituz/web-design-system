@@ -57,3 +57,9 @@ export type { SwitchProps } from './Switch';
 export { Separator } from './Separator';
 
 export { Toggle, toggleVariants } from './Toggle';
+
+export { Show } from './Show';
+export type { ShowComponentProps } from './Show';
+
+export { Hide } from './Hide';
+export type { HideComponentProps } from './Hide';
