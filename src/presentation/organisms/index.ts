@@ -135,3 +135,21 @@ export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 // NEW: Media & Content Components
 export { ImageLightbox } from './ImageLightbox';
 export type { ImageLightboxProps, ImageLightboxImage } from './ImageLightbox';
+
+// NEW: Content & Engagement Components
+export { NewsletterSignup } from './NewsletterSignup';
+export type { NewsletterSignupProps } from './NewsletterSignup';
+
+export { Comments } from './Comments';
+export type { CommentsProps, GiscusConfig } from './Comments';
+
+// NEW: Filter Components
+export { FilterBar } from './FilterBar';
+export type { FilterBarProps, Category, SortOption } from './FilterBar';
+
+export { FilterSidebar } from './FilterSidebar';
+export type { FilterSidebarProps } from './FilterSidebar';
+
+// NEW: Navigation Components
+export { MainNavbar } from './MainNavbar';
+export type { MainNavbarProps, NavItem, MainNavbarLanguage } from './MainNavbar';
