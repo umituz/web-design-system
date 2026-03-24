@@ -80,7 +80,7 @@ export function useBreakpoint(): UseBreakpointReturn {
   });
 
   // FIX: Use useRef for resize timer to prevent timer issues
-  const resizeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const resizeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     const updateBreakpoint = () => {

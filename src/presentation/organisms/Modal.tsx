@@ -27,8 +27,8 @@ export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
   ({ open = false, onClose, showCloseButton = true, size = 'md', className, children, ...props }, ref) => {
     const [shouldRender, setShouldRender] = useState(open);
     const [isAnimating, setIsAnimating] = useState(false);
-    const rafRef = useRef<number>();
-    const timerRef = useRef<number>();
+    const rafRef = useRef<number | null>(null);
+    const timerRef = useRef<number | null>(null);
 
     useEffect(() => {
       if (open) {
