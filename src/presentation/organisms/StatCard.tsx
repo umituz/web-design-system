@@ -9,7 +9,7 @@ import { cn } from '../../infrastructure/utils';
 import { Card, CardContent } from './Card';
 import { Progress } from '../atoms';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import type { BaseProps, ColorVariant, SizeVariant } from '../../domain/types';
+import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface StatCardProps extends BaseProps {
   title: string;
