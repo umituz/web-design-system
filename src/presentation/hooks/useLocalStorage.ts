@@ -1,9 +1,9 @@
 /**
  * useLocalStorage Hook
- * @description LocalStorage state management
+ * @description LocalStorage state management with optimized re-renders
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useRef } from 'react';
 
 export function useLocalStorage<T>(
   key: string,
@@ -18,17 +18,21 @@ export function useLocalStorage<T>(
     }
   });
 
+  // Use ref to track latest value without causing re-renders
+  const valueRef = useRef(storedValue);
+  valueRef.current = storedValue;
+
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       try {
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        const valueToStore = value instanceof Function ? value(valueRef.current) : value;
         setStoredValue(valueToStore);
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       } catch (error) {
         console.error(`Error setting localStorage key "${key}":`, error);
       }
     },
-    [key, storedValue]
+    [key] // Remove storedValue dependency
   );
 
   const removeValue = useCallback(() => {

@@ -4,6 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
+import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -62,7 +63,7 @@ export const TableFooter = forwardRef<HTMLTableSectionElement, HTMLAttributes<HT
 
 TableFooter.displayName = 'TableFooter';
 
-export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElement>>(
+export const TableRow = React.memo(forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElement>>(
   ({ className, ...props }, ref) => (
     <tr
       ref={ref}
@@ -73,11 +74,11 @@ export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTable
       {...props}
     />
   )
-);
+));
 
 TableRow.displayName = 'TableRow';
 
-export const TableHead = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement>>(
+export const TableHead = React.memo(forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement>>(
   ({ className, ...props }, ref) => (
     <th
       ref={ref}
@@ -88,11 +89,11 @@ export const TableHead = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTab
       {...props}
     />
   )
-);
+));
 
 TableHead.displayName = 'TableHead';
 
-export const TableCell = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement> & { colSpan?: number }>(
+export const TableCell = React.memo(forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement> & { colSpan?: number }>(
   ({ className, ...props }, ref) => (
     <td
       ref={ref}
@@ -103,7 +104,7 @@ export const TableCell = forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTab
       {...props}
     />
   )
-);
+));
 
 TableCell.displayName = 'TableCell';
 

@@ -1,9 +1,10 @@
 /**
  * Navbar Component (Organism)
- * @description Navigation bar with logo and links
+ * @description Navigation bar with logo and links - optimized for performance
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
+import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -17,7 +18,7 @@ const variantStyles: Record<'default' | 'sticky' | 'fixed', string> = {
   fixed: 'fixed top-0 left-0 right-0 z-50',
 };
 
-export const Navbar = forwardRef<HTMLElement, NavbarProps>(
+export const Navbar = React.memo(forwardRef<HTMLElement, NavbarProps>(
   ({ className, variant = 'default', children, ...props }, ref) => {
     return (
       <nav
@@ -33,11 +34,11 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
       </nav>
     );
   }
-);
+));
 
 Navbar.displayName = 'Navbar';
 
-export const NavbarBrand = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export const NavbarBrand = React.memo(forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
@@ -45,11 +46,11 @@ export const NavbarBrand = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElem
       {...props}
     />
   )
-);
+));
 
 NavbarBrand.displayName = 'NavbarBrand';
 
-export const NavbarLinks = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export const NavbarLinks = React.memo(forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
@@ -57,11 +58,11 @@ export const NavbarLinks = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElem
       {...props}
     />
   )
-);
+));
 
 NavbarLinks.displayName = 'NavbarLinks';
 
-export const NavbarActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export const NavbarActions = React.memo(forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
@@ -69,6 +70,6 @@ export const NavbarActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEl
       {...props}
     />
   )
-);
+));
 
 NavbarActions.displayName = 'NavbarActions';

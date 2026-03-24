@@ -4,6 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
+import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -33,7 +34,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
 Card.displayName = 'Card';
 
-export const CardHeader = forwardRef<HTMLDivElement, CardProps>(
+export const CardHeader = React.memo(forwardRef<HTMLDivElement, CardProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
@@ -41,11 +42,11 @@ export const CardHeader = forwardRef<HTMLDivElement, CardProps>(
       {...props}
     />
   )
-);
+));
 
 CardHeader.displayName = 'CardHeader';
 
-export const CardTitle = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLHeadingElement>>(
+export const CardTitle = React.memo(forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
@@ -53,11 +54,11 @@ export const CardTitle = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLHea
       {...props}
     />
   )
-);
+));
 
 CardTitle.displayName = 'CardTitle';
 
-export const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+export const CardDescription = React.memo(forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
@@ -65,19 +66,19 @@ export const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<H
       {...props}
     />
   )
-);
+));
 
 CardDescription.displayName = 'CardDescription';
 
-export const CardContent = forwardRef<HTMLDivElement, CardProps>(
+export const CardContent = React.memo(forwardRef<HTMLDivElement, CardProps>(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
   )
-);
+));
 
 CardContent.displayName = 'CardContent';
 
-export const CardFooter = forwardRef<HTMLDivElement, CardProps>(
+export const CardFooter = React.memo(forwardRef<HTMLDivElement, CardProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
@@ -85,6 +86,6 @@ export const CardFooter = forwardRef<HTMLDivElement, CardProps>(
       {...props}
     />
   )
-);
+));
 
 CardFooter.displayName = 'CardFooter';
