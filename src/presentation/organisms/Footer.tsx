@@ -33,7 +33,7 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
         {...props}
       >
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Brand */}
             {brand && (
               <div>
@@ -67,7 +67,7 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(
             {social && (
               <div>
                 <h4 className="font-semibold text-text-primary mb-3">Connect</h4>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   {social.map((item, index) => (
                     <a
                       key={index}
