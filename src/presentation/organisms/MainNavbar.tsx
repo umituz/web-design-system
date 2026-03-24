@@ -87,9 +87,10 @@ export const MainNavbar = ({
     <nav className={`bg-bg-primary sticky top-0 z-50 border-b border-border transition-theme ${className || ''}`}>
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            {logo || <span className="text-xl font-bold text-text-primary">{appName}</span>}
+          {/* Logo + App Name */}
+          <Link to="/" className="flex items-center gap-2 sm:gap-3">
+            {logo}
+            <span className="text-xl font-bold text-text-primary hidden xs:block">{appName}</span>
           </Link>
 
           {/* Desktop Menu */}
