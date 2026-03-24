@@ -1,9 +1,10 @@
 /**
  * Modal Component (Organism)
- * @description Dialog/overlay container
+ * @description Dialog/overlay container with optimized transitions
  */
 
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type HTMLAttributes, useEffect, useState } from 'react';
+import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -22,9 +23,35 @@ const sizeStyles: Record<'sm' | 'md' | 'lg' | 'xl' | 'full', string> = {
   full: 'max-w-full mx-4',
 };
 
-export const Modal = forwardRef<HTMLDivElement, ModalProps>(
+export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
   ({ open = false, onClose, showCloseButton = true, size = 'md', className, children, ...props }, ref) => {
-    if (!open) return null;
+    const [shouldRender, setShouldRender] = useState(open);
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    useEffect(() => {
+      if (open) {
+        setShouldRender(true);
+        // Small delay to trigger animation
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      } else {
+        setIsAnimating(false);
+        // Wait for animation to complete before unmounting
+        const timer = setTimeout(() => {
+          setShouldRender(false);
+        }, 200); // Match animation duration
+        return () => clearTimeout(timer);
+      }
+    }, [open]);
+
+    if (!shouldRender) return null;
+
+    const handleBackdropClick = (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget && onClose) {
+        onClose();
+      }
+    };
 
     return (
       <div
@@ -33,8 +60,11 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       >
         {/* Backdrop */}
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm"
-          onClick={onClose}
+          className={`fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity duration-200 ${
+            isAnimating ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={handleBackdropClick}
+          aria-hidden="true"
         />
 
         {/* Modal */}
@@ -42,7 +72,8 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           ref={ref}
           className={cn(
             'relative z-50 w-full rounded-lg border bg-card p-6 shadow-lg',
-            'animate-in fade-in-0 zoom-in-95',
+            'transition-all duration-200',
+            isAnimating ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
             sizeStyles[size],
             className
           )}
@@ -53,6 +84,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
             <button
               onClick={onClose}
               className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              aria-label="Close modal"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -66,7 +98,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       </div>
     );
   }
-);
+));
 
 Modal.displayName = 'Modal';
 

@@ -1,9 +1,9 @@
 /**
  * FilterBar Component (Organism)
- * @description Mobile filter bar with search, categories, tags, and sort
+ * @description Mobile filter bar with search, categories, tags, and sort with optimized performance
  */
 
-import { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import React from 'react';
 import type { BaseProps } from '../../domain/types';
 
@@ -35,7 +35,67 @@ export interface FilterBarProps extends BaseProps {
   onClearFilters: () => void;
 }
 
-export const FilterBar = ({
+// Memoize category button component
+const CategoryButton = memo<{
+  category: Category;
+  selectedCategory: string | null;
+  onCategoryChange: (category: string) => void;
+}>(({ category, selectedCategory, onCategoryChange }) => {
+  const Icon = category.icon;
+  const isActive = selectedCategory === category.id;
+
+  const handleClick = useCallback(() => {
+    onCategoryChange(category.id);
+  }, [category.id, onCategoryChange]);
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all transition-theme ${
+        isActive
+          ? 'bg-primary-light text-text-primary font-medium'
+          : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
+      }`}
+      type="button"
+      aria-pressed={isActive}
+    >
+      <Icon size={14} />
+      <span>{category.name}</span>
+    </button>
+  );
+});
+
+CategoryButton.displayName = 'CategoryButton';
+
+// Memoize tag button component
+const TagButton = memo<{
+  tag: string;
+  isSelected: boolean;
+  onTagToggle: (tag: string) => void;
+}>(({ tag, isSelected, onTagToggle }) => {
+  const handleClick = useCallback(() => {
+    onTagToggle(tag);
+  }, [tag, onTagToggle]);
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all transition-theme ${
+        isSelected
+          ? 'bg-primary-light text-text-primary'
+          : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
+      }`}
+      type="button"
+      aria-pressed={isSelected}
+    >
+      {tag}
+    </button>
+  );
+});
+
+TagButton.displayName = 'TagButton';
+
+export const FilterBar = memo<FilterBarProps>(({
   searchQuery,
   setSearchQuery,
   selectedCategory,
@@ -50,8 +110,24 @@ export const FilterBar = ({
   hasActiveFilters,
   onClearFilters,
   className,
-}: FilterBarProps) => {
+}) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, [setSearchQuery]);
+
+  const handleToggleFilters = useCallback(() => {
+    setIsFilterOpen(prev => !prev);
+  }, []);
+
+  const handleSortChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    onSortChange(e.target.value);
+  }, [onSortChange]);
+
+  const handleClearFilters = useCallback(() => {
+    onClearFilters();
+  }, [onClearFilters]);
 
   return (
     <div className={`lg:hidden mb-4 space-y-3 ${className || ''}`}>
@@ -75,7 +151,7 @@ export const FilterBar = ({
           type="text"
           placeholder="Search..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearchChange}
           className="w-full pl-10 pr-4 py-2.5 bg-bg-secondary text-text-primary rounded-lg border border-border focus:border-primary-light focus:outline-none placeholder-text-secondary/50 transition-theme text-sm"
           aria-label="Search"
         />
@@ -84,7 +160,7 @@ export const FilterBar = ({
       {/* Filter Toggle + Sort + Clear Filters */}
       <div className="flex items-center gap-2 flex-wrap">
         <button
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
+          onClick={handleToggleFilters}
           className="flex items-center gap-2 px-4 py-2.5 bg-bg-secondary text-text-primary rounded-lg border border-border hover:border-primary-light transition-all text-sm font-medium transition-theme"
           type="button"
           aria-expanded={isFilterOpen}
@@ -104,7 +180,7 @@ export const FilterBar = ({
         {/* Sort Dropdown */}
         <select
           value={sortBy}
-          onChange={(e) => onSortChange(e.target.value)}
+          onChange={handleSortChange}
           className="px-3 py-2.5 bg-bg-secondary text-text-primary rounded-lg border border-border focus:border-primary-light focus:outline-none transition-theme text-sm"
           aria-label="Sort by"
         >
@@ -118,7 +194,7 @@ export const FilterBar = ({
         {/* Clear Filters */}
         {hasActiveFilters && (
           <button
-            onClick={onClearFilters}
+            onClick={handleClearFilters}
             className="px-3 py-2.5 text-text-secondary hover:text-text-primary text-sm transition-colors"
             type="button"
           >
@@ -134,28 +210,14 @@ export const FilterBar = ({
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-3">Categories</h4>
             <div className="grid grid-cols-2 gap-2">
-              {categories.map((category) => {
-                const Icon = category.icon;
-                const isActive = selectedCategory === category.id;
-                return (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      onCategoryChange(category.id);
-                    }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all transition-theme ${
-                      isActive
-                        ? 'bg-primary-light text-text-primary font-medium'
-                        : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
-                    }`}
-                    type="button"
-                    aria-pressed={isActive}
-                  >
-                    <Icon size={14} />
-                    <span>{category.name}</span>
-                  </button>
-                );
-              })}
+              {categories.map((category) => (
+                <CategoryButton
+                  key={category.id}
+                  category={category}
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={onCategoryChange}
+                />
+              ))}
             </div>
           </div>
 
@@ -164,19 +226,12 @@ export const FilterBar = ({
             <h4 className="text-sm font-semibold text-text-primary mb-3">Popular Tags</h4>
             <div className="flex flex-wrap gap-2">
               {popularTags.map((tag) => (
-                <button
+                <TagButton
                   key={tag}
-                  onClick={() => onTagToggle(tag)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all transition-theme ${
-                    selectedTags.includes(tag)
-                      ? 'bg-primary-light text-text-primary'
-                      : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
-                  }`}
-                  type="button"
-                  aria-pressed={selectedTags.includes(tag)}
-                >
-                  {tag}
-                </button>
+                  tag={tag}
+                  isSelected={selectedTags.includes(tag)}
+                  onTagToggle={onTagToggle}
+                />
               ))}
             </div>
           </div>
@@ -184,4 +239,6 @@ export const FilterBar = ({
       )}
     </div>
   );
-};
+});
+
+FilterBar.displayName = 'FilterBar';

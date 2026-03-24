@@ -4,6 +4,7 @@
  */
 
 import { forwardRef, type HTMLAttributes } from 'react';
+import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -45,7 +46,7 @@ const weightStyles: Record<'normal' | 'medium' | 'semibold' | 'bold', string> = 
 
 // NOTE: "as any" is used here for the polymorphic ref, which is a necessary workaround
 // for TypeScript's limitations in typing polymorphic components properly.
-export const Text = forwardRef<HTMLElement, TextProps>(
+export const Text = React.memo(forwardRef<HTMLElement, TextProps>(
   ({ className, as = 'p', variant = 'body', size = 'md', weight = 'normal', ...props }, ref) => {
     const Tag = as as any;
     return (
@@ -61,6 +62,6 @@ export const Text = forwardRef<HTMLElement, TextProps>(
       />
     );
   }
-);
+));
 
 Text.displayName = 'Text';
