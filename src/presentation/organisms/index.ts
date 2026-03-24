@@ -131,3 +131,7 @@ export {
 } from './DropdownMenu';
 
 export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
+
+// NEW: Media & Content Components
+export { ImageLightbox } from './ImageLightbox';
+export type { ImageLightboxProps, ImageLightboxImage } from './ImageLightbox';
