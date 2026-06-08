@@ -3,13 +3,17 @@
  * @description Newsletter subscription form with email validation
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, type FormEvent } from 'react';
+import { CheckCircle2, Mail, Send } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
+import { randomIntegerInRange } from '../../infrastructure/calculation/randomIntegerInRange';
+import { validateEmail } from '../../infrastructure/security/validators/emailAddressValidator';
+import { TIMING } from '../../infrastructure/constants/timing.constants';
 import type { BaseProps } from '../../domain/types';
-import { Icon } from '../atoms/Icon';
 
-const SUBSCRIBER_COUNT_MIN = 1000;
-const SUBSCRIBER_COUNT_MAX = 6000;
+const DEFAULT_SUBSCRIBER_COUNT_MIN = 1000;
+const DEFAULT_SUBSCRIBER_COUNT_MAX = 6000;
+const SUCCESS_MESSAGE_DURATION_MS = 5000;
 
 export interface NewsletterSignupProps extends BaseProps {
   onSubscribe?: (email: string) => Promise<void>;
@@ -19,8 +23,8 @@ export interface NewsletterSignupProps extends BaseProps {
 
 export const NewsletterSignup = ({
   onSubscribe,
-  subscriberCountMin = SUBSCRIBER_COUNT_MIN,
-  subscriberCountMax = SUBSCRIBER_COUNT_MAX,
+  subscriberCountMin = DEFAULT_SUBSCRIBER_COUNT_MIN,
+  subscriberCountMax = DEFAULT_SUBSCRIBER_COUNT_MAX,
   className,
 }: NewsletterSignupProps) => {
   const [email, setEmail] = useState('');
@@ -28,57 +32,47 @@ export const NewsletterSignup = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // FIXED: Generate random count per component instance, not at module load
+  // Sample a per-instance count once. Recomputed only if bounds change.
   const subscriberCount = useMemo(
-    () => Math.floor(Math.random() * (subscriberCountMax - subscriberCountMin + 1)) + subscriberCountMin,
+    () => randomIntegerInRange(subscriberCountMin, subscriberCountMax),
     [subscriberCountMin, subscriberCountMax]
   );
 
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  // Reset success message after 5 seconds with cleanup
+  // Auto-clear the success banner after a window
   useEffect(() => {
-    if (isSubscribed) {
-      const timeout = setTimeout(() => {
-        setIsSubscribed(false);
-      }, 5000);
-      return () => clearTimeout(timeout);
-    }
+    if (!isSubscribed) return;
+    const timeout = setTimeout(() => setIsSubscribed(false), SUCCESS_MESSAGE_DURATION_MS);
+    return () => clearTimeout(timeout);
   }, [isSubscribed]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
     setError('');
 
-    // Validate email
     if (!email) {
       setError('Please enter your email address');
       return;
     }
 
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      setError(emailValidation.error ?? 'Please enter a valid email address');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Call the subscribe function if provided
       if (onSubscribe) {
         await onSubscribe(email);
       } else {
-        // Simulate API call for demo purposes
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulated round-trip for demo / preview
+        await new Promise((resolve) => setTimeout(resolve, TIMING.NEWSLETTER_SUBMIT_DELAY_MS));
       }
-
       setIsLoading(false);
       setIsSubscribed(true);
       setEmail('');
-    } catch (err) {
+    } catch {
       setIsLoading(false);
       setError('Failed to subscribe. Please try again.');
     }
@@ -86,19 +80,14 @@ export const NewsletterSignup = ({
 
   if (isSubscribed) {
     return (
-      <div className={cn('bg-bg-card rounded-xl p-4 border border-border', className)}>
-        <div className="flex items-center gap-3 text-green-600">
-          <Icon className="text-green-600" size="lg">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </Icon>
+      <div className={cn('rounded-xl border border-border bg-card p-4', className)}>
+        <div className="flex items-center gap-3 text-success">
+          <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
           <div>
-            <div className="font-semibold text-sm">Thanks for subscribing!</div>
-            <div className="text-xs text-text-secondary">Check your inbox to confirm your subscription</div>
+            <div className="text-sm font-semibold text-foreground">Thanks for subscribing!</div>
+            <div className="text-xs text-muted-foreground">
+              Check your inbox to confirm your subscription
+            </div>
           </div>
         </div>
       </div>
@@ -106,56 +95,50 @@ export const NewsletterSignup = ({
   }
 
   return (
-    <div className={cn('bg-bg-card rounded-xl p-4 border border-border', className)}>
-      <div className="flex items-center gap-2 mb-3">
-        <Icon className="text-primary-light" size="lg">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 8l7.89 5.26a2 2 0 002.22 0l7.89-5.26a2 2 0 002.22 0L21 8V5a2 2 0 00-2-2H5a2 2 0 00-2 2v3a2 2 0 002.22 0z"
-          />
-        </Icon>
-        <h3 className="text-sm font-semibold text-text-primary">Newsletter</h3>
+    <div className={cn('rounded-xl border border-border bg-card p-4', className)}>
+      <div className="mb-3 flex items-center gap-2">
+        <Mail className="h-5 w-5 text-primary" aria-hidden="true" />
+        <h3 className="text-sm font-semibold text-foreground">Newsletter</h3>
       </div>
-      <p className="text-xs text-text-secondary mb-3">
+      <p className="mb-3 text-xs text-muted-foreground">
         Get the latest articles delivered straight to your inbox. No spam, ever.
       </p>
-      <form onSubmit={handleSubmit} className="space-y-2">
+      <form onSubmit={handleSubmit} className="space-y-2" noValidate>
+        <label htmlFor="newsletter-email" className="sr-only">
+          Email address
+        </label>
         <input
+          id="newsletter-email"
           type="email"
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 bg-bg-secondary text-text-primary rounded-lg border border-border focus:border-primary-light focus:outline-none placeholder-text-secondary/50 transition-theme text-sm"
           disabled={isLoading}
+          aria-invalid={!!error}
+          aria-describedby={error ? 'newsletter-error' : undefined}
+          className="w-full rounded-lg border border-input bg-secondary px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
         />
         {error && (
-          <p className="text-xs text-red-500">{error}</p>
+          <p id="newsletter-error" role="alert" className="text-xs text-destructive">
+            {error}
+          </p>
         )}
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary-gradient text-text-primary rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isLoading ? (
-            <>Subscribing...</>
+            <>Subscribing…</>
           ) : (
             <>
-              <Icon size="sm">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M22 2L11 13M22 2l-7 20M2 2l15 15L2 2l15-15"
-                />
-              </Icon>
+              <Send className="h-4 w-4" aria-hidden="true" />
               Subscribe
             </>
           )}
         </button>
       </form>
-      <p className="text-xs text-text-secondary mt-2">
+      <p className="mt-2 text-xs text-muted-foreground">
         Join {subscriberCount.toLocaleString()}+ subscribers
       </p>
     </div>

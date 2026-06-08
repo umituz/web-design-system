@@ -6,6 +6,9 @@
 import { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { ChevronDown, ChevronUp, Check, Copy } from 'lucide-react';
+import { cn } from '../../infrastructure/utils';
+import { TIMING } from '../../infrastructure/constants/timing.constants';
 import type { BaseProps } from '../../domain/types';
 
 export interface CodeBlockProps extends BaseProps {
@@ -13,106 +16,107 @@ export interface CodeBlockProps extends BaseProps {
   language?: string;
   filename?: string;
   showLineNumbers?: boolean;
+  /** Lines threshold to enable collapse/expand. */
+  collapseThreshold?: number;
 }
+
+const DEFAULT_LANGUAGE = 'javascript';
+const DEFAULT_COLLAPSE_THRESHOLD = 10;
+const COPY_RESET_MS = 2000;
+const COLLAPSED_MAX_HEIGHT = 'max-h-80';
 
 export const CodeBlock = ({
   children,
-  language = 'javascript',
+  language = DEFAULT_LANGUAGE,
   filename,
   showLineNumbers = false,
+  collapseThreshold = DEFAULT_COLLAPSE_THRESHOLD,
   className,
 }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Cleanup copy timeout
   useEffect(() => {
-    if (copied) {
-      const timeout = setTimeout(() => setCopied(false), 2000);
-      return () => clearTimeout(timeout);
-    }
+    if (!copied) return;
+    const timeout = setTimeout(() => setCopied(false), COPY_RESET_MS);
+    return () => clearTimeout(timeout);
   }, [copied]);
 
   const handleCopy = async () => {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      console.error('[CodeBlock] Clipboard API not available');
+      return;
+    }
     try {
       await navigator.clipboard.writeText(children);
       setCopied(true);
     } catch (error) {
-      console.error('Failed to copy code:', error);
+      console.error('[CodeBlock] Failed to copy code:', error);
     }
   };
 
-  // Auto-detect language if not provided
-  const detectedLanguage = language || 'javascript';
-
-  // Check if code is long enough for collapse
   const lineCount = children.split('\n').length;
-  const isLongCode = lineCount > 10;
+  const isLongCode = lineCount > collapseThreshold;
 
   return (
-    <div className={`my-6 rounded-lg border border-border overflow-hidden bg-bg-card transition-theme ${className || ''}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-bg-tertiary border-b border-border">
+    <div
+      className={cn(
+        'my-6 overflow-hidden rounded-lg border border-border bg-card transition-colors',
+        className
+      )}
+    >
+      <div className="flex items-center justify-between border-b border-border bg-secondary px-4 py-2">
         <div className="flex items-center gap-2">
           {filename && (
-            <span className="text-xs font-medium text-text-secondary">{filename}</span>
+            <span className="text-xs font-medium text-muted-foreground">{filename}</span>
           )}
-          <span className="text-xs px-2 py-1 bg-bg-primary text-text-primary rounded-md font-medium">
-            {detectedLanguage}
+          <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">
+            {language}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           {isLongCode && (
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1 text-text-secondary hover:text-text-primary rounded transition-colors"
-              title={isExpanded ? 'Collapse' : 'Expand'}
               type="button"
+              onClick={() => setIsExpanded((prev) => !prev)}
               aria-label={isExpanded ? 'Collapse code' : 'Expand code'}
+              title={isExpanded ? 'Collapse' : 'Expand'}
+              className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {isExpanded ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="18 15 12 9 6 15" />
-                </svg>
+                <ChevronUp className="h-4 w-4" aria-hidden="true" />
               ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                <ChevronDown className="h-4 w-4" aria-hidden="true" />
               )}
             </button>
           )}
 
           <button
-            onClick={handleCopy}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
-              copied
-                ? 'bg-green-500 text-white'
-                : 'bg-bg-secondary text-text-primary hover:bg-bg-tertiary border border-border'
-            }`}
-            title={copied ? 'Copied!' : 'Copy code'}
             type="button"
+            onClick={handleCopy}
             aria-label={copied ? 'Code copied' : 'Copy code'}
+            title={copied ? 'Copied!' : 'Copy code'}
+            className={cn(
+              'flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+              copied
+                ? 'border-success bg-success text-success-foreground'
+                : 'border-border bg-secondary text-foreground hover:bg-muted'
+            )}
           >
             {copied ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
+              <Check className="h-3.5 w-3.5" aria-hidden="true" />
             ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>
+              <Copy className="h-3.5 w-3.5" aria-hidden="true" />
             )}
             <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy'}</span>
           </button>
         </div>
       </div>
 
-      {/* Code */}
-      <div className={isLongCode && !isExpanded ? 'max-h-80 overflow-hidden' : ''}>
+      <div className={cn(isLongCode && !isExpanded && COLLAPSED_MAX_HEIGHT, 'overflow-hidden')}>
         <SyntaxHighlighter
-          language={detectedLanguage}
+          language={language}
           style={vscDarkPlus}
           showLineNumbers={showLineNumbers}
           customStyle={{
@@ -126,14 +130,13 @@ export const CodeBlock = ({
         </SyntaxHighlighter>
       </div>
 
-      {/* Expand hint for collapsed code */}
       {isLongCode && !isExpanded && (
-        <div className="px-4 py-2 bg-bg-secondary text-center border-t border-border">
+        <div className="border-t border-border bg-secondary px-4 py-2 text-center">
           <button
-            onClick={() => setIsExpanded(true)}
-            className="text-sm text-primary-light hover:underline font-medium"
             type="button"
+            onClick={() => setIsExpanded(true)}
             aria-label={`Show all ${lineCount} lines`}
+            className="text-sm font-medium text-primary underline-offset-4 transition-colors hover:underline focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Show all {lineCount} lines
           </button>

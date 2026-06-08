@@ -1,12 +1,14 @@
 /**
  * MainNavbar Component (Organism)
  * @description Full-featured navigation bar with logo, links, theme toggle, language selector, and mobile menu
+ * @note The optional `LinkComponent` prop allows consumers to provide their router's Link (e.g. react-router's Link)
+ *       to avoid hard-coding a router dependency. When omitted, items render as native anchors (`<a>`).
  */
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-// @ts-ignore - react-router-dom is a peer dependency, may not be available during package build
-import { Link, useLocation } from 'react-router-dom';
-import React from 'react';
+import { useState, useEffect, useRef, useMemo, type ElementType, type ReactNode } from 'react';
+import { Languages, Moon, Sun, Menu, X, Github, Check } from 'lucide-react';
+import { cn } from '../../infrastructure/utils';
+import { IconButton } from '../atoms/IconButton';
 import { Show, Hide } from '../atoms';
 import type { BaseProps } from '../../domain/types';
 
@@ -18,11 +20,31 @@ export interface NavItem {
 export interface MainNavbarLanguage {
   code: string;
   name: string;
-  flag: string;
+  icon?: ReactNode;
 }
 
+export interface MainNavbarTranslations {
+  language: string;
+  switchToMode: (mode: string) => string;
+  lightMode: string;
+  darkMode: string;
+  github: string;
+  openMenu: string;
+  closeMenu: string;
+}
+
+const DEFAULT_TRANSLATIONS: MainNavbarTranslations = {
+  language: 'Language',
+  switchToMode: (mode) => `Switch to ${mode} mode`,
+  lightMode: 'Light Mode',
+  darkMode: 'Dark Mode',
+  github: 'GitHub',
+  openMenu: 'Open menu',
+  closeMenu: 'Close menu',
+};
+
 export interface MainNavbarProps extends BaseProps {
-  logo?: React.ReactNode;
+  logo?: ReactNode;
   appName: string;
   navItems: NavItem[];
   supportedLanguages: Record<string, MainNavbarLanguage>;
@@ -32,13 +54,12 @@ export interface MainNavbarProps extends BaseProps {
   onThemeToggle: () => void;
   githubUrl?: string;
   githubLabel?: string;
-  translations?: {
-    language: string;
-    switchToMode: (mode: string) => string;
-    lightMode: string;
-    darkMode: string;
-    github: string;
-  };
+  translations?: Partial<MainNavbarTranslations>;
+  /**
+   * Optional custom Link component (e.g. react-router's `Link`).
+   * If omitted, the navbar renders native `<a>` elements.
+   */
+  LinkComponent?: ElementType;
 }
 
 export const MainNavbar = ({
@@ -51,268 +72,237 @@ export const MainNavbar = ({
   theme,
   onThemeToggle,
   githubUrl,
-  githubLabel = 'GitHub',
-  translations = {
-    language: 'Language',
-    switchToMode: (mode: string) => `Switch to ${mode} mode`,
-    lightMode: 'Light Mode',
-    darkMode: 'Dark Mode',
-    github: 'GitHub',
-  },
+  githubLabel,
+  translations: translationsOverride,
   className,
+  LinkComponent = 'a',
 }: MainNavbarProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const translations: MainNavbarTranslations = { ...DEFAULT_TRANSLATIONS, ...translationsOverride };
+  const githubText = githubLabel ?? translations.github;
+
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const location = useLocation();
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
-  const navItemsMemo = useMemo(() => navItems, [JSON.stringify(navItems)]);
+  const navItemsKey = useMemo(
+    () => navItems.map((i) => i.path).join('|'),
+    [navItems]
+  );
+  const navItemsMemo = useMemo(() => navItems, [navItemsKey]);
 
   useEffect(() => {
+    if (!isLangOpen) return;
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (langDropdownRef.current && !langDropdownRef.current.contains(target)) {
         setIsLangOpen(false);
       }
     };
 
-    if (isLangOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isLangOpen]);
 
-  return (
-    <nav className={`bg-bg-primary sticky top-0 z-50 border-b border-border transition-theme ${className || ''}`}>
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo + App Name */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-3">
-            {logo}
-            <span className="text-xl font-bold text-text-primary">{appName}</span>
-          </Link>
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMobileOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMobileOpen]);
 
-          {/* Desktop Menu */}
+  const isActivePath = (path: string) =>
+    typeof window !== 'undefined' ? window.location.pathname === path : false;
+
+  return (
+    <nav
+      className={cn(
+        'sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur transition-colors',
+        className
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <LinkComponent to="/" className="flex items-center gap-2 sm:gap-3">
+          {logo}
+          <span className="text-xl font-bold text-foreground">{appName}</span>
+        </LinkComponent>
+
+        <Show above="lg">
+          <div className="flex items-center gap-6 lg:gap-8">
+            {navItemsMemo.map((item) => {
+              const isActive = isActivePath(item.path);
+              return (
+                <LinkComponent
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    'whitespace-nowrap font-medium transition-colors',
+                    isActive ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                  )}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {item.name}
+                </LinkComponent>
+              );
+            })}
+          </div>
+        </Show>
+
+        <div className="flex items-center gap-1 md:gap-2">
           <Show above="lg">
-            <div className="flex items-center gap-6 lg:gap-8">
-              {navItemsMemo.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className={`font-medium transition-colors transition-theme whitespace-nowrap ${
-                      isActive ? 'text-primary-light' : 'text-text-secondary hover:text-primary-light'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
+            <div className="relative" ref={langDropdownRef}>
+              <IconButton
+                icon={<Languages className="h-5 w-5" />}
+                label={translations.language}
+                onClick={() => setIsLangOpen((prev) => !prev)}
+                aria-expanded={isLangOpen}
+                aria-haspopup="menu"
+              />
+
+              {isLangOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card shadow-xl"
+                >
+                  {Object.entries(supportedLanguages).map(([code, { name, icon }]) => {
+                    const isCurrent = currentLanguage === code;
+                    return (
+                      <button
+                        key={code}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={isCurrent}
+                        onClick={() => {
+                          onLanguageChange(code);
+                          setIsLangOpen(false);
+                        }}
+                        className={cn(
+                          'flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors',
+                          isCurrent
+                            ? 'bg-muted text-primary'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        )}
+                      >
+                        {icon}
+                        <span>{name}</span>
+                        {isCurrent && <Check className="ml-auto h-4 w-4 text-primary" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </Show>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-3">
-            {/* Language Selector */}
-            <Show above="lg">
-              <div className="relative" ref={langDropdownRef}>
-                <button
-                  onClick={() => setIsLangOpen(!isLangOpen)}
-                  className="p-2 rounded-lg bg-bg-secondary text-text-secondary hover:text-primary-light border border-border hover:border-primary-light transition-all transition-theme"
-                  title={translations.language}
-                  type="button"
-                >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m5 8 6 6" />
-                  <path d="m4 14 6-6 2-3" />
-                  <path d="M2 5h12" />
-                  <path d="M7 2h1" />
-                  <path d="m22 22-5-10-5 10" />
-                  <path d="M14 18h6" />
-                </svg>
-              </button>
+          <IconButton
+            icon={theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            label={translations.switchToMode(theme === 'dark' ? 'light' : 'dark')}
+            onClick={onThemeToggle}
+          />
 
-              {isLangOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-bg-card rounded-lg border border-border shadow-xl z-50">
-                  {Object.entries(supportedLanguages).map(([code, { name, flag }]) => (
-                    <button
-                      key={code}
-                      onClick={() => {
-                        onLanguageChange(code);
-                        setIsLangOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-bg-tertiary transition-colors transition-theme ${
-                        currentLanguage === code ? 'bg-bg-tertiary text-primary-light' : 'text-text-secondary'
-                      }`}
-                      type="button"
-                    >
-                      <span className="text-xl">{flag}</span>
-                      <span className="text-sm">{name}</span>
-                      {currentLanguage === code && (
-                        <span className="ml-auto text-primary-light">✓</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-              </div>
-            </Show>
-
-            {/* Theme Toggle */}
-            <button
-              onClick={onThemeToggle}
-              className="p-2 rounded-lg bg-bg-secondary text-text-secondary hover:text-primary-light border border-border hover:border-primary-light transition-all transition-theme"
-              title={translations.switchToMode(theme === 'dark' ? 'light' : 'dark')}
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              type="button"
-            >
-              {theme === 'dark' ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2" />
-                  <path d="M12 20v2" />
-                  <path d="m4.93 4.93 1.41 1.41" />
-                  <path d="m17.66 17.66 1.41 1.41" />
-                  <path d="M2 12h2" />
-                  <path d="M20 12h2" />
-                  <path d="m6.34 17.66-1.41 1.41" />
-                  <path d="m19.07 4.93-1.41 1.41" />
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                </svg>
-              )}
-            </button>
-
-            {/* GitHub */}
-            <Show above="lg">
-              {githubUrl && (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-bg-secondary text-text-secondary rounded-lg border border-border hover:border-primary-light hover:text-text-primary transition-all transition-theme"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                  <span className="font-medium">{githubLabel}</span>
-                </a>
-              )}
-            </Show>
-
-            {/* Mobile Button */}
-            <Hide above="lg">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-text-secondary flex"
-                type="button"
-                aria-label="Toggle menu"
-              >
-                {isOpen ? (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="4" x2="20" y1="12" y2="12" />
-                    <line x1="4" x2="20" y1="6" y2="6" />
-                    <line x1="4" x2="20" y1="18" y2="18" />
-                  </svg>
-                )}
-              </button>
-            </Hide>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <Hide above="lg">
-        {isOpen && (
-          <div className="bg-bg-secondary border-t border-border transition-theme">
-          <div className="px-4 py-4 space-y-2">
-            {/* Theme Toggle Mobile */}
-            <button
-              onClick={onThemeToggle}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary hover:bg-bg-tertiary transition-all transition-theme"
-              type="button"
-            >
-              {theme === 'dark' ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2" />
-                  <path d="M12 20v2" />
-                  <path d="m4.93 4.93 1.41 1.41" />
-                  <path d="m17.66 17.66 1.41 1.41" />
-                  <path d="M2 12h2" />
-                  <path d="M20 12h2" />
-                  <path d="m6.34 17.66-1.41 1.41" />
-                  <path d="m19.07 4.93-1.41 1.41" />
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                </svg>
-              )}
-              <span>{theme === 'dark' ? translations.lightMode : translations.darkMode}</span>
-            </button>
-
-            {/* Language Selector Mobile */}
-            <div className="px-4 py-2">
-              <div className="text-text-secondary text-sm mb-2">{translations.language}</div>
-              <div className="grid grid-cols-2 gap-2">
-                {Object.entries(supportedLanguages).map(([code, { name, flag }]) => (
-                  <button
-                    key={code}
-                    onClick={() => onLanguageChange(code)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all transition-theme ${
-                      currentLanguage === code
-                        ? 'bg-primary-light text-text-primary'
-                        : 'bg-bg-primary text-text-secondary hover:bg-bg-tertiary'
-                    }`}
-                    type="button"
-                  >
-                    <span>{flag}</span>
-                    <span>{name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {navItemsMemo.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`block px-4 py-2 rounded-lg font-medium transition-theme ${
-                    isActive ? 'text-primary-light bg-bg-tertiary' : 'text-text-secondary hover:bg-bg-tertiary'
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-
+          <Show above="lg">
             {githubUrl && (
               <a
                 href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary rounded-lg hover:bg-bg-tertiary transition-all transition-theme"
+                className="ml-2 flex items-center gap-2 rounded-lg border border-border bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition-colors hover:bg-muted"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-                <span>{githubLabel}</span>
+                <Github className="h-4 w-4" />
+                <span>{githubText}</span>
               </a>
             )}
-          </div>
+          </Show>
+
+          <Hide above="lg">
+            <IconButton
+              icon={isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              label={isMobileOpen ? translations.closeMenu : translations.openMenu}
+              onClick={() => setIsMobileOpen((prev) => !prev)}
+              aria-expanded={isMobileOpen}
+            />
+          </Hide>
         </div>
+      </div>
+
+      <Hide above="lg">
+        {isMobileOpen && (
+          <div className="border-t border-border bg-card">
+            <div className="space-y-2 px-4 py-4">
+              <button
+                type="button"
+                onClick={onThemeToggle}
+                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+                <span>{theme === 'dark' ? translations.lightMode : translations.darkMode}</span>
+              </button>
+
+              <div className="px-4 py-2">
+                <div className="mb-2 text-sm text-muted-foreground">{translations.language}</div>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(supportedLanguages).map(([code, { name, icon }]) => {
+                    const isCurrent = currentLanguage === code;
+                    return (
+                      <button
+                        key={code}
+                        type="button"
+                        onClick={() => onLanguageChange(code)}
+                        className={cn(
+                          'flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
+                          isCurrent
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary text-secondary-foreground hover:bg-muted'
+                        )}
+                      >
+                        {icon}
+                        <span>{name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {navItemsMemo.map((item) => {
+                const isActive = isActivePath(item.path);
+                return (
+                  <LinkComponent
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsMobileOpen(false)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={cn(
+                      'block rounded-lg px-4 py-2 font-medium transition-colors',
+                      isActive
+                        ? 'bg-muted text-primary'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    )}
+                  >
+                    {item.name}
+                  </LinkComponent>
+                );
+              })}
+
+              {githubUrl && (
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Github className="h-4 w-4" />
+                  <span>{githubText}</span>
+                </a>
+              )}
+            </div>
+          </div>
         )}
       </Hide>
     </nav>

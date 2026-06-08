@@ -3,7 +3,7 @@
  * @description Data table component
  */
 
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type HTMLAttributes, type TdHTMLAttributes } from 'react';
 import React from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
@@ -93,7 +93,7 @@ export const TableHead = React.memo(forwardRef<HTMLTableCellElement, HTMLAttribu
 
 TableHead.displayName = 'TableHead';
 
-export const TableCell = React.memo(forwardRef<HTMLTableCellElement, HTMLAttributes<HTMLTableCellElement> & { colSpan?: number }>(
+export const TableCell = React.memo(forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCellElement>>(
   ({ className, ...props }, ref) => (
     <td
       ref={ref}

@@ -4,9 +4,11 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
+import { useScrollLock } from '../hooks/useScrollLock';
+import { clampToRange } from '../../infrastructure/calculation/rangeClamper';
 import type { BaseProps } from '../../domain/types';
-import { Icon } from '../atoms/Icon';
 
 export interface ImageLightboxImage {
   src: string;
@@ -21,44 +23,45 @@ export interface ImageLightboxProps extends BaseProps {
   onClose: () => void;
 }
 
+const ZOOM_TOGGLE_KEYS = new Set(['+', '=']);
+
 export const ImageLightbox = ({
   images,
   initialIndex = 0,
   isOpen,
   onClose,
+  className,
 }: ImageLightboxProps) => {
-  // Early return if closed
-  if (!isOpen) return null;
-
-  // Early return if no images
-  if (!images || images.length === 0) {
-    return null;
-  }
-
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    if (!images || images.length === 0) return 0;
+    return clampToRange(initialIndex, 0, images.length - 1);
+  });
   const [isZoomed, setIsZoomed] = useState(false);
 
-  // Ensure initialIndex is within bounds
-  const safeIndex = Math.min(Math.max(initialIndex, 0), images.length - 1);
-  const currentImage = images[safeIndex];
+  useScrollLock(isOpen);
 
-  // Use useCallback to memoize navigation functions
+  const safeIndex = images && images.length > 0
+    ? clampToRange(currentIndex, 0, images.length - 1)
+    : 0;
+  const currentImage = images?.[safeIndex];
+
   const goToNext = useCallback(() => {
+    if (!images?.length) return;
     setCurrentIndex((prev) => (prev + 1) % images.length);
-  }, [images.length]);
+  }, [images]);
 
   const goToPrevious = useCallback(() => {
+    if (!images?.length) return;
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-  }, [images.length]);
+  }, [images]);
 
-  const handleImageClick = useCallback(() => {
-    setIsZoomed(!isZoomed);
-  }, [isZoomed]);
+  const toggleZoom = useCallback(() => setIsZoomed((prev) => !prev), []);
 
-  // Handle keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
         case 'Escape':
           onClose();
           break;
@@ -68,181 +71,141 @@ export const ImageLightbox = ({
         case 'ArrowRight':
           goToNext();
           break;
-        case '+':
-        case '=':
-          setIsZoomed(!isZoomed);
-          break;
+        default:
+          if (ZOOM_TOGGLE_KEYS.has(event.key)) toggleZoom();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, goToPrevious, goToNext, isZoomed]);
+  }, [isOpen, onClose, goToPrevious, goToNext, toggleZoom]);
 
-  // Prevent body scroll when lightbox is open
-  useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, []);
-
-  if (!currentImage) return null;
+  if (!isOpen || !images || images.length === 0 || !currentImage) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={currentImage.title ?? 'Image lightbox'}
+      className={cn(
+        'fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4',
+        className
+      )}
       onClick={onClose}
     >
-      {/* Close button */}
       <button
+        type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-all"
         aria-label="Close lightbox"
+        className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white"
       >
-        <Icon className="text-white">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </Icon>
+        <X className="h-5 w-5" aria-hidden="true" />
       </button>
 
-      {/* Navigation - Previous */}
       {images.length > 1 && (
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             goToPrevious();
           }}
-          className="absolute left-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-all"
           aria-label="Previous image"
+          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white"
         >
-          <Icon className="text-white" size="lg">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </Icon>
+          <ChevronLeft className="h-6 w-6" aria-hidden="true" />
         </button>
       )}
 
-      {/* Navigation - Next */}
       {images.length > 1 && (
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             goToNext();
           }}
-          className="absolute right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-all"
           aria-label="Next image"
+          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white"
         >
-          <Icon className="text-white" size="lg">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </Icon>
+          <ChevronRight className="h-6 w-6" aria-hidden="true" />
         </button>
       )}
 
-      {/* Main Image */}
       <div
-        className="relative max-w-5xl max-h-[90vh] w-full"
-        onClick={handleImageClick}
+        className="relative max-h-[90vh] w-full max-w-5xl"
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleZoom();
+        }}
       >
         <img
           src={currentImage.src}
           alt={currentImage.alt}
           className={cn(
-            'w-full h-full object-contain',
-            isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+            'max-h-[90vh] w-full object-contain transition-transform',
+            isZoomed ? 'cursor-zoom-out scale-150' : 'cursor-zoom-in'
           )}
-          style={{
-            maxHeight: '90vh',
-            objectFit: 'contain',
-          }}
         />
 
-        {/* Zoom indicator */}
-        <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/50 px-3 py-2 rounded-full">
+        <div className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-black/50 px-3 py-2">
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setIsZoomed(!isZoomed);
+              toggleZoom();
             }}
-            className="p-1 hover:bg-black/70 rounded-full transition-all text-white"
             aria-label={isZoomed ? 'Zoom out' : 'Zoom in'}
+            className="rounded-full p-1 text-white transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white"
           >
             {isZoomed ? (
-              <Icon className="text-white" size="sm">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"
-                />
-              </Icon>
+              <ZoomOut className="h-4 w-4" aria-hidden="true" />
             ) : (
-              <Icon className="text-white" size="sm">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
-                />
-              </Icon>
+              <ZoomIn className="h-4 w-4" aria-hidden="true" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Image Counter */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 left-4 bg-black/50 px-4 py-2 rounded-full text-white text-sm">
+        <div className="absolute bottom-4 left-4 rounded-full bg-black/50 px-4 py-2 text-sm text-white">
           {currentIndex + 1} / {images.length}
         </div>
       )}
 
-      {/* Image Title */}
       {currentImage.title && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-2 rounded-full text-white text-sm max-w-md text-center">
+        <div className="absolute bottom-4 left-1/2 max-w-md -translate-x-1/2 rounded-full bg-black/50 px-4 py-2 text-center text-sm text-white">
           {currentImage.title}
         </div>
       )}
 
-      {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2 max-w-xl overflow-x-auto">
-          {images.map((image, index) => (
-            <button
-              key={index}
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentIndex(index);
-              }}
-              className={cn(
-                'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all',
-                index === currentIndex
-                  ? 'border-white scale-110'
-                  : 'border-transparent opacity-50 hover:opacity-100'
-              )}
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-full object-cover"
-              />
-            </button>
-          ))}
+        <div className="absolute bottom-20 left-1/2 flex max-w-xl -translate-x-1/2 gap-2 overflow-x-auto">
+          {images.map((image, index) => {
+            const isActive = index === currentIndex;
+            return (
+              <button
+                key={`${image.src}-${index}`}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(index);
+                }}
+                aria-label={`Show image ${index + 1}`}
+                aria-current={isActive ? 'true' : undefined}
+                className={cn(
+                  'h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-white',
+                  isActive
+                    ? 'scale-110 border-white'
+                    : 'border-transparent opacity-50 hover:opacity-100'
+                )}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="h-full w-full object-cover"
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

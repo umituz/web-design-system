@@ -1,27 +1,25 @@
 /**
  * ListItem Component (Molecule)
  * @description Reusable list item with icon, content, and actions
- * Reduces boilerplate in list components throughout the app
  */
 
-import { forwardRef, type ReactNode } from 'react';
+import { forwardRef, type ReactNode, type MouseEvent } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
-export interface ListItemProps extends BaseProps {
+export interface ListItemProps extends Omit<BaseProps, 'id'> {
   title: string;
   description?: string;
   icon?: ReactNode;
   actions?: ReactNode;
   leftContent?: ReactNode;
   rightContent?: ReactNode;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
   href?: string;
   disabled?: boolean;
   selected?: boolean;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'bordered' | 'ghost';
-  className?: string;
   id?: string;
 }
 
@@ -29,27 +27,27 @@ const sizeStyles = {
   sm: 'p-3 gap-3',
   md: 'p-4 gap-4',
   lg: 'p-5 gap-5',
-};
+} as const;
 
 const titleSizeStyles = {
   sm: 'text-sm',
   md: 'text-base',
   lg: 'text-lg',
-};
+} as const;
 
 const descriptionSizeStyles = {
   sm: 'text-xs',
   md: 'text-sm',
   lg: 'text-base',
-};
+} as const;
 
 const iconSizeStyles = {
   sm: 'h-4 w-4',
   md: 'h-5 w-5',
   lg: 'h-6 w-6',
-};
+} as const;
 
-export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
+export const ListItem = forwardRef<HTMLElement, ListItemProps>(
   (
     {
       className,
@@ -70,46 +68,57 @@ export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
     ref
   ) => {
     const baseClasses = cn(
-      'flex items-center justify-between w-full transition-all duration-200',
+      'flex w-full items-center justify-between transition-all duration-200',
       sizeStyles[size],
       !disabled && onClick && 'cursor-pointer hover:bg-muted/50 active:scale-[0.98]',
-      selected && 'bg-muted/50 border-primary',
-      variant === 'bordered' && 'border border-border rounded-lg',
+      selected && 'border-primary bg-muted/50',
+      variant === 'bordered' && 'rounded-lg border border-border',
       variant === 'ghost' && 'hover:bg-muted/30',
-      disabled && 'opacity-50 cursor-not-allowed',
+      disabled && 'cursor-not-allowed opacity-50',
       className
     );
 
     const content = (
       <>
-        {leftContent || icon ? (
-          <div className="flex items-center gap-3 flex-shrink-0">
-            {icon && <div className={cn(iconSizeStyles[size], 'text-muted-foreground')}>{icon}</div>}
-            {!icon && leftContent}
+        {(leftContent || icon) && (
+          <div className="flex shrink-0 items-center gap-3">
+            {icon ? (
+              <div className={cn(iconSizeStyles[size], 'text-muted-foreground')}>{icon}</div>
+            ) : (
+              leftContent
+            )}
           </div>
-        ) : null}
+        )}
 
-        <div className="flex-1 min-w-0">
-          <p className={cn('font-medium text-foreground truncate', titleSizeStyles[size])}>{title}</p>
+        <div className="min-w-0 flex-1">
+          <p className={cn('truncate font-medium text-foreground', titleSizeStyles[size])}>
+            {title}
+          </p>
           {description && (
-            <p className={cn('text-muted-foreground truncate', descriptionSizeStyles[size])}>{description}</p>
+            <p className={cn('truncate text-muted-foreground', descriptionSizeStyles[size])}>
+              {description}
+            </p>
           )}
         </div>
 
-        {rightContent || actions ? (
-          <div className="flex items-center gap-2 flex-shrink-0">
+        {(rightContent || actions) && (
+          <div className="flex shrink-0 items-center gap-2">
             {rightContent}
             {actions}
           </div>
-        ) : null}
+        )}
       </>
     );
 
-    // NOTE: Polymorphic component - renders as anchor when href is provided
-    // "ref as any" is necessary due to TypeScript limitations with polymorphic refs
     if (href && !disabled) {
       return (
-        <a href={href} className={baseClasses} id={id} ref={ref as any}>
+        <a
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          href={href}
+          className={baseClasses}
+          id={id}
+          onClick={onClick}
+        >
           {content}
         </a>
       );
@@ -117,10 +126,12 @@ export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
     return (
       <div
-        ref={ref}
+        ref={ref as React.Ref<HTMLDivElement>}
         className={baseClasses}
         onClick={disabled ? undefined : onClick}
         id={id}
+        role={onClick && !disabled ? 'button' : undefined}
+        tabIndex={onClick && !disabled ? 0 : undefined}
       >
         {content}
       </div>

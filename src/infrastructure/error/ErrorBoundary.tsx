@@ -1,6 +1,9 @@
-import React, { Component, ErrorInfo, ReactNode, memo } from "react";
+import { Component, ErrorInfo, ReactNode, memo } from "react";
+import { AlertTriangle, Home, RefreshCw, Bug } from "lucide-react";
+import { cn } from "../utils";
+import { generateErrorId } from "../calculation/errorIdGenerator";
 
-interface Props {
+interface ErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
@@ -8,14 +11,36 @@ interface Props {
   level?: 'page' | 'component' | 'feature';
 }
 
-interface State {
+interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
   errorInfo?: ErrorInfo;
   errorId?: string;
 }
 
-const ErrorDetails = memo(({ error, errorInfo, showDetails }: {
+const LEVEL_CONFIG = {
+  page: {
+    title: 'Page Error',
+    description: 'This page encountered an unexpected error.',
+    showHomeButton: true,
+  },
+  feature: {
+    title: 'Feature Error',
+    description: 'This feature is temporarily unavailable due to an error.',
+    showHomeButton: false,
+  },
+  component: {
+    title: 'Component Error',
+    description: 'A component on this page encountered an error.',
+    showHomeButton: false,
+  },
+} as const;
+
+const ErrorDetails = memo(({
+  error,
+  errorInfo,
+  showDetails,
+}: {
   error: Error;
   errorInfo?: ErrorInfo;
   showDetails: boolean;
@@ -23,27 +48,28 @@ const ErrorDetails = memo(({ error, errorInfo, showDetails }: {
   if (!showDetails || !import.meta.env.DEV) return null;
 
   return (
-    <div style={{ padding: '16px', background: '#f5f5f5', borderRadius: '8px', marginTop: '16px' }}>
-      <h4 style={{ fontWeight: 600, fontSize: '14px', marginBottom: '8px' }}>
-        🐛 Error Details (Development)
+    <div className="mt-4 rounded-lg bg-muted p-4">
+      <h4 className="mb-2 flex items-center gap-2 text-sm font-semibold">
+        <Bug className="h-4 w-4" />
+        Error Details (Development)
       </h4>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div className="flex flex-col gap-2">
         <div>
-          <p style={{ fontSize: '12px', fontWeight: 500, color: '#666' }}>Message:</p>
-          <pre style={{ fontSize: '12px', color: '#dc2626', overflow: 'auto' }}>{error.message}</pre>
+          <p className="text-xs font-medium text-muted-foreground">Message:</p>
+          <pre className="overflow-auto text-xs text-destructive">{error.message}</pre>
         </div>
         {error.stack && (
           <div>
-            <p style={{ fontSize: '12px', fontWeight: 500, color: '#666' }}>Stack:</p>
-            <pre style={{ fontSize: '12px', color: '#666', overflow: 'auto', maxHeight: '128px' }}>
+            <p className="text-xs font-medium text-muted-foreground">Stack:</p>
+            <pre className="max-h-32 overflow-auto text-xs text-muted-foreground">
               {error.stack}
             </pre>
           </div>
         )}
         {errorInfo?.componentStack && (
           <div>
-            <p style={{ fontSize: '12px', fontWeight: 500, color: '#666' }}>Component Stack:</p>
-            <pre style={{ fontSize: '12px', color: '#666', overflow: 'auto', maxHeight: '128px' }}>
+            <p className="text-xs font-medium text-muted-foreground">Component Stack:</p>
+            <pre className="max-h-32 overflow-auto text-xs text-muted-foreground">
               {errorInfo.componentStack}
             </pre>
           </div>
@@ -52,30 +78,28 @@ const ErrorDetails = memo(({ error, errorInfo, showDetails }: {
     </div>
   );
 });
-
 ErrorDetails.displayName = 'ErrorDetails';
 
-export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     return {
       hasError: true,
       error,
-      errorId: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      errorId: generateErrorId(),
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ error, errorInfo });
-
     this.props.onError?.(error, errorInfo);
 
     if (import.meta.env.DEV) {
-      console.group('🚨 ErrorBoundary caught an error');
+      console.group('ErrorBoundary caught an error');
       console.error('Error:', error);
       console.error('Error Info:', errorInfo);
       console.groupEnd();
@@ -90,96 +114,46 @@ export class ErrorBoundary extends Component<Props, State> {
     window.location.href = '/';
   };
 
-  private getLevelConfig = () => {
-    const { level = 'component' } = this.props;
-
-    switch (level) {
-      case 'page':
-        return {
-          title: 'Page Error',
-          description: 'This page encountered an unexpected error.',
-          showHomeButton: true,
-        };
-      case 'feature':
-        return {
-          title: 'Feature Error',
-          description: 'This feature is temporarily unavailable due to an error.',
-          showHomeButton: false,
-        };
-      default:
-        return {
-          title: 'Component Error',
-          description: 'A component on this page encountered an error.',
-          showHomeButton: false,
-        };
-    }
-  };
-
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      const config = this.getLevelConfig();
+      const config = LEVEL_CONFIG[this.props.level ?? 'component'];
       const { showDetails = false } = this.props;
 
       return (
-        <div style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '16px',
-          background: 'linear-gradient(to bottom right, #fef2f2, #fff7ed)'
-        }}>
-          <div style={{
-            width: '100%',
-            maxWidth: '672px',
-            background: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-            overflow: 'hidden'
-          }}>
-            <div style={{ padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    background: '#fecaca',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <span style={{ fontSize: '24px' }}>⚠️</span>
+        <div
+          className={cn(
+            'flex min-h-screen items-center justify-center bg-gradient-to-br from-destructive/5 to-warning/5 p-4'
+          )}
+        >
+          <div className="w-full max-w-2xl overflow-hidden rounded-lg bg-card shadow-lg">
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+                    <AlertTriangle className="h-6 w-6 text-destructive" />
                   </div>
                   <div>
-                    <h2 style={{ color: '#dc2626', margin: 0, fontSize: '20px', fontWeight: 600 }}>
+                    <h2 className="m-0 text-xl font-semibold text-destructive">
                       {config.title}
                     </h2>
-                    <p style={{ color: '#666', margin: 0, fontSize: '14px' }}>
+                    <p className="m-0 text-sm text-muted-foreground">
                       {config.description}
                     </p>
                   </div>
                 </div>
                 {this.state.errorId && (
-                  <span style={{
-                    background: '#dc2626',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    fontWeight: 500
-                  }}>
+                  <span className="rounded bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">
                     ID: {this.state.errorId.slice(-8)}
                   </span>
                 )}
               </div>
             </div>
 
-            <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="flex flex-col gap-4 px-6 pb-6">
               {this.state.error && (
                 <ErrorDetails
                   error={this.state.error}
@@ -188,60 +162,31 @@ export class ErrorBoundary extends Component<Props, State> {
                 />
               )}
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <div className="flex flex-wrap gap-2">
                 <button
+                  type="button"
                   onClick={this.handleReset}
-                  style={{
-                    padding: '8px 16px',
-                    background: 'white',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
+                  className="flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
                 >
-                  🔄 Try Again
+                  <RefreshCw className="h-4 w-4" />
+                  Try Again
                 </button>
                 <button
+                  type="button"
                   onClick={() => window.location.reload()}
-                  style={{
-                    padding: '8px 16px',
-                    background: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
+                  className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
-                  🔄 Refresh Page
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh Page
                 </button>
                 {config.showHomeButton && (
                   <button
+                    type="button"
                     onClick={this.handleGoHome}
-                    style={{
-                      padding: '8px 16px',
-                      background: '#6b7280',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
+                    className="flex items-center gap-2 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80"
                   >
-                    🏠 Go Home
+                    <Home className="h-4 w-4" />
+                    Go Home
                   </button>
                 )}
               </div>

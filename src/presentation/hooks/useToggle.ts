@@ -1,16 +1,18 @@
 /**
  * useToggle Hook
- * @description Toggle boolean state
+ * @description Toggle boolean state with explicit setValue
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 
-export function useToggle(initialValue: boolean = false): [boolean, () => void, (value: boolean) => void] {
-  const [value, setValue] = useState(initialValue);
+export type UseToggleReturn = [boolean, () => void, (value: boolean) => void];
+
+export function useToggle(initialValue: boolean = false): UseToggleReturn {
+  const [value, setValue] = useState<boolean>(initialValue);
 
   const toggle = useCallback(() => {
-    setValue((v) => !v);
+    setValue((prev) => !prev);
   }, []);
 
-  return [value, toggle, setValue];
+  return useMemo<UseToggleReturn>(() => [value, toggle, setValue], [value, toggle]);
 }

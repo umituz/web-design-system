@@ -1,7 +1,6 @@
 /**
  * StatCard Component (Organism)
  * @description Enhanced metric card with progress bar and target tracking (Responsive)
- * Combines functionality of KPICard and StatsCard from main app
  */
 
 import { forwardRef, type ComponentType } from 'react';
@@ -9,6 +8,7 @@ import { cn, getSpacing, getIconSize, getContainerSize, getTextSize, getSpaceY, 
 import { Card, CardContent } from './Card';
 import { Progress } from '../atoms';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { formatTrendMagnitude } from '../../infrastructure/calculation/trendMagnitudeFormatter';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface StatCardProps extends BaseProps {
@@ -44,7 +44,7 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
       target,
       size = 'md',
       variant = 'default',
-      trendValueFormatter = (v) => `${v > 0 ? '+' : ''}${Math.abs(v).toFixed(1)}%`,
+      trendValueFormatter = (v) => formatTrendMagnitude(v),
       onClick,
       changeLabel,
       responsiveLayout = true,

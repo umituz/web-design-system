@@ -63,3 +63,6 @@ export type { ShowComponentProps } from './Show';
 
 export { Hide } from './Hide';
 export type { HideComponentProps } from './Hide';
+
+export { IconButton } from './IconButton';
+export type { IconButtonProps } from './IconButton';
