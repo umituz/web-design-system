@@ -2,21 +2,22 @@
  * @umituz/web-design-system
  *
  * Web Design System - Atomic Design components (Atoms, Molecules, Organisms)
- * for React applications with Tailwind CSS
+ * for React applications with Tailwind CSS.
  *
- * ⚠️ ONEMLI: App'ler bu root barrel'i kullanMAMALI.
- * Subpath import kullanin: "@umituz/web-design-system/atoms"
+ * Apps MUST NOT use this root barrel.
+ * Use subpath imports instead: "@umituz/web-design-system/atoms"
  *
  * @example
- * // ✅ DOGRU: Subpath import
+ * // CORRECT: Subpath import
  * import { Button, Input } from '@umituz/web-design-system/atoms';
  * import { Card } from '@umituz/web-design-system/organisms';
  *
- * // ❌ YANLIS: Root barrel import
+ * // INCORRECT: Root barrel import
  * import { Button, Card } from '@umituz/web-design-system';
  */
 
-// Re-export everything for backward compatibility
+// Re-exports for consumers that prefer the single entry point.
+// Subpath imports are still recommended for better tree-shaking.
 export * from './domain/tokens';
 export * from './domain/types';
 export * from './infrastructure/utils';
@@ -62,7 +63,7 @@ export { AspectRatio } from './presentation/atoms/AspectRatio';
 export type { SwitchProps } from './presentation/atoms/Switch';
 export { Switch } from './presentation/atoms/Switch';
 export { Separator } from './presentation/atoms/Separator';
-export { Toggle as ToggleAtom, toggleVariants } from './presentation/atoms/Toggle';
+export { Toggle as TogglePrimitive, toggleVariants } from './presentation/atoms/Toggle';
 
 // Molecules
 export type { FormFieldProps } from './presentation/molecules/FormField';

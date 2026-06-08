@@ -46,11 +46,7 @@ export const LoadingState = forwardRef<HTMLDivElement, LoadingStateProps>(
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className={cn(
-                  'w-2 h-2 bg-primary rounded-full animate-bounce',
-                  'w-1.5 h-1.5 sm:w-2 sm:h-2',
-                  'lg:w-2.5 h-2.5'
-                )}
+                className="h-1.5 w-1.5 animate-bounce rounded-full bg-primary sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5"
                 style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}

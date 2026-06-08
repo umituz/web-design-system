@@ -3,6 +3,8 @@
  * @description Display active filters with remove buttons
  */
 
+import { X } from 'lucide-react';
+import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface ActiveFilterTagsProps extends BaseProps {
@@ -24,7 +26,7 @@ export const ActiveFilterTags = ({
   className,
 }: ActiveFilterTagsProps) => {
   const categoryName = selectedCategory
-    ? categories.find(c => c.id === selectedCategory)?.name
+    ? categories.find((c) => c.id === selectedCategory)?.name
     : null;
 
   if (!selectedCategory && selectedTags.length === 0) {
@@ -32,49 +34,48 @@ export const ActiveFilterTags = ({
   }
 
   return (
-    <div className={`hidden lg:flex flex-wrap items-center gap-2 mb-4 md:mb-6 ${className || ''}`}>
-      <span className="text-sm text-text-secondary">Active filters:</span>
+    <div
+      role="region"
+      aria-label="Active filters"
+      className={cn('mb-4 hidden flex-wrap items-center gap-2 md:mb-6 lg:flex', className)}
+    >
+      <span className="text-sm text-muted-foreground">Active filters:</span>
 
-      {/* Category Tag */}
       {categoryName && (
-        <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary-light text-text-primary rounded-full text-xs font-medium">
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground">
           {categoryName}
           <button
+            type="button"
             onClick={onCategoryRemove}
-            className="ml-1 hover:opacity-70 transition-opacity"
             aria-label={`Remove ${categoryName} filter`}
+            className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full transition-opacity hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-ring"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
+            <X className="h-3 w-3" aria-hidden="true" />
           </button>
         </span>
       )}
 
-      {/* Tag Buttons */}
       {selectedTags.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-bg-secondary text-text-primary rounded-full text-xs font-medium border border-border"
+          className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1.5 text-xs font-medium text-foreground"
         >
           {tag}
           <button
+            type="button"
             onClick={() => onTagRemove(tag)}
-            className="ml-1 hover:opacity-70 transition-opacity"
             aria-label={`Remove ${tag} filter`}
+            className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full transition-opacity hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-ring"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
+            <X className="h-3 w-3" aria-hidden="true" />
           </button>
         </span>
       ))}
 
-      {/* Clear All Button */}
       <button
-        onClick={onClearAll}
-        className="px-3 py-1.5 text-primary-light hover:underline text-xs font-medium"
         type="button"
+        onClick={onClearAll}
+        className="px-3 py-1.5 text-xs font-medium text-primary underline-offset-4 transition-colors hover:underline"
       >
         Clear all
       </button>

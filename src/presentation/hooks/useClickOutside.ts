@@ -10,26 +10,30 @@ export function useClickOutside<T extends HTMLElement>(
   enabled: boolean = true
 ) {
   const ref = useRef<T>(null);
+  // Use a ref to keep the latest callback without retriggering the effect
+  // on every render — callers commonly pass inline functions.
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
 
   useEffect(() => {
     if (!enabled) return;
 
-    const handleClick = (event: Event) => {
-      // FIX: Safe null check and type guard
-      const target = event.target as Node;
-      if (ref.current && target && !ref.current.contains(target)) {
-        callback();
+    const handlePointerDown = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (ref.current && !ref.current.contains(target)) {
+        callbackRef.current();
       }
     };
 
-    document.addEventListener('mousedown', handleClick);
-    document.addEventListener('touchstart', handleClick);
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
 
     return () => {
-      document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('touchstart', handleClick);
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
     };
-  }, [callback, enabled]);
+  }, [enabled]);
 
   return ref;
 }

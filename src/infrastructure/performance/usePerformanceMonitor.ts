@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 export interface PerformanceMetrics {
   renderTime: number;
@@ -18,14 +18,35 @@ export interface PerformanceConfig {
   onMetricsUpdate?: (metrics: PerformanceMetrics) => void;
 }
 
+const SLOW_RENDER_THRESHOLD_MS = 16;
+const MAX_TRACKED_RENDER_TIMES = 50;
+const REPORT_LOG_INTERVAL = 10;
+
+const isDev = (): boolean =>
+  typeof import.meta !== 'undefined' && import.meta.env?.DEV === true;
+
+const readMemoryUsage = (trackMemory: boolean): number | undefined => {
+  if (!trackMemory) return undefined;
+  if (typeof performance === 'undefined') return undefined;
+  const memory = (performance as { memory?: { usedJSHeapSize: number } }).memory;
+  return memory?.usedJSHeapSize;
+};
+
+const gradeFor = (avg: number): 'A' | 'B' | 'C' | 'D' =>
+  avg < 5 ? 'A' : avg < 10 ? 'B' : avg < SLOW_RENDER_THRESHOLD_MS ? 'C' : 'D';
+
 export const usePerformanceMonitor = (config: PerformanceConfig = {}) => {
   const {
     trackRenders = true,
     trackMemory = false,
     sampleRate = 1.0,
     componentName = 'Unknown',
-    onMetricsUpdate
+    onMetricsUpdate,
   } = config;
+
+  // Use a ref for the callback to avoid retriggering the effect on every render.
+  const onMetricsUpdateRef = useRef(onMetricsUpdate);
+  onMetricsUpdateRef.current = onMetricsUpdate;
 
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     renderTime: 0,
@@ -33,7 +54,7 @@ export const usePerformanceMonitor = (config: PerformanceConfig = {}) => {
     updateCount: 0,
     lastRenderTime: 0,
     averageRenderTime: 0,
-    componentName
+    componentName,
   });
 
   const mountTimeRef = useRef<number>(0);
@@ -44,10 +65,6 @@ export const usePerformanceMonitor = (config: PerformanceConfig = {}) => {
   useEffect(() => {
     mountTimeRef.current = performance.now();
     renderStartRef.current = performance.now();
-
-    return () => {
-      // Component unmount
-    };
   }, [componentName]);
 
   useEffect(() => {
@@ -59,16 +76,15 @@ export const usePerformanceMonitor = (config: PerformanceConfig = {}) => {
     renderTimesRef.current.push(renderTime);
     updateCountRef.current += 1;
 
-    if (renderTimesRef.current.length > 50) {
-      renderTimesRef.current = renderTimesRef.current.slice(-50);
+    if (renderTimesRef.current.length > MAX_TRACKED_RENDER_TIMES) {
+      renderTimesRef.current = renderTimesRef.current.slice(-MAX_TRACKED_RENDER_TIMES);
     }
 
-    const averageRenderTime = renderTimesRef.current.reduce((sum, time) => sum + time, 0) / renderTimesRef.current.length;
+    const averageRenderTime =
+      renderTimesRef.current.reduce((sum, time) => sum + time, 0) /
+      renderTimesRef.current.length;
 
-    let memoryUsage: number | undefined;
-    if (trackMemory && 'memory' in performance) {
-      memoryUsage = (performance as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize;
-    }
+    const memoryUsage = readMemoryUsage(trackMemory);
 
     const newMetrics: PerformanceMetrics = {
       renderTime,
@@ -77,27 +93,27 @@ export const usePerformanceMonitor = (config: PerformanceConfig = {}) => {
       lastRenderTime: renderTime,
       averageRenderTime,
       memoryUsage,
-      componentName
+      componentName,
     };
 
     setMetrics(newMetrics);
-    onMetricsUpdate?.(newMetrics);
+    onMetricsUpdateRef.current?.(newMetrics);
 
     renderStartRef.current = performance.now();
 
-    if (import.meta.env.DEV) {
-      if (renderTime > 16) {
+    if (isDev()) {
+      if (renderTime > SLOW_RENDER_THRESHOLD_MS) {
         console.warn(`[Performance] Slow render detected: ${renderTime.toFixed(2)}ms`);
       }
-      if (updateCountRef.current % 10 === 0) {
+      if (updateCountRef.current % REPORT_LOG_INTERVAL === 0) {
         console.log({
           renders: updateCountRef.current,
-          avgRenderTime: averageRenderTime.toFixed(2) + 'ms',
-          lastRenderTime: renderTime.toFixed(2) + 'ms'
+          avgRenderTime: `${averageRenderTime.toFixed(2)}ms`,
+          lastRenderTime: `${renderTime.toFixed(2)}ms`,
         });
       }
     }
-  }, [trackRenders, sampleRate, trackMemory, componentName, onMetricsUpdate]);
+  }, [trackRenders, sampleRate, trackMemory, componentName]);
 
   const resetMetrics = useCallback(() => {
     renderTimesRef.current = [];
@@ -111,48 +127,36 @@ export const usePerformanceMonitor = (config: PerformanceConfig = {}) => {
       updateCount: 0,
       lastRenderTime: 0,
       averageRenderTime: 0,
-      componentName
+      componentName,
     });
   }, [componentName]);
 
-  const getPerformanceReport = useCallback(() => {
-    return {
+  const getPerformanceReport = useCallback(
+    () => ({
       ...metrics,
       renderTimes: [...renderTimesRef.current],
-      isSlowComponent: metrics.averageRenderTime > 16,
-      performanceGrade: metrics.averageRenderTime < 5 ? 'A' :
-                       metrics.averageRenderTime < 10 ? 'B' :
-                       metrics.averageRenderTime < 16 ? 'C' : 'D'
-    };
-  }, [metrics]);
+      isSlowComponent: metrics.averageRenderTime > SLOW_RENDER_THRESHOLD_MS,
+      performanceGrade: gradeFor(metrics.averageRenderTime),
+    }),
+    [metrics]
+  );
 
-  return {
-    metrics,
-    resetMetrics,
-    getPerformanceReport
-  };
+  return { metrics, resetMetrics, getPerformanceReport };
 };
 
 export const useRenderPerformance = (componentName?: string) => {
-  const renderStartTime = useRef<number>(0);
-  const [renderStats, setRenderStats] = useState<{
-    lastRenderTime: number;
-    renderCount: number;
-  }>({
+  const [renderStats, setRenderStats] = useState({
     lastRenderTime: 0,
-    renderCount: 0
+    renderCount: 0,
   });
-
-  const startTime = performance.now();
+  const startTime = useMemo(() => performance.now(), [componentName]);
 
   useEffect(() => {
-    setRenderStats(prev => ({
+    setRenderStats((prev) => ({
       lastRenderTime: performance.now() - startTime,
-      renderCount: prev.renderCount + 1
+      renderCount: prev.renderCount + 1,
     }));
-
-    renderStartTime.current = performance.now();
-  }, [componentName, renderStats, startTime]);
+  }, [componentName, startTime]);
 
   return renderStats;
 };

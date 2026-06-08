@@ -16,13 +16,13 @@ export interface ToggleProps extends ButtonHTMLAttributes<HTMLButtonElement>, Ba
 const sizeStyles = {
   sm: 'h-5 w-9',
   md: 'h-6 w-11',
-  lg: 'h-7 w-13',
+  lg: 'h-7 w-14',
 };
 
 const thumbSizeStyles = {
-  sm: 'h-4 w-4 data-[state=checked:translate-x-4',
-  md: 'h-5 w-5 data-[state=checked:translate-x-5',
-  lg: 'h-6 w-6 data-[state=checked:translate-x-6',
+  sm: 'h-4 w-4 data-[state=checked]:translate-x-4',
+  md: 'h-5 w-5 data-[state=checked]:translate-x-5',
+  lg: 'h-6 w-6 data-[state=checked]:translate-x-7',
 };
 
 export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(

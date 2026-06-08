@@ -5,6 +5,7 @@
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
+import { percentOfMax } from '../../infrastructure/calculation/percentOfMax';
 import type { BaseProps } from '../../domain/types';
 
 export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
@@ -21,7 +22,7 @@ const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
   ({ className, value = 0, max = 100, size = 'md', ...props }, ref) => {
-    const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
+    const percentage = percentOfMax(value, max);
 
     return (
       <div

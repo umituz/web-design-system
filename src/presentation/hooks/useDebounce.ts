@@ -4,25 +4,24 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { TIMING } from '../../infrastructure/constants/timing.constants';
+import { clampToNonNegative } from '../../infrastructure/calculation/rangeClamper';
 
-export function useDebounce<T>(value: T, delay: number = 500): T {
+export function useDebounce<T>(value: T, delay: number = TIMING.DEBOUNCE_DEFAULT_MS): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
   const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Clear previous timeout
-    if (timeoutRef.current) {
+    if (timeoutRef.current !== null) {
       clearTimeout(timeoutRef.current);
     }
 
-    // Set new timeout
     timeoutRef.current = window.setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
 
-    // Cleanup
     return () => {
-      if (timeoutRef.current) {
+      if (timeoutRef.current !== null) {
         clearTimeout(timeoutRef.current);
       }
     };
@@ -37,7 +36,7 @@ export function useDebounce<T>(value: T, delay: number = 500): T {
  */
 export function useThrottle<T extends (...args: any[]) => any>(
   func: T,
-  delay: number = 300
+  delay: number = TIMING.THROTTLE_DEFAULT_MS
 ): T {
   const lastRun = useRef<Date>(new Date());
   const timeoutRef = useRef<number | null>(null);
@@ -51,12 +50,11 @@ export function useThrottle<T extends (...args: any[]) => any>(
       return func(...args);
     }
 
-    if (timeoutRef.current) {
+    if (timeoutRef.current !== null) {
       clearTimeout(timeoutRef.current);
     }
 
-    // FIX: Ensure delay is never negative
-    const delayUntilNextExecution = Math.max(0, delay - timeSinceLastRun);
+    const delayUntilNextExecution = clampToNonNegative(delay - timeSinceLastRun);
     timeoutRef.current = window.setTimeout(() => {
       lastRun.current = new Date();
       func(...args);

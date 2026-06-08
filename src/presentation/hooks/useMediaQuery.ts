@@ -14,6 +14,7 @@ import {
   isBreakpointGreaterThan,
   isBreakpointLessThan,
 } from '../../infrastructure/constants/breakpoint.constants';
+import { TIMING } from '../../infrastructure/constants/timing.constants';
 
 /**
  * Simple media query hook for a single breakpoint
@@ -102,7 +103,7 @@ export function useBreakpoint(): UseBreakpointReturn {
       if (resizeTimerRef.current) {
         clearTimeout(resizeTimerRef.current);
       }
-      resizeTimerRef.current = setTimeout(updateBreakpoint, 100);
+      resizeTimerRef.current = setTimeout(updateBreakpoint, TIMING.RESIZE_DEBOUNCE_MS);
     };
 
     window.addEventListener('resize', handleResize);

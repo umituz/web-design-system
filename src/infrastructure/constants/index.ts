@@ -8,8 +8,8 @@ export {
   DEFAULT_SIZE,
   DEFAULT_VARIANT,
   DEFAULT_COLOR_SCHEME,
-  SIZE_MAP,
-  COLOR_MAP,
+  DEFAULT_ORIENTATION,
+  DEFAULT_DELAY_MS,
 } from './component.constants';
 
 export {
@@ -56,3 +56,5 @@ export {
   type FontWeightKey,
   type FontWeight,
 } from './typography.constants';
+
+export { TIMING, type TimingKey } from './timing.constants';

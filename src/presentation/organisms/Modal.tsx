@@ -3,9 +3,11 @@
  * @description Dialog/overlay container with optimized transitions
  */
 
-import { forwardRef, type HTMLAttributes, useEffect, useState, useRef } from 'react';
-import React from 'react';
+import { forwardRef, type HTMLAttributes, type MouseEvent, useEffect, useState, useRef } from 'react';
+import { memo } from 'react';
+import { X } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
+import { TIMING } from '../../infrastructure/constants/timing.constants';
 import type { BaseProps } from '../../domain/types';
 
 export interface ModalProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
@@ -23,7 +25,7 @@ const sizeStyles: Record<'sm' | 'md' | 'lg' | 'xl' | 'full', string> = {
   full: 'max-w-full mx-4',
 };
 
-export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
+export const Modal = memo(forwardRef<HTMLDivElement, ModalProps>(
   ({ open = false, onClose, showCloseButton = true, size = 'md', className, children, ...props }, ref) => {
     const [shouldRender, setShouldRender] = useState(open);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -33,33 +35,33 @@ export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
     useEffect(() => {
       if (open) {
         setShouldRender(true);
-        // FIX: Store rafId and cleanup properly
         rafRef.current = requestAnimationFrame(() => {
           setIsAnimating(true);
         });
       } else {
         setIsAnimating(false);
-        // Wait for animation to complete before unmounting
+        // Wait for the fade-out animation to finish before unmounting
         timerRef.current = window.setTimeout(() => {
           setShouldRender(false);
-        }, 200); // Match animation duration
+        }, TIMING.MODAL_FADE_OUT_MS);
       }
 
-      // FIX: Proper cleanup for both animation frame and timeout
       return () => {
-        if (rafRef.current) {
+        if (rafRef.current !== null) {
           cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
         }
-        if (timerRef.current) {
+        if (timerRef.current !== null) {
           clearTimeout(timerRef.current);
+          timerRef.current = null;
         }
       };
     }, [open]);
 
     if (!shouldRender) return null;
 
-    const handleBackdropClick = (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget && onClose) {
+    const handleBackdropClick = (event: MouseEvent) => {
+      if (event.target === event.currentTarget && onClose) {
         onClose();
       }
     };
@@ -69,16 +71,15 @@ export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
         className="fixed inset-0 z-50 flex items-center justify-center"
         {...props}
       >
-        {/* Backdrop */}
         <div
-          className={`fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity duration-200 ${
+          className={cn(
+            'fixed inset-0 bg-background/80 backdrop-blur-sm transition-opacity duration-200',
             isAnimating ? 'opacity-100' : 'opacity-0'
-          }`}
+          )}
           onClick={handleBackdropClick}
           aria-hidden="true"
         />
 
-        {/* Modal */}
         <div
           ref={ref}
           className={cn(
@@ -93,14 +94,12 @@ export const Modal = React.memo(forwardRef<HTMLDivElement, ModalProps>(
         >
           {showCloseButton && (
             <button
+              type="button"
               onClick={onClose}
-              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               aria-label="Close modal"
+              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span className="sr-only">Close</span>
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           )}
 

@@ -5,6 +5,7 @@
 
 import { forwardRef, type HTMLAttributes, type ReactNode, useState, useRef, useEffect } from 'react';
 import { cn } from '../../infrastructure/utils';
+import { TIMING } from '../../infrastructure/constants/timing.constants';
 import type { BaseProps } from '../../domain/types';
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'>, BaseProps {
@@ -21,7 +22,7 @@ const placementStyles: Record<'top' | 'bottom' | 'left' | 'right', string> = {
 };
 
 export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
-  ({ className, children, content, placement = 'top', delay = 200, ...props }, ref) => {
+  ({ className, children, content, placement = 'top', delay = TIMING.TOOLTIP_DEFAULT_DELAY_MS, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 

@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
+import { sanitizeInput } from './sanitizers/contentSanitizer';
 
 export interface ValidationRule {
   required?: boolean;
@@ -51,12 +52,7 @@ const validateField = (value: string | number | boolean | string[], rule: Valida
   return null;
 };
 
-export const sanitizeInput = (value: string): string => {
-  return value
-    .trim()
-    .replace(/[<>]/g, '')
-    .replace(/\s+/g, ' ');
-};
+export { sanitizeInput as FormSanitizeInput };
 
 export const VALIDATION_PATTERNS = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,

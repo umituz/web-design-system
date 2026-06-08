@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
 import {
   Table,
@@ -16,7 +17,11 @@ import {
   TableCaption,
 } from './Table';
 import { Button } from '../atoms/Button';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import {
+  computeTotalPages,
+  clampPageNumber,
+  computePageBounds,
+} from '../../infrastructure/calculation/pageBoundsCalculator';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
@@ -100,7 +105,9 @@ export function DataTable<T extends Record<string, unknown>>({
     return sortedData.slice(start, end);
   }, [sortedData, currentPage, paginated, pageSize]);
 
-  const totalPages = Math.ceil(data.length / pageSize);
+  const totalPages = computeTotalPages(data.length, pageSize);
+  const safePage = clampPageNumber(currentPage, totalPages);
+  const pageBounds = computePageBounds(currentPage, pageSize, data.length);
 
   const renderCell = (row: T, column: Column<T>) => {
     if (column.cell) {
@@ -154,7 +161,13 @@ export function DataTable<T extends Record<string, unknown>>({
                 <div className="flex items-center gap-2">
                   {column.header}
                   {column.sortable && sortable && sortColumn === column.id && (
-                    <span className="text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+                    <span className="text-xs">
+                      {sortDirection === 'asc' ? (
+                        <ArrowUp className="h-3 w-3" aria-hidden="true" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" aria-hidden="true" />
+                      )}
+                    </span>
                   )}
                 </div>
               </TableHead>
@@ -185,33 +198,33 @@ export function DataTable<T extends Record<string, unknown>>({
               <TableCell colSpan={columns.length}>
                 <div className="flex items-center justify-between">
                   <p className={cn('text-muted-foreground', sizeStyles[size])}>
-                    Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, data.length)} of {data.length} results
+                    Showing {pageBounds.startIndex} to {pageBounds.endIndex} of {data.length} results
                   </p>
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setCurrentPage(1)}
-                      disabled={currentPage === 1}
+                      disabled={safePage === 1}
                     >
                       <ChevronsLeft className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => clampPageNumber(p - 1, totalPages))}
+                      disabled={safePage === 1}
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <span className={cn('text-sm font-medium', sizeStyles[size])}>
-                      Page {currentPage} of {totalPages}
+                      Page {safePage} of {totalPages}
                     </span>
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((p) => clampPageNumber(p + 1, totalPages))}
+                      disabled={safePage === totalPages}
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -219,7 +232,7 @@ export function DataTable<T extends Record<string, unknown>>({
                       size="sm"
                       variant="outline"
                       onClick={() => setCurrentPage(totalPages)}
-                      disabled={currentPage === totalPages}
+                      disabled={safePage === totalPages}
                     >
                       <ChevronsRight className="h-4 w-4" />
                     </Button>

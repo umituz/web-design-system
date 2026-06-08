@@ -1,26 +1,49 @@
 /**
  * useScrollLock Hook
- * @description Lock/unlock body scroll
+ * @description Lock/unlock body scroll while preserving scrollbar gutter
  */
 
 import { useEffect } from 'react';
+import { measureScrollbarWidth } from '../../infrastructure/calculation/scrollbarWidthMeasurer';
 
-export function useScrollLock(enabled: boolean = true) {
+const SCROLLBAR_GUTTER_STYLE_ID = 'use-scroll-lock-gutter-style';
+
+const ensureScrollbarGutterStyle = () => {
+  if (typeof document === 'undefined') return;
+  if (document.getElementById(SCROLLBAR_GUTTER_STYLE_ID)) return;
+
+  const style = document.createElement('style');
+  style.id = SCROLLBAR_GUTTER_STYLE_ID;
+  style.textContent = `
+    html.use-scroll-lock-active body {
+      overflow: hidden;
+    }
+  `;
+  document.head.appendChild(style);
+};
+
+export const useScrollLock = (enabled: boolean = true): void => {
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || typeof document === 'undefined') return;
 
-    const originalStyle = window.getComputedStyle(document.body).overflow;
-    const originalPaddingRight = window.getComputedStyle(document.body).paddingRight;
+    ensureScrollbarGutterStyle();
+    const html = document.documentElement;
+    const body = document.body;
 
-    // FIX: Ensure scrollbar width is never negative
-    const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const scrollbarWidth = measureScrollbarWidth();
 
-    document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = `${scrollbarWidth}px`;
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    html.classList.add('use-scroll-lock-active');
 
     return () => {
-      document.body.style.overflow = originalStyle;
-      document.body.style.paddingRight = originalPaddingRight;
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+      html.classList.remove('use-scroll-lock-active');
     };
   }, [enabled]);
-}
+};
