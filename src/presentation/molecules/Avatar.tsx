@@ -59,7 +59,7 @@ const AvatarImage = forwardRef<HTMLImageElement, AvatarImageProps>(
 
 AvatarImage.displayName = 'AvatarImage';
 
-export interface AvatarFallbackProps extends HTMLAttributes<HTMLDivElement> {}
+export type AvatarFallbackProps = HTMLAttributes<HTMLDivElement>;
 
 const AvatarFallback = forwardRef<HTMLDivElement, AvatarFallbackProps>(
   ({ className, ...props }, ref) => {
