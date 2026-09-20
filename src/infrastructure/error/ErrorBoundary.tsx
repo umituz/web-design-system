@@ -18,6 +18,10 @@ interface ErrorBoundaryState {
   errorId?: string;
 }
 
+// Bundler-agnostic dev detection: `import.meta.env` only exists under Vite;
+// webpack/Node CJS consumers would crash on the unguarded access.
+const isDev = typeof import.meta !== 'undefined' && import.meta.env?.DEV === true;
+
 const LEVEL_CONFIG = {
   page: {
     title: 'Page Error',
@@ -45,7 +49,7 @@ const ErrorDetails = memo(({
   errorInfo?: ErrorInfo;
   showDetails: boolean;
 }) => {
-  if (!showDetails || !import.meta.env.DEV) return null;
+  if (!showDetails || !isDev) return null;
 
   return (
     <div className="mt-4 rounded-lg bg-muted p-4">
@@ -98,7 +102,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     this.setState({ error, errorInfo });
     this.props.onError?.(error, errorInfo);
 
-    if (import.meta.env.DEV) {
+    if (isDev) {
       console.group('ErrorBoundary caught an error');
       console.error('Error:', error);
       console.error('Error Info:', errorInfo);
