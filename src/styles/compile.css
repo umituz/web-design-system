@@ -1,0 +1,18 @@
+/**
+ * @umituz/web-design-system — Tailwind v4 compile entry
+ *
+ * Input for the build step (`npm run build`) that produces
+ * `dist/styles.css`: Tailwind + animations + the theme layer, with the
+ * component source scanned for utility classes.
+ *
+ * Vanilla hosts import the precompiled output:
+ *   @import "@umituz/web-design-system/styles.css";
+ *
+ * Tailwind v4 hosts compile this package's source themselves instead
+ * (see README) and must NOT also import the precompiled stylesheet.
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./theme.css";
+@source "../src";
