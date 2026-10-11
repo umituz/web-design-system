@@ -49,7 +49,7 @@ export interface DataTableProps<T> extends BaseProps {
   onRowClick?: (row: T) => void;
 }
 
-export function DataTable<T extends Record<string, unknown>>({
+export function DataTable<T>({
   className,
   data,
   columns,
