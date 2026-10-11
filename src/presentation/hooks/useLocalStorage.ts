@@ -3,7 +3,7 @@
  * @description LocalStorage state management with safe error surfacing
  */
 
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 
 const isBrowser = (): boolean =>
   typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -26,7 +26,9 @@ export function useLocalStorage<T>(
   const [storedValue, setStoredValue] = useState<T>(() => readInitial(key, initialValue));
 
   const valueRef = useRef(storedValue);
-  valueRef.current = storedValue;
+  useEffect(() => {
+    valueRef.current = storedValue;
+  }, [storedValue]);
 
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {

@@ -22,7 +22,7 @@ import {
   clampPageNumber,
   computePageBounds,
 } from '../../infrastructure/utils/calculation.utils';
-import type { BaseProps, ColorVariant } from '../../domain/types';
+import type { BaseProps } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
 export interface Column<T> {
@@ -39,7 +39,6 @@ export interface DataTableProps<T> extends BaseProps {
   columns: Column<T>[];
   caption?: string;
   size?: MediumSizes;
-  variant?: ColorVariant;
   sortable?: boolean;
   paginated?: boolean;
   pageSize?: number;
@@ -56,7 +55,6 @@ export function DataTable<T extends Record<string, unknown>>({
   columns,
   caption,
   size = 'md',
-  variant = 'primary',
   sortable = false,
   paginated = false,
   pageSize = 10,

@@ -68,7 +68,7 @@ function generateCacheKey(inputs: ClassValue[]): string {
         // Handle objects (like conditional objects in clsx)
         return JSON.stringify(
           Object.entries(input)
-            .filter(([_, value]) => Boolean(value))
+            .filter(([, value]) => Boolean(value))
             .map(([key]) => key)
             .sort()
         );

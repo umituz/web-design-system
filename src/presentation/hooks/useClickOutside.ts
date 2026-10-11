@@ -13,7 +13,9 @@ export function useClickOutside<T extends HTMLElement>(
   // Use a ref to keep the latest callback without retriggering the effect
   // on every render — callers commonly pass inline functions.
   const callbackRef = useRef(callback);
-  callbackRef.current = callback;
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
 
   useEffect(() => {
     if (!enabled) return;

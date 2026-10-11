@@ -34,7 +34,7 @@ export function useDebounce<T>(value: T, delay: number = TIMING.DEBOUNCE_DEFAULT
  * useThrottle Hook
  * @description Throttle a function to limit execution rate
  */
-export function useThrottle<T extends (...args: any[]) => any>(
+export function useThrottle<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number = TIMING.THROTTLE_DEFAULT_MS
 ): T {

@@ -8,7 +8,6 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { ChevronDown, ChevronUp, Check, Copy } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
-import { TIMING } from '../../infrastructure/constants/timing.constants';
 import type { BaseProps } from '../../domain/types';
 
 export interface CodeBlockProps extends BaseProps {
