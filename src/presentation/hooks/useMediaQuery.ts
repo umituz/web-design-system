@@ -3,7 +3,7 @@
  * @description Enhanced responsive breakpoint detection with helper functions
  */
 
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo, useSyncExternalStore } from 'react';
 import type {
   Breakpoint,
   UseBreakpointReturn,
@@ -27,22 +27,26 @@ import { TIMING } from '../../infrastructure/constants/timing.constants';
  * ```
  */
 export function useMediaQuery(breakpoint: Breakpoint): boolean {
-  const [matches, setMatches] = useState(false);
+  const query = useMemo(() => createMediaQuery(breakpoint), [breakpoint]);
 
-  useEffect(() => {
-    // FIX: SSR-safe check
-    if (typeof window === 'undefined') return;
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      if (typeof window === 'undefined') return () => {};
+      const media = window.matchMedia(query);
+      media.addEventListener('change', onStoreChange);
+      return () => media.removeEventListener('change', onStoreChange);
+    },
+    [query]
+  );
 
-    const query = createMediaQuery(breakpoint);
-    const media = window.matchMedia(query);
-    setMatches(media.matches);
+  const getSnapshot = useCallback(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia(query).matches;
+  }, [query]);
 
-    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [breakpoint]);
+  const getServerSnapshot = useCallback(() => false, []);
 
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 /**

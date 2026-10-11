@@ -18,7 +18,7 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
     return (
       <div
         ref={ref}
-        className="relative"
+        className={cn('relative', className)}
         {...props}
       >
         {leftElement && (
