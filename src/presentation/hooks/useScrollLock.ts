@@ -4,7 +4,12 @@
  */
 
 import { useEffect } from 'react';
-import { measureScrollbarWidth } from '../../infrastructure/calculation/scrollbarWidthMeasurer';
+
+/** Width of the vertical scrollbar, so locking scroll doesn't shift layout. */
+const measureScrollbarWidth = (): number => {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return 0;
+  return Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+};
 
 const SCROLLBAR_GUTTER_STYLE_ID = 'use-scroll-lock-gutter-style';
 

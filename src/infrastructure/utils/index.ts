@@ -18,3 +18,15 @@ export {
   getSpaceY,
   getResponsiveStyles,
 } from './responsive.utils';
+
+export {
+  clampToRange,
+  clampToNonNegative,
+  clampToPositive,
+  percentOfMax,
+  formatTrendMagnitude,
+  computeTotalPages,
+  clampPageNumber,
+  computePageBounds,
+} from './calculation.utils';
+export type { PageBounds } from './calculation.utils';

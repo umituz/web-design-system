@@ -1,55 +1,14 @@
 /**
  * Design Tokens
- * @description Central design token exports
+ * @description Responsive scale maps (functional utilities, not theming).
+ * Theming lives in CSS: see `src/styles/theme.css` (@theme) — the
+ * single source of truth for colors, radius, fonts and shadows.
  * Subpath: @umituz/web-design-system/tokens
  */
 
-export type {
-  ColorTokens,
-} from './color.tokens';
 export {
-  lightColorTokens,
-  darkColorTokens,
-} from './color.tokens';
-
-export type {
-  SpacingToken,
-} from './spacing.tokens';
-export {
-  spacing,
-} from './spacing.tokens';
-
-export type {
-  FontSizeToken,
-  FontWeightToken,
-} from './typography.tokens';
-export {
-  fontSizes,
-  fontWeights,
-  lineHeights,
-} from './typography.tokens';
-
-export type {
-  RadiusToken,
-} from './radius.tokens';
-export {
-  radii,
-} from './radius.tokens';
-
-export type {
-  ShadowToken,
-} from './shadow.tokens';
-export {
-  shadows,
-} from './shadow.tokens';
-
-export type {
-  DurationToken,
-  EasingToken,
-} from './animation.tokens';
-export {
-  durations,
-  easings,
-  animations,
-  keyframes,
-} from './animation.tokens';
+  RESPONSIVE_SPACING,
+  RESPONSIVE_ICON_SIZE,
+  RESPONSIVE_CONTAINER_SIZE,
+  RESPONSIVE_TEXT_SIZE,
+} from './responsive-map.tokens';

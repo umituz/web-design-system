@@ -10,12 +10,6 @@ export type { CardProps } from './Card';
 export { Alert, AlertTitle, AlertDescription } from './Alert';
 export type { AlertProps } from './Alert';
 
-export { Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter } from './Modal';
-export type { ModalProps } from './Modal';
-
-export { Navbar, NavbarBrand, NavbarLinks, NavbarActions } from './Navbar';
-export type { NavbarProps } from './Navbar';
-
 export {
   Table,
   TableHeader,
@@ -68,14 +62,8 @@ export {
   SheetTrigger,
 } from './Sheet';
 
-export { Footer } from './Footer';
-export type { FooterProps } from './Footer';
-
 export { MetricCard } from './MetricCard';
 export type { MetricCardProps } from './MetricCard';
-
-export { QuickActionCard } from './QuickActionCard';
-export type { QuickActionCardProps } from './QuickActionCard';
 
 export { EmptyState } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
@@ -88,32 +76,6 @@ export type { DataTableProps, Column } from './DataTable';
 
 export { StatCard } from './StatCard';
 export type { StatCardProps } from './StatCard';
-
-export { FormModal } from './FormModal';
-export type { FormModalProps } from './FormModal';
-
-export { Grid, GridItem } from './Grid';
-export type { GridProps, GridItemProps } from './Grid';
-
-export { ConfirmDialog } from './ConfirmDialog';
-export type { ConfirmDialogProps } from './ConfirmDialog';
-
-export { Calendar } from './Calendar';
-export type { CalendarProps } from './Calendar';
-
-export {
-  AlertDialog,
-  AlertDialogPortal,
-  AlertDialogOverlay,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from './AlertDialog';
 
 export {
   DropdownMenu,
@@ -134,25 +96,3 @@ export {
 } from './DropdownMenu';
 
 export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
-
-// NEW: Media & Content Components
-export { ImageLightbox } from './ImageLightbox';
-export type { ImageLightboxProps, ImageLightboxImage } from './ImageLightbox';
-
-// NEW: Content & Engagement Components
-export { NewsletterSignup } from './NewsletterSignup';
-export type { NewsletterSignupProps } from './NewsletterSignup';
-
-export { Comments } from './Comments';
-export type { CommentsProps, GiscusConfig } from './Comments';
-
-// NEW: Filter Components
-export { FilterBar } from './FilterBar';
-export type { FilterBarProps, Category, SortOption } from './FilterBar';
-
-export { FilterSidebar } from './FilterSidebar';
-export type { FilterSidebarProps } from './FilterSidebar';
-
-// NEW: Navigation Components
-export { MainNavbar } from './MainNavbar';
-export type { MainNavbarProps, NavItem, MainNavbarLanguage } from './MainNavbar';

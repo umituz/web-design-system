@@ -5,7 +5,7 @@
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
-import { percentOfMax } from '../../infrastructure/calculation/percentOfMax';
+import { percentOfMax } from '../../infrastructure/utils/calculation.utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps {

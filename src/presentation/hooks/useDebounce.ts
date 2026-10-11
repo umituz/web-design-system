@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TIMING } from '../../infrastructure/constants/timing.constants';
-import { clampToNonNegative } from '../../infrastructure/calculation/rangeClamper';
+import { clampToNonNegative } from '../../infrastructure/utils/calculation.utils';
 
 export function useDebounce<T>(value: T, delay: number = TIMING.DEBOUNCE_DEFAULT_MS): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
