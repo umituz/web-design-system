@@ -98,7 +98,7 @@ export const CodeBlock = ({
             aria-label={copied ? 'Code copied' : 'Copy code'}
             title={copied ? 'Copied!' : 'Copy code'}
             className={cn(
-              'flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+              'flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
               copied
                 ? 'border-success bg-success text-success-foreground'
                 : 'border-border bg-secondary text-foreground hover:bg-muted'
