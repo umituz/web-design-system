@@ -8,7 +8,7 @@ import { cn, getSpacing, getIconSize, getContainerSize, getTextSize, getSpaceY, 
 import { Card, CardContent } from './Card';
 import { Progress } from '../atoms';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { formatTrendMagnitude } from '../../infrastructure/calculation/trendMagnitudeFormatter';
+import { formatTrendMagnitude } from '../../infrastructure/utils/calculation.utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
 export interface StatCardProps extends BaseProps {

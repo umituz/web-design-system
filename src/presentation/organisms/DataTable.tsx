@@ -21,7 +21,7 @@ import {
   computeTotalPages,
   clampPageNumber,
   computePageBounds,
-} from '../../infrastructure/calculation/pageBoundsCalculator';
+} from '../../infrastructure/utils/calculation.utils';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 

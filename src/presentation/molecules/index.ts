@@ -42,8 +42,5 @@ export type { ListItemProps } from './ListItem';
 export { ActiveFilterTags } from './ActiveFilterTags';
 export type { ActiveFilterTagsProps } from './ActiveFilterTags';
 
-export { Breadcrumb } from './Breadcrumb';
-export type { BreadcrumbProps, BreadcrumbItem } from './Breadcrumb';
-
 export { CodeBlock } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
