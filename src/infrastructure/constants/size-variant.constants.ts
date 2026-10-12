@@ -52,7 +52,7 @@ export function getNextSizeVariant(current: SizeVariant): SizeVariant | null {
   if (index === -1 || index === SIZE_VARIANT_ORDER.length - 1) {
     return null;
   }
-  return SIZE_VARIANT_ORDER[index + 1];
+  return SIZE_VARIANT_ORDER[index + 1] ?? null;
 }
 
 /**
@@ -63,7 +63,7 @@ export function getPrevSizeVariant(current: SizeVariant): SizeVariant | null {
   if (index <= 0) {
     return null;
   }
-  return SIZE_VARIANT_ORDER[index - 1];
+  return SIZE_VARIANT_ORDER[index - 1] ?? null;
 }
 
 /**
