@@ -12,6 +12,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const css = readFileSync(resolve(__dirname, '../../dist/styles.css'), 'utf8');
+const bridge = readFileSync(resolve(__dirname, '../styles/bridge.css'), 'utf8');
 
 describe('dist/styles.css contract', () => {
   it('exists and is non-trivial', () => {
@@ -40,6 +41,10 @@ describe('dist/styles.css contract', () => {
     // Radius scale
     expect(css).toMatch(/\.rounded-md\{border-radius:var\(--radius-md\)\}/);
     expect(css).toMatch(/\.rounded-lg\{border-radius:var\(--radius-lg\)\}/);
+    // Toaster viewport + kind accents
+    expect(css).toMatch(/\.border-l-success\{[^}]*var\(--color-success\)/);
+    expect(css).toMatch(/\.text-warning\{[^}]*var\(--color-warning\)/);
+    expect(css).toMatch(/\.bg-popover\{[^}]*var\(--color-popover\)/);
   });
 
   it('ships the dark palette under both dark selectors', () => {
@@ -56,5 +61,49 @@ describe('dist/styles.css contract', () => {
 
   it('ships preflight inside @layer base (safe for layered hosts)', () => {
     expect(css).toMatch(/@layer base/);
+  });
+});
+
+describe('bridge.css contract (published as-is)', () => {
+  const requiredSlots = [
+    'background',
+    'foreground',
+    'card',
+    'card-foreground',
+    'popover',
+    'popover-foreground',
+    'primary',
+    'primary-foreground',
+    'secondary',
+    'secondary-foreground',
+    'muted',
+    'muted-foreground',
+    'accent',
+    'accent-foreground',
+    'border',
+    'input',
+    'destructive',
+    'destructive-foreground',
+    'ring',
+  ] as const;
+
+  it('maps every required slot to a bare --app-* token (loud failure)', () => {
+    for (const slot of requiredSlots) {
+      expect(bridge).toContain(`--color-${slot}: var(--app-${slot})`);
+    }
+  });
+
+  it('gives optional slots DS-light defaults as fallbacks', () => {
+    expect(bridge).toContain('--color-success: var(--app-success, #16a34a)');
+    expect(bridge).toContain('--color-warning: var(--app-warning, #d97706)');
+    expect(bridge).toContain('--color-info: var(--app-info, #2563eb)');
+    expect(bridge).toContain('--color-primary-soft: var(--app-primary-soft, rgba(37, 99, 235, 0.1))');
+  });
+
+  it('never touches radius or mono font (name-collision doctrine)', () => {
+    // Strip doc comments first — the header documents the doctrine by name.
+    const declarations = bridge.replace(/\/\*[\s\S]*?\*\//g, '');
+    expect(declarations).not.toContain('--radius-');
+    expect(declarations).not.toContain('--font-mono');
   });
 });

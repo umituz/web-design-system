@@ -10,6 +10,9 @@ bundler compiles the components. Styling is available two ways:
 
 - `@umituz/web-design-system/styles.css` — precompiled (`dist/styles.css`),
   Tailwind included. For vanilla-CSS hosts.
+- `@umituz/web-design-system/bridge.css` — the semantic palette bridge: maps
+  the `--color-*` contract onto the host's `--app-*` tokens. For vanilla-CSS
+  hosts that theme via their own token names (see below).
 - `@umituz/web-design-system/theme.css` — the `@theme` layer alone. For
   Tailwind v4 hosts that compile the component classes themselves.
 
@@ -50,6 +53,31 @@ Restyle by overriding the CSS variables — no rebuild needed:
 
 Dark mode: add `data-theme="dark"` or `class="dark"` on any ancestor
 (typically `<html>`). The package never switches themes on its own.
+
+Hosts with their own token vocabulary (`--app-*`) use the bridge instead of
+overriding `--color-*` one by one:
+
+```css
+/* app tokens css — imports in this order */
+@import "@umituz/web-design-system/styles.css";
+@import "@umituz/web-design-system/bridge.css";
+
+:root {
+  --app-background: #fdfcf9;      /* paper */
+  --app-foreground: #1c1917;      /* ink  */
+  --app-primary: #2e8b5f;         /* brand */
+  --app-primary-foreground: #ffffff;
+  /* … the 19 required slots (missing slots break loudly). Optional:
+     --app-success / --app-warning / --app-info (+ -foreground),
+     --app-primary-soft, --app-font-sans fall back to DS defaults. */
+}
+[data-theme="dark"] {
+  --app-background: #0c0a09;      /* re-define per theme */
+}
+```
+
+`--radius-*` and `--font-mono` are deliberately not in the bridge — re-declare
+them unlayered in the host css to override (name-collision doctrine).
 
 ### Tailwind v4 host
 
@@ -107,9 +135,10 @@ is three variables:
 ```bash
 @umituz/web-design-system/styles.css   # precompiled stylesheet (vanilla hosts)
 @umituz/web-design-system/theme.css     # @theme layer (Tailwind v4 hosts)
+@umituz/web-design-system/bridge.css    # --color-* → --app-* palette bridge
 @umituz/web-design-system/atoms         # Button, Input, Badge, Spinner, …
 @umituz/web-design-system/molecules     # FormField, Select, Avatar, …
-@umituz/web-design-system/organisms     # Card, Dialog, Sheet, Table, DataTable, …
+@umituz/web-design-system/organisms     # Card, Dialog, Sheet, Table, DataTable, ToastProvider, KeyValueList, …
 @umituz/web-design-system/templates     # page-level layouts
 @umituz/web-design-system/hooks         # useMediaQuery, useDebounce, useTheme, …
 @umituz/web-design-system/utils         # cn, responsive helpers, clamp/pagination math
