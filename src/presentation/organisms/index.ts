@@ -96,3 +96,9 @@ export {
 } from './DropdownMenu';
 
 export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
+
+export { ToastProvider, useToast } from './Toaster';
+export type { ToastKind, ToastOptions } from './Toaster';
+
+export { KeyValueList } from './KeyValueList';
+export type { KeyValueListProps, KeyValueItem } from './KeyValueList';

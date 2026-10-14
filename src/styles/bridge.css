@@ -1,0 +1,74 @@
+/**
+ * @umituz/web-design-system — semantic palette bridge (CSS-camp apps)
+ *
+ * Bu dosya, Tailwind derlemesi yapmayan (vanilla CSS) uygulamaların
+ * `--color-*` semantik paletini kendi renk isimlerine bağlayan KANONİK
+ * köprüdür. 8 uygulamada elle kopyalanan `packages.css` eşlemesinin
+ * paketteki tek doğru hâlidir — yeni projeler eşlemeyi buradan alır,
+ * kendi başına yazmaz.
+ *
+ * Sözleşme:
+ *   1. İçe aktarım sırası (uygulamanın ana css'i):
+ *        @import "@umituz/web-design-system/styles.css";
+ *        @import "@umituz/web-design-system/bridge.css";
+ *        :root { --app-... }          ← uygulamanın kendi token'ları (SON)
+ *   2. ZORUNLU slotlar (fallback'siz): uygulama 19 çekirdek `--app-*`
+ *      tokenını tanımlamazsa ilgili renk görünür biçimde bozulur —
+ *      eksik palet bilinçli olarak gürültülü başarısız olur.
+ *   3. OPSİYONEL slotlar: tanımlanmazsa DS'in açık-theme varsayılanı
+ *      geçerli olur (success/warning/info üçlüsü, primary-soft, font).
+ *   4. Karanlık theme: uygulama `[data-theme="dark"] / .dark` altında
+ *      `--app-*` tokenlarını yeniden tanımlar; köprü otomatik devralır.
+ *   5. `--radius-*` ve `--font-mono` bu dosyada YOKTUR: bilinçli isim
+ *      çakışması doktrini — uygulama kendi css'inde (unlayered)
+ *      yeniden tanımlayarak ezer.
+ *   6. Tailwind-camp uygulamalar (kaynağı `@source` ile derleyenler) bu
+ *      dosyaya ihtiyaç duymaz; kendi `@theme` paletiyle ezer.
+ */
+
+:root {
+  /* --- ZORUNLU: yüzeyler & metin --- */
+  --color-background: var(--app-background);
+  --color-foreground: var(--app-foreground);
+  --color-card: var(--app-card);
+  --color-card-foreground: var(--app-card-foreground);
+  --color-popover: var(--app-popover);
+  --color-popover-foreground: var(--app-popover-foreground);
+
+  /* --- ZORUNLU: marka --- */
+  --color-primary: var(--app-primary);
+  --color-primary-foreground: var(--app-primary-foreground);
+  --color-secondary: var(--app-secondary);
+  --color-secondary-foreground: var(--app-secondary-foreground);
+
+  /* --- ZORUNLU: nötr --- */
+  --color-muted: var(--app-muted);
+  --color-muted-foreground: var(--app-muted-foreground);
+  --color-accent: var(--app-accent);
+  --color-accent-foreground: var(--app-accent-foreground);
+  --color-border: var(--app-border);
+  --color-input: var(--app-input);
+
+  /* --- ZORUNLU: yıkıcı & odak --- */
+  --color-destructive: var(--app-destructive);
+  --color-destructive-foreground: var(--app-destructive-foreground);
+  --color-ring: var(--app-ring);
+
+  /* --- OPSİYONEL: durum üçlüsü (DS açık-theme varsayılanıyla) --- */
+  --color-success: var(--app-success, #16a34a);
+  --color-success-foreground: var(--app-success-foreground, #ffffff);
+  --color-warning: var(--app-warning, #d97706);
+  --color-warning-foreground: var(--app-warning-foreground, #ffffff);
+  --color-info: var(--app-info, #2563eb);
+  --color-info-foreground: var(--app-info-foreground, #ffffff);
+
+  /* --- OPSİYONEL: dashboard token sözleşmesi (udb bileşenleri bekler) --- */
+  --color-primary-soft: var(--app-primary-soft, rgba(37, 99, 235, 0.1));
+
+  /* --- OPSİYONEL: tipografi --- */
+  --font-sans: var(
+    --app-font-sans,
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif
+  );
+}

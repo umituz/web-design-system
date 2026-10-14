@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Button } from '../presentation/atoms/Button';
 import { Badge } from '../presentation/atoms/Badge';
 import { Spinner } from '../presentation/atoms/Spinner';
@@ -13,6 +13,9 @@ import { Alert, AlertTitle, AlertDescription } from '../presentation/organisms/A
 import { Card, CardHeader, CardTitle, CardContent } from '../presentation/organisms/Card';
 import { EmptyState } from '../presentation/organisms/EmptyState';
 import { StatCard } from '../presentation/organisms/StatCard';
+import { ToastProvider, useToast } from '../presentation/organisms/Toaster';
+import type { ToastKind } from '../presentation/organisms/Toaster';
+import { KeyValueList } from '../presentation/organisms/KeyValueList';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -74,5 +77,43 @@ describe('organisms', () => {
     render(<StatCard title="MRR" value="1200" trend={{ value: 12.34 }} />);
     expect(screen.getByText('1200')).toBeTruthy();
     expect(screen.getAllByText('+12.3%').length).toBeGreaterThan(0);
+  });
+
+  it('ToastProvider renders a fired toast with its kind accent', async () => {
+    function Harness({ kind }: { kind: ToastKind }) {
+      const { toast } = useToast();
+      return (
+        <button type="button" onClick={() => toast({ kind, title: 'Saved', description: 'Row updated' })}>
+          fire
+        </button>
+      );
+    }
+    render(
+      <ToastProvider>
+        <Harness kind="success" />
+      </ToastProvider>,
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'fire' }));
+    });
+    expect(screen.getByText('Saved')).toBeTruthy();
+    expect(screen.getByText('Row updated')).toBeTruthy();
+    expect(screen.getByText('Saved').closest('div')?.parentElement?.className).toContain('border-l-success');
+  });
+
+  it('KeyValueList renders label/value pairs in a definition list', () => {
+    render(
+      <KeyValueList
+        items={[
+          { label: 'E-posta', value: 'a@b.c' },
+          { label: 'Rol', value: 'admin' },
+        ]}
+      />,
+    );
+    const dl = screen.getByText('E-posta').closest('dl');
+    expect(dl).toBeTruthy();
+    expect(dl?.querySelectorAll('dt').length).toBe(2);
+    expect(dl?.querySelectorAll('dd').length).toBe(2);
+    expect(screen.getByText('a@b.c').className).toContain('text-right');
   });
 });
