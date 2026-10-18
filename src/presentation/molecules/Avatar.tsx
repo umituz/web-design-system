@@ -9,6 +9,7 @@ import type { BaseProps } from '../../domain/types';
 import type { ExtendedSizes } from '../../infrastructure/constants';
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
+  name?: string;
   size?: ExtendedSizes;
 }
 
@@ -21,8 +22,31 @@ const sizeStyles: Record<ExtendedSizes, string> = {
   '2xl': 'h-20 w-20 text-2xl',
 };
 
+const nameTones = [
+  'bg-primary/15 text-primary',
+  'bg-success/15 text-success',
+  'bg-warning/15 text-warning',
+  'bg-info/15 text-info',
+  'bg-secondary text-secondary-foreground',
+];
+
+const initialsOf = (name: string): string => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+const toneIndexOf = (name: string): number => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i += 1) {
+    hash = (hash * 31 + name.charCodeAt(i)) % 997;
+  }
+  return hash % nameTones.length;
+};
+
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-  ({ className, size = 'md', ...props }, ref) => {
+  ({ className, size = 'md', name, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -32,7 +56,13 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
           className
         )}
         {...props}
-      />
+      >
+        {name !== undefined && !children ? (
+          <AvatarFallback className={nameTones[toneIndexOf(name)]}>{initialsOf(name)}</AvatarFallback>
+        ) : (
+          children
+        )}
+      </div>
     );
   }
 );

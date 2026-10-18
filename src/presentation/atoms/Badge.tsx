@@ -8,13 +8,16 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
+export type BadgeVariant = ColorVariant | 'info';
+
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
-  variant?: ColorVariant;
+  variant?: BadgeVariant;
   size?: MediumSizes;
 }
 
-const variantStyles: Record<ColorVariant, string> = {
+const variantStyles: Record<BadgeVariant, string> = {
   primary: 'bg-primary text-primary-foreground border-primary',
+  info: 'bg-info text-info-foreground border-info',
   secondary: 'bg-secondary text-secondary-foreground border-secondary',
   success: 'bg-success text-success-foreground border-success',
   warning: 'bg-warning text-warning-foreground border-warning',

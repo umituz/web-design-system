@@ -34,14 +34,41 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
 Card.displayName = 'Card';
 
-export const CardHeader = React.memo(forwardRef<HTMLDivElement, CardProps>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('flex flex-col space-y-1.5 p-6', className)}
-      {...props}
-    />
-  )
+export interface CardHeaderProps extends Omit<CardProps, 'title'> {
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  actions?: React.ReactNode;
+}
+
+export const CardHeader = React.memo(forwardRef<HTMLDivElement, CardHeaderProps>(
+  ({ className, title, subtitle, actions, children, ...props }, ref) => {
+    const hasStructuralProps = title !== undefined || subtitle !== undefined || actions !== undefined;
+    if (!hasStructuralProps) {
+      return (
+        <div
+          ref={ref}
+          className={cn('flex flex-col space-y-1.5 p-6', className)}
+          {...props}
+        >
+          {children}
+        </div>
+      );
+    }
+    return (
+      <div
+        ref={ref}
+        className={cn('flex items-start justify-between gap-4 p-6', className)}
+        {...props}
+      >
+        <div className="flex flex-col space-y-1.5">
+          {title !== undefined && <CardTitle>{title}</CardTitle>}
+          {subtitle !== undefined && <CardDescription>{subtitle}</CardDescription>}
+          {children}
+        </div>
+        {actions !== undefined && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      </div>
+    );
+  }
 ));
 
 CardHeader.displayName = 'CardHeader';

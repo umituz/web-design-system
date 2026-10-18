@@ -8,7 +8,7 @@ export { Button } from './Button';
 export type { ButtonProps } from './Button';
 
 export { Badge } from './Badge';
-export type { BadgeProps } from './Badge';
+export type { BadgeProps, BadgeVariant } from './Badge';
 
 export { Input } from './Input';
 export type { InputProps } from './Input';
@@ -66,3 +66,9 @@ export type { HideComponentProps } from './Hide';
 
 export { IconButton } from './IconButton';
 export type { IconButtonProps } from './IconButton';
+
+export { Sparkline } from './Sparkline';
+export type { SparklineProps } from './Sparkline';
+
+export { NativeSelect } from './NativeSelect';
+export type { NativeSelectProps } from './NativeSelect';

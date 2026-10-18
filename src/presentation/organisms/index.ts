@@ -110,3 +110,11 @@ export type { ToastKind, ToastOptions } from './Toaster';
 
 export { KeyValueList } from './KeyValueList';
 export type { KeyValueListProps, KeyValueItem } from './KeyValueList';
+
+export { KpiCard } from './KpiCard';
+export type { KpiCardProps, KpiDelta, KpiIconTone } from './KpiCard';
+
+export { Modal } from './Modal';
+export type { ModalProps, ModalSize } from './Modal';
+
+export type { ToastShorthandOptions } from './Toaster';

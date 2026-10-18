@@ -19,6 +19,12 @@ import { KeyValueList } from '../presentation/organisms/KeyValueList';
 import { DataTable, TablePagination } from '../presentation/organisms/DataTable';
 import { Tabs } from '../presentation/organisms/Tabs';
 import { Progress } from '../presentation/atoms/Progress';
+import { Input } from '../presentation/atoms/Input';
+import { NativeSelect } from '../presentation/atoms/NativeSelect';
+import { Sparkline } from '../presentation/atoms/Sparkline';
+import { Avatar } from '../presentation/molecules/Avatar';
+import { KpiCard } from '../presentation/organisms/KpiCard';
+import { Modal } from '../presentation/organisms/Modal';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -99,8 +105,8 @@ describe('organisms', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'fire' }));
     });
-    expect(screen.getByText('Saved')).toBeTruthy();
-    expect(screen.getByText('Row updated')).toBeTruthy();
+    expect(screen.getAllByText('Saved').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Row updated').length).toBeGreaterThan(0);
     expect(screen.getByText('Saved').closest('div')?.parentElement?.className).toContain('border-l-success');
   });
 
@@ -376,5 +382,169 @@ describe('controlled surfaces', () => {
     expect(fill?.className).toContain('bg-destructive');
     expect(track.getAttribute('aria-valuenow')).toBe('40');
     expect(track.getAttribute('aria-valuemin')).toBe('0');
+  });
+});
+
+describe('fleet surface supersets', () => {
+  it('Button renders alias variants and icon slots', () => {
+    const { container } = render(
+      <Button variant="primary" icon={<svg data-testid="lead" />} iconRight={<svg data-testid="trail" />}>
+        Save
+      </Button>
+    );
+    const btn = container.querySelector('button');
+    expect(btn?.className).toContain('bg-primary');
+    expect(btn?.querySelector('[data-testid="lead"]')).not.toBeNull();
+    expect(btn?.querySelector('[data-testid="trail"]')).not.toBeNull();
+    const { container: danger } = render(<Button variant="danger">Delete</Button>);
+    expect(danger.querySelector('button')?.className).toContain('bg-destructive');
+  });
+
+  it('Badge renders info variant', () => {
+    const { container } = render(<Badge variant="info">New</Badge>);
+    expect(container.querySelector('.bg-info')).not.toBeNull();
+  });
+
+  it('Input wraps label and hint when provided', () => {
+    const { container } = render(<Input label="Full name" hint="As printed on the deed" />);
+    const label = container.querySelector('label');
+    expect(label?.textContent).toBe('Full name');
+    expect(container.textContent).toContain('As printed on the deed');
+    const { container: bare } = render(<Input placeholder="Plain" />);
+    expect(bare.querySelector('label')).toBeNull();
+  });
+
+  it('Input renders string error message', () => {
+    const { container } = render(<Input label="Email" error="Required" />);
+    expect(container.querySelector('input')?.className).toContain('border-destructive');
+    expect(container.textContent).toContain('Required');
+  });
+
+  it('NativeSelect renders label plus chevron and options', () => {
+    const { container } = render(
+      <NativeSelect label="Tier" defaultValue="premium">
+        <option value="standard">Standard</option>
+        <option value="premium">Premium</option>
+      </NativeSelect>
+    );
+    expect(container.querySelector('label')?.textContent).toBe('Tier');
+    expect(container.querySelectorAll('option')).toHaveLength(2);
+    expect(container.querySelector('svg')).not.toBeNull();
+  });
+
+  it('Avatar derives initials and deterministic tone from name', () => {
+    const { container } = render(<Avatar name="Umit Uz" />);
+    const fallback = container.querySelector(
+      '.text-primary, .text-success, .text-warning, .text-info, .text-secondary-foreground'
+    );
+    expect(container.textContent).toContain('UU');
+    expect(fallback).not.toBeNull();
+    const { container: solo } = render(<Avatar name="veyra" />);
+    expect(solo.textContent).toContain('VE');
+  });
+
+  it('CardHeader builds layout from title, subtitle and actions props', () => {
+    const { container } = render(
+      <CardHeader title="Fleet" subtitle="All vehicles" actions={<button type="button">Add</button>} />
+    );
+    expect(container.querySelector('h3')?.textContent).toBe('Fleet');
+    expect(container.textContent).toContain('All vehicles');
+    expect(container.querySelector('button')?.textContent).toBe('Add');
+    const { container: compound } = render(
+      <CardHeader>
+        <CardTitle>Compound</CardTitle>
+      </CardHeader>
+    );
+    expect(compound.querySelector('button')).toBeNull();
+    expect(compound.textContent).toContain('Compound');
+  });
+
+  it('Sparkline renders a polyline for multi-point data', () => {
+    const { container } = render(<Sparkline data={[1, 4, 2, 8]} />);
+    const polyline = container.querySelector('polyline');
+    expect(polyline).not.toBeNull();
+    expect(polyline?.getAttribute('points')?.split(' ')).toHaveLength(4);
+    const { container: flat } = render(<Sparkline data={[3]} />);
+    expect(flat.querySelector('polyline')).toBeNull();
+  });
+
+  it('KpiCard renders label, value, delta, hint, icon tone and spark', () => {
+    const { container } = render(
+      <KpiCard
+        label="Total vehicles"
+        value="128"
+        delta={{ value: '+2', direction: 'up' }}
+        hint="this month"
+        icon={<svg data-testid="kpi-icon" />}
+        iconTone="info"
+        spark={[1, 2, 3, 4]}
+      />
+    );
+    expect(container.textContent).toContain('Total vehicles');
+    expect(container.textContent).toContain('128');
+    expect(container.textContent).toContain('+2');
+    expect(container.textContent).toContain('this month');
+    expect(container.querySelector('[data-testid="kpi-icon"]')).not.toBeNull();
+    expect(container.querySelector('.bg-info\\/10, [class*="bg-info"]')).not.toBeNull();
+    expect(container.querySelector('polyline')).not.toBeNull();
+  });
+
+  it('KpiCard inverts delta color with good=false', () => {
+    const { container } = render(
+      <KpiCard label="Churn" value="4%" delta={{ value: '+1', direction: 'up', good: false }} />
+    );
+    expect(container.querySelector('.text-destructive')).not.toBeNull();
+  });
+
+  it('Modal opens content, title and footer through the convenience API', () => {
+    render(
+      <Modal open onClose={() => {}} title="Filters" description="Narrow the list" footer={<button type="button">Apply</button>}>
+        <p>Body copy</p>
+      </Modal>
+    );
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('Filters')).toBeTruthy();
+    expect(screen.getByText('Narrow the list')).toBeTruthy();
+    expect(screen.getByText('Body copy')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeTruthy();
+  });
+
+  it('toast shorthand call maps tone aliases onto kinds', () => {
+    function Fire() {
+      const { toast } = useToast();
+      return (
+        <button type="button" onClick={() => toast('Saved', { tone: 'success', message: 'Row updated' })}>
+          fire
+        </button>
+      );
+    }
+    render(
+      <ToastProvider>
+        <Fire />
+      </ToastProvider>
+    );
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'fire' }));
+    });
+    expect(screen.getAllByText('Saved').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Row updated').length).toBeGreaterThan(0);
+    function FireAlias() {
+      const { toast } = useToast();
+      return (
+        <button type="button" onClick={() => toast('Deleted', { tone: 'danger' })}>
+          second
+        </button>
+      );
+    }
+    const { container } = render(
+      <ToastProvider>
+        <FireAlias />
+      </ToastProvider>
+    );
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'second' }));
+    });
+    expect(container.textContent).toContain('Deleted');
+    expect(container.querySelector('.border-l-destructive')).not.toBeNull();
   });
 });

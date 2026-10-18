@@ -1,15 +1,17 @@
 /**
  * Input Component (Atom)
- * @description Text input field
+ * @description Text input field with optional label and helper text
  */
 
-import { forwardRef, type InputHTMLAttributes } from 'react';
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
-  error?: boolean;
+  error?: boolean | string;
+  hint?: ReactNode;
+  label?: ReactNode;
   size?: MediumSizes;
 }
 
@@ -20,24 +22,50 @@ const sizeStyles: Record<MediumSizes, string> = {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, error, size = 'md', type = 'text', ...props }, ref) => {
-    return (
+  ({ className, error, hint, label, size = 'md', type = 'text', id, ...props }, ref) => {
+    const generatedId = useId();
+    const inputId = id ?? generatedId;
+    const hasError = Boolean(error);
+    const errorText = typeof error === 'string' && error.length > 0 ? error : undefined;
+    const hintId = `${inputId}-hint`;
+    const control = (
       <input
         ref={ref}
+        id={inputId}
         type={type}
+        aria-invalid={hasError || undefined}
+        aria-describedby={hint !== undefined || errorText !== undefined ? hintId : undefined}
         className={cn(
-          'flex w-full rounded-md border bg-background py-2',
+          'flex w-full rounded-md border bg-background px-3 py-2',
           'text-sm ring-offset-background',
           'file:border-0 file:bg-transparent file:text-sm file:font-medium',
           'placeholder:text-muted-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           'disabled:cursor-not-allowed disabled:opacity-50',
           sizeStyles[size],
-          error ? 'border-destructive' : 'border-input',
+          hasError ? 'border-destructive' : 'border-input',
           className
         )}
         {...props}
       />
+    );
+    if (label === undefined && hint === undefined && !errorText) {
+      return control;
+    }
+    return (
+      <div className="w-full">
+        {label !== undefined && (
+          <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium">
+            {label}
+          </label>
+        )}
+        {control}
+        {(errorText !== undefined || hint !== undefined) && (
+          <p id={hintId} className={cn('mt-1.5 text-xs', errorText ? 'text-destructive' : 'text-muted-foreground')}>
+            {errorText ?? hint}
+          </p>
+        )}
+      </div>
     );
   }
 );

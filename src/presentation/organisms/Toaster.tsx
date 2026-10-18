@@ -18,9 +18,16 @@ export interface ToastOptions {
   description?: string;
 }
 
+export interface ToastShorthandOptions {
+  tone?: ToastKind | 'danger' | 'neutral';
+  message?: string;
+}
+
 interface ToastApi {
   /** Fire a toast — after every mutating action is the fleet idiom. */
-  toast: (t: ToastOptions) => void;
+  toast(t: ToastOptions): void;
+  /** Shorthand call: toast('Saved', { tone: 'success', message: '…' }). */
+  toast(title: string, options?: ToastShorthandOptions): void;
 }
 
 interface ToastEntry extends ToastOptions {
@@ -47,6 +54,18 @@ export interface ToastProviderProps {
   duration?: number;
 }
 
+const toneAliases: Record<NonNullable<ToastShorthandOptions['tone']>, ToastKind> = {
+  success: 'success',
+  error: 'error',
+  warning: 'warning',
+  info: 'info',
+  danger: 'error',
+  neutral: 'info',
+};
+
+const normalizeTone = (tone?: ToastShorthandOptions['tone']): ToastKind =>
+  tone === undefined ? 'info' : toneAliases[tone];
+
 export function ToastProvider({ children, maxVisible = 4, duration = 4200 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastEntry[]>([]);
   const counter = useRef(0);
@@ -56,7 +75,15 @@ export function ToastProvider({ children, maxVisible = 4, duration = 4200 }: Toa
   }, []);
 
   const toast = useCallback(
-    (t: ToastOptions) => {
+    (tOrTitle: ToastOptions | string, shorthand?: ToastShorthandOptions) => {
+      const t: ToastOptions =
+        typeof tOrTitle === 'string'
+          ? {
+              title: tOrTitle,
+              kind: normalizeTone(shorthand?.tone),
+              description: shorthand?.message,
+            }
+          : tOrTitle;
       const id = ++counter.current;
       setToasts((list) => [...list.slice(-(maxVisible - 1)), { id, ...t }]);
       setTimeout(() => dismiss(id), duration);
