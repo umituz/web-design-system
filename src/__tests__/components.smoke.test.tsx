@@ -4,7 +4,7 @@
  * styles contract test).
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Button } from '../presentation/atoms/Button';
 import { Badge } from '../presentation/atoms/Badge';
@@ -102,6 +102,40 @@ describe('organisms', () => {
     expect(screen.getByText('Saved')).toBeTruthy();
     expect(screen.getByText('Row updated')).toBeTruthy();
     expect(screen.getByText('Saved').closest('div')?.parentElement?.className).toContain('border-l-success');
+  });
+
+  it('ToastProvider honors maxVisible and duration overrides', () => {
+    vi.useFakeTimers();
+    function Burst() {
+      const { toast } = useToast();
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            toast({ kind: 'info', title: 'One' });
+            toast({ kind: 'info', title: 'Two' });
+            toast({ kind: 'info', title: 'Three' });
+          }}
+        >
+          burst
+        </button>
+      );
+    }
+    render(
+      <ToastProvider maxVisible={2} duration={500}>
+        <Burst />
+      </ToastProvider>,
+    );
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'burst' }));
+    });
+    expect(screen.queryByText('One')).toBeNull();
+    expect(screen.getByText('Two')).toBeTruthy();
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+    expect(screen.queryByText('Two')).toBeNull();
+    vi.useRealTimers();
   });
 
   it('KeyValueList renders label/value pairs in a definition list', () => {

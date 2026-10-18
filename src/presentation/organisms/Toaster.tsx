@@ -43,9 +43,11 @@ const kindMeta: Record<ToastKind, { icon: typeof CheckCircle2; accent: string; i
 
 export interface ToastProviderProps {
   children: ReactNode;
+  maxVisible?: number;
+  duration?: number;
 }
 
-export function ToastProvider({ children }: ToastProviderProps) {
+export function ToastProvider({ children, maxVisible = 4, duration = 4200 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastEntry[]>([]);
   const counter = useRef(0);
 
@@ -56,10 +58,10 @@ export function ToastProvider({ children }: ToastProviderProps) {
   const toast = useCallback(
     (t: ToastOptions) => {
       const id = ++counter.current;
-      setToasts((list) => [...list.slice(-3), { id, ...t }]);
-      setTimeout(() => dismiss(id), 4200);
+      setToasts((list) => [...list.slice(-(maxVisible - 1)), { id, ...t }]);
+      setTimeout(() => dismiss(id), duration);
     },
-    [dismiss],
+    [dismiss, maxVisible, duration],
   );
 
   const value = useMemo(() => ({ toast }), [toast]);
@@ -68,6 +70,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
     <ToastContext.Provider value={value}>
       {children}
       <div
+        role="status"
         aria-live="polite"
         className="pointer-events-none fixed bottom-4 right-4 z-[100] flex w-[340px] max-w-[calc(100vw-2rem)] flex-col gap-2"
       >
