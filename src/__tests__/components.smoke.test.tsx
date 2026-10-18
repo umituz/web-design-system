@@ -16,6 +16,7 @@ import { StatCard } from '../presentation/organisms/StatCard';
 import { ToastProvider, useToast } from '../presentation/organisms/Toaster';
 import type { ToastKind } from '../presentation/organisms/Toaster';
 import { KeyValueList } from '../presentation/organisms/KeyValueList';
+import { DataTable, TablePagination } from '../presentation/organisms/DataTable';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -115,5 +116,113 @@ describe('organisms', () => {
     expect(dl?.querySelectorAll('dt').length).toBe(2);
     expect(dl?.querySelectorAll('dd').length).toBe(2);
     expect(screen.getByText('a@b.c').className).toContain('text-right');
+  });
+});
+
+describe('DataTable', () => {
+  interface Row {
+    id: string;
+    name: string;
+    qty: number;
+  }
+  const rows: Row[] = [
+    { id: 'r2', name: 'bravo', qty: 2 },
+    { id: 'r1', name: 'alpha', qty: 10 },
+  ];
+
+  it('renders accessor columns and emptyState', () => {
+    render(
+      <DataTable<Row>
+        data={[]}
+        columns={[{ id: 'name', header: 'Name', accessor: 'name' }]}
+        emptyState={{ title: 'No rows' }}
+      />,
+    );
+    expect(screen.getByText('No rows')).toBeTruthy();
+  });
+
+  it('sorts internally by sortValue on header click', () => {
+    render(
+      <DataTable<Row>
+        data={rows}
+        sortable
+        columns={[
+          { id: 'name', header: 'Name', accessor: 'name', sortable: true, sortValue: (r) => r.name },
+        ]}
+      />,
+    );
+    const cellsBefore = screen.getAllByRole('row').map((tr) => tr.textContent);
+    expect(cellsBefore.join()).toContain('bravo');
+    fireEvent.click(screen.getByRole('columnheader', { name: /name/i }));
+    const firstDataRow = screen.getAllByRole('row')[1];
+    expect(firstDataRow.textContent).toContain('alpha');
+  });
+
+  it('controlled sort delegates to onSortChange', () => {
+    let clicked = '';
+    render(
+      <DataTable<Row>
+        data={rows}
+        sortable
+        sort={{ id: 'qty', dir: 'desc' }}
+        onSortChange={(id) => {
+          clicked = id;
+        }}
+        columns={[{ id: 'qty', header: 'Qty', accessor: 'qty', sortable: true }]}
+      />,
+    );
+    fireEvent.click(screen.getByRole('columnheader', { name: /qty/i }));
+    expect(clicked).toBe('qty');
+    expect(screen.getByRole('columnheader', { name: /qty/i }).getAttribute('aria-sort')).toBe('descending');
+  });
+
+  it('applies align, hideBelow and sticky classes', () => {
+    const { container } = render(
+      <DataTable<Row>
+        data={rows}
+        sticky
+        columns={[
+          { id: 'qty', header: 'Qty', accessor: 'qty', align: 'right', hideBelow: 'md' },
+        ]}
+      />,
+    );
+    const th = container.querySelector('thead th');
+    expect(th).toBeTruthy();
+    expect(th?.className).toContain('text-right');
+    expect(th?.className).toContain('hidden md:table-cell');
+    expect(th?.className).toContain('sticky top-0');
+  });
+
+  it('renders skeleton rows while loading', () => {
+    render(
+      <DataTable<Row>
+        data={[]}
+        loading
+        columns={[
+          { id: 'name', header: 'Name', accessor: 'name' },
+          { id: 'qty', header: 'Qty', accessor: 'qty' },
+        ]}
+      />,
+    );
+    expect(screen.getAllByRole('status').length).toBeGreaterThan(0);
+  });
+
+  it('renders the empty node when data is empty and empty is provided', () => {
+    render(
+      <DataTable<Row>
+        data={[]}
+        empty={<p>custom empty</p>}
+        columns={[{ id: 'name', header: 'Name', accessor: 'name' }]}
+      />,
+    );
+    expect(screen.getByText('custom empty')).toBeTruthy();
+  });
+
+  it('TablePagination disables boundary buttons and marks the active page', () => {
+    render(<TablePagination page={2} totalPages={3} onPage={() => {}} />);
+    expect(screen.getByRole('button', { name: 'First page' })).toBeTruthy();
+    expect(screen.getByLabelText('Next page')).toBeTruthy();
+    const active = screen.getByRole('button', { name: '2' });
+    expect(active.getAttribute('aria-current')).toBe('page');
   });
 });

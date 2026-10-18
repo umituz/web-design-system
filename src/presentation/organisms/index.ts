@@ -71,8 +71,16 @@ export type { EmptyStateProps } from './EmptyState';
 export { LoadingState } from './LoadingState';
 export type { LoadingStateProps } from './LoadingState';
 
-export { DataTable } from './DataTable';
-export type { DataTableProps, Column } from './DataTable';
+export { DataTable, TablePagination } from './DataTable';
+export type {
+  DataTableProps,
+  Column,
+  SortState,
+  TablePaginationProps,
+  ColumnAlign,
+  ColumnHideBelow,
+  SortDirection,
+} from './DataTable';
 
 export { StatCard } from './StatCard';
 export type { StatCardProps } from './StatCard';
