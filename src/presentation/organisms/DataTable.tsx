@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import type { ReactNode } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -48,6 +48,7 @@ export interface Column<T> {
   sortable?: boolean;
   align?: ColumnAlign;
   hideBelow?: ColumnHideBelow;
+  width?: string;
   className?: string;
 }
 
@@ -55,6 +56,8 @@ export interface TablePaginationProps extends BaseProps {
   page: number;
   totalPages: number;
   onPage: (page: number) => void;
+  label?: ReactNode;
+  hideWhenSingle?: boolean;
 }
 
 export interface DataTableProps<T> extends BaseProps {
@@ -71,6 +74,7 @@ export interface DataTableProps<T> extends BaseProps {
   loading?: boolean;
   empty?: ReactNode;
   sticky?: boolean;
+  stackable?: boolean;
   paginated?: boolean;
   pageSize?: number;
   emptyState?: {
@@ -78,6 +82,18 @@ export interface DataTableProps<T> extends BaseProps {
     description?: string;
   };
   onRowClick?: (row: T) => void;
+  rowLabel?: (row: T) => string;
+}
+
+const INTERACTIVE_SELECTOR = 'button, a, input, select, textarea, label';
+
+function rowClickAllowed(event: ReactMouseEvent<HTMLTableRowElement>): boolean {
+  if (event.target === event.currentTarget) return true;
+  return !(event.target as HTMLElement).closest(INTERACTIVE_SELECTOR);
+}
+
+function stackLabel<T>(column: Column<T>): string {
+  return typeof column.header === 'string' ? column.header : column.id;
 }
 
 const alignStyles: Record<ColumnAlign, string> = {
@@ -118,68 +134,90 @@ function compareValues(a: string | number | null, b: string | number | null): nu
   return String(a).localeCompare(String(b));
 }
 
-export function TablePagination({ className, page, totalPages, onPage }: TablePaginationProps) {
-  const windowPages = useMemo(() => {
-    const start = Math.max(1, Math.min(page - 2, totalPages - 4));
-    const out: number[] = [];
-    for (let p = start; p < start + 5 && p <= totalPages; p += 1) out.push(p);
+export function TablePagination({ className, page, totalPages, onPage, label, hideWhenSingle = false }: TablePaginationProps) {
+  const safeTotalPages = Number.isFinite(totalPages) ? Math.max(Math.floor(totalPages), 1) : 1;
+  const safePage = Number.isFinite(page) ? Math.min(Math.max(Math.floor(page), 1), safeTotalPages) : 1;
+
+  const slots = useMemo(() => {
+    type Slot = number | 'ellipsis-start' | 'ellipsis-end';
+    const out: Slot[] = [1];
+    const start = Math.max(safePage - 1, 2);
+    const end = Math.min(safePage + 1, safeTotalPages - 1);
+    if (start > 2) out.push('ellipsis-start');
+    for (let p = start; p <= end; p += 1) out.push(p);
+    if (end < safeTotalPages - 1) out.push('ellipsis-end');
+    if (safeTotalPages > 1) out.push(safeTotalPages);
     return out;
-  }, [page, totalPages]);
+  }, [safePage, safeTotalPages]);
+
+  if (safeTotalPages <= 1 && hideWhenSingle) {
+    if (!label) return null;
+    return <div className={cn('text-sm text-muted-foreground', className)}>{label}</div>;
+  }
 
   return (
-    <div className={cn('flex items-center gap-1', className)}>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onPage(1)}
-        disabled={page <= 1}
-        aria-label="First page"
-      >
-        <ChevronsLeft className="h-4 w-4" />
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onPage(page - 1)}
-        disabled={page <= 1}
-        aria-label="Previous page"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-      {windowPages.map((p) => (
+    <nav className={cn('flex items-center justify-between gap-2', className)} aria-label="Pagination">
+      {label && <span className="text-sm text-muted-foreground">{label}</span>}
+      <div className="flex items-center gap-1">
         <Button
-          key={p}
           size="sm"
           variant="outline"
-          className={cn(
-            'min-w-9',
-            p === page && 'pointer-events-none bg-primary text-primary-foreground'
-          )}
-          onClick={() => onPage(p)}
-          aria-current={p === page ? 'page' : undefined}
+          onClick={() => onPage(1)}
+          disabled={safePage <= 1}
+          aria-label="First page"
         >
-          {p}
+          <ChevronsLeft className="h-4 w-4" />
         </Button>
-      ))}
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onPage(page + 1)}
-        disabled={page >= totalPages}
-        aria-label="Next page"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onPage(totalPages)}
-        disabled={page >= totalPages}
-        aria-label="Last page"
-      >
-        <ChevronsRight className="h-4 w-4" />
-      </Button>
-    </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => onPage(safePage - 1)}
+          disabled={safePage <= 1}
+          aria-label="Previous page"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        {slots.map((slot) =>
+          typeof slot === 'number' ? (
+            <Button
+              key={slot}
+              size="sm"
+              variant="outline"
+              className={cn(
+                'min-w-9',
+                slot === safePage && 'pointer-events-none bg-primary text-primary-foreground'
+              )}
+              onClick={() => onPage(slot)}
+              aria-current={slot === safePage ? 'page' : undefined}
+            >
+              {slot}
+            </Button>
+          ) : (
+            <span key={slot} className="px-1 text-muted-foreground" aria-hidden="true">
+              …
+            </span>
+          )
+        )}
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => onPage(safePage + 1)}
+          disabled={safePage >= safeTotalPages}
+          aria-label="Next page"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => onPage(safeTotalPages)}
+          disabled={safePage >= safeTotalPages}
+          aria-label="Last page"
+        >
+          <ChevronsRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </nav>
   );
 }
 
@@ -198,10 +236,12 @@ export function DataTable<T>({
   loading = false,
   empty,
   sticky = false,
+  stackable = false,
   paginated = false,
   pageSize = 10,
   emptyState,
   onRowClick,
+  rowLabel,
   ...props
 }: DataTableProps<T>) {
   const [internalSort, setInternalSort] = useState<SortState | null>(null);
@@ -292,7 +332,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn('space-y-4', className)} {...props}>
+    <div className={cn('space-y-4', stackable && 'ds-datatable-stack', className)} {...props}>
       <Table>
         {caption && <TableCaption>{caption}</TableCaption>}
         <TableHeader>
@@ -302,6 +342,7 @@ export function DataTable<T>({
               return (
                 <TableHead
                   key={column.id}
+                  style={column.width ? { width: column.width } : undefined}
                   className={cn(
                     sizeStyles[size],
                     pxStyles[size],
@@ -355,18 +396,35 @@ export function DataTable<T>({
           {paginatedData.map((row, index) => {
             const key = rowKey ? rowKey(row) : index;
             const selected = rowKey !== undefined && selectedId !== undefined && rowKey(row) === selectedId;
+            const handleRowKeyDown = (event: ReactKeyboardEvent<HTMLTableRowElement>) => {
+              if (event.target !== event.currentTarget) return;
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onRowClick?.(row);
+              }
+            };
             return (
               <TableRow
                 key={key}
+                tabIndex={onRowClick ? 0 : undefined}
+                aria-label={onRowClick && rowLabel ? rowLabel(row) : undefined}
                 className={cn(
                   onRowClick && 'cursor-pointer hover:bg-muted/50',
                   selected && 'bg-muted/60'
                 )}
-                onClick={() => onRowClick?.(row)}
+                onClick={
+                  onRowClick
+                    ? (event) => {
+                        if (rowClickAllowed(event)) onRowClick(row);
+                      }
+                    : undefined
+                }
+                onKeyDown={onRowClick ? handleRowKeyDown : undefined}
               >
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
+                    data-label={stackable ? stackLabel(column) : undefined}
                     className={cn(
                       pxStyles[size],
                       pyStyles[size],

@@ -3,7 +3,7 @@
  * @description Tabbed interface
  */
 
-import { useState, useCallback, type ReactNode, type HTMLAttributes } from 'react';
+import { useRef, useState, useCallback, type KeyboardEvent, type ReactNode, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -12,12 +12,17 @@ export interface Tab {
   label: string;
   content?: ReactNode;
   disabled?: boolean;
+  count?: number;
 }
 
 export interface TabsProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   tabs: Tab[];
   defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   variant?: 'default' | 'pills' | 'underline';
+  ariaLabel?: string;
+  panelId?: string;
 }
 
 const variantStyles: Record<'default' | 'pills' | 'underline', string> = {
@@ -41,15 +46,48 @@ const tabVariantStyles: Record<'default' | 'pills' | 'underline', { base: string
   },
 };
 
-export function Tabs({ tabs, defaultValue, variant = 'default', className, ...props }: TabsProps) {
-  const [activeTab, setActiveTab] = useState(defaultValue || tabs[0]?.value);
+export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'default', ariaLabel, panelId, className, ...props }: TabsProps) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const [internalTab, setInternalTab] = useState(defaultValue || tabs[0]?.value);
+  const activeTab = value ?? internalTab;
 
-  const handleTabChange = useCallback((value: string) => {
-    const tab = tabs.find((t) => t.value === value);
-    if (tab && !tab.disabled) {
-      setActiveTab(value);
-    }
-  }, [tabs]);
+  const handleTabChange = useCallback(
+    (next: string) => {
+      const tab = tabs.find((t) => t.value === next);
+      if (tab && !tab.disabled) {
+        setInternalTab(next);
+        onValueChange?.(next);
+      }
+    },
+    [tabs, onValueChange]
+  );
+
+  const moveFocus = useCallback(
+    (direction: 1 | -1) => {
+      const buttons = Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]:not([disabled])') ?? []);
+      if (buttons.length === 0) return;
+      const currentIndex = buttons.findIndex((button) => button.getAttribute('data-state') === 'active');
+      const next = buttons[(currentIndex + direction + buttons.length) % buttons.length];
+      if (next) {
+        next.focus();
+        next.click();
+      }
+    },
+    []
+  );
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        moveFocus(1);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        moveFocus(-1);
+      }
+    },
+    [moveFocus]
+  );
 
   const currentTab = tabs.find((t) => t.value === activeTab);
 
@@ -57,7 +95,10 @@ export function Tabs({ tabs, defaultValue, variant = 'default', className, ...pr
     <div className={cn('w-full', className)} {...props}>
       {/* Tab List */}
       <div
+        ref={listRef}
         role="tablist"
+        aria-label={ariaLabel}
+        onKeyDown={handleKeyDown}
         className={cn('inline-flex w-full', variantStyles[variant])}
       >
         {tabs.map((tab) => {
@@ -67,11 +108,16 @@ export function Tabs({ tabs, defaultValue, variant = 'default', className, ...pr
           return (
             <button
               key={tab.value}
+              type="button"
               role="tab"
               aria-selected={isActive}
+              data-state={isActive ? 'active' : 'inactive'}
+              aria-controls={panelId}
+              tabIndex={isActive ? 0 : -1}
               disabled={tab.disabled}
               onClick={() => handleTabChange(tab.value)}
               className={cn(
+                'inline-flex items-center gap-1.5',
                 styles.base,
                 isActive
                   ? styles.active
@@ -80,6 +126,11 @@ export function Tabs({ tabs, defaultValue, variant = 'default', className, ...pr
               )}
             >
               {tab.label}
+              {typeof tab.count === 'number' && (
+                <span className="rounded-full bg-muted px-1.5 text-xs leading-4 text-muted-foreground">
+                  {tab.count}
+                </span>
+              )}
             </button>
           );
         })}
@@ -88,6 +139,7 @@ export function Tabs({ tabs, defaultValue, variant = 'default', className, ...pr
       {/* Tab Content */}
       <div
         role="tabpanel"
+        id={panelId}
         className="mt-4"
       >
         {currentTab?.content}

@@ -12,6 +12,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps
   value?: number;
   max?: number;
   size?: 'sm' | 'md' | 'lg';
+  tone?: 'primary' | 'success' | 'warning' | 'destructive';
 }
 
 const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
@@ -20,8 +21,15 @@ const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
   lg: 'h-3',
 };
 
+const toneStyles: Record<'primary' | 'success' | 'warning' | 'destructive', string> = {
+  primary: 'bg-primary',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  destructive: 'bg-destructive',
+};
+
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
-  ({ className, value = 0, max = 100, size = 'md', ...props }, ref) => {
+  ({ className, value = 0, max = 100, size = 'md', tone = 'primary', ...props }, ref) => {
     const percentage = percentOfMax(value, max);
 
     return (
@@ -29,6 +37,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         ref={ref}
         role="progressbar"
         aria-valuenow={value}
+        aria-valuemin={0}
         aria-valuemax={max}
         className={cn(
           'w-full bg-muted rounded-full overflow-hidden',
@@ -38,7 +47,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         {...props}
       >
         <div
-          className="h-full bg-primary transition-all duration-300 ease-in-out"
+          className={cn('h-full transition-all duration-300 ease-in-out', toneStyles[tone])}
           style={{ width: `${percentage}%` }}
         />
       </div>

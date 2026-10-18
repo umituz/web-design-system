@@ -17,6 +17,8 @@ import { ToastProvider, useToast } from '../presentation/organisms/Toaster';
 import type { ToastKind } from '../presentation/organisms/Toaster';
 import { KeyValueList } from '../presentation/organisms/KeyValueList';
 import { DataTable, TablePagination } from '../presentation/organisms/DataTable';
+import { Tabs } from '../presentation/organisms/Tabs';
+import { Progress } from '../presentation/atoms/Progress';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -224,5 +226,121 @@ describe('DataTable', () => {
     expect(screen.getByLabelText('Next page')).toBeTruthy();
     const active = screen.getByRole('button', { name: '2' });
     expect(active.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('applies column width and stackable data labels', () => {
+    const { container } = render(
+      <DataTable<Row>
+        data={rows}
+        stackable
+        columns={[{ id: 'qty', header: 'Qty', accessor: 'qty', width: '120px' }]}
+      />,
+    );
+    const th = container.querySelector('thead th');
+    expect(th?.getAttribute('style')).toContain('width: 120px');
+    expect(container.querySelector('td[data-label="Qty"]')).toBeTruthy();
+  });
+
+  it('fires onRowClick from the keyboard but not from interactive children', () => {
+    const clicked: string[] = [];
+    const { container } = render(
+      <DataTable<Row>
+        data={rows}
+        rowKey={(r) => r.id}
+        rowLabel={(r) => r.name}
+        onRowClick={(r) => clicked.push(r.id)}
+        columns={[
+          { id: 'name', header: 'Name', accessor: 'name' },
+          {
+            id: 'act',
+            header: 'Actions',
+            accessor: 'name',
+            cell: () => (
+              <button type="button" onClick={() => clicked.push('btn')}>
+                open
+              </button>
+            ),
+          },
+        ]}
+      />,
+    );
+    const firstRow = container.querySelector('tbody tr');
+    expect(firstRow?.getAttribute('tabIndex')).toBe('0');
+    expect(firstRow?.getAttribute('aria-label')).toBe('bravo');
+    fireEvent.click(screen.getAllByRole('button', { name: 'open' })[0]!);
+    expect(clicked).toEqual(['btn']);
+    fireEvent.keyDown(firstRow!, { key: 'Enter' });
+    expect(clicked).toEqual(['btn', 'r2']);
+  });
+
+  it('TablePagination ellipses distant ranges and renders a label', () => {
+    render(<TablePagination page={5} totalPages={20} onPage={() => {}} label="42 results" />);
+    expect(screen.getByText('42 results')).toBeTruthy();
+    const ellipses = screen.getAllByText('…');
+    expect(ellipses.length).toBe(2);
+    expect(screen.getByRole('button', { name: '5' }).getAttribute('aria-current')).toBe('page');
+  });
+
+  it('TablePagination hides controls for a single page only when asked', () => {
+    const { container, rerender } = render(<TablePagination page={1} totalPages={1} onPage={() => {}} />);
+    expect(container.querySelector('nav')).toBeTruthy();
+    rerender(
+      <TablePagination page={1} totalPages={1} onPage={() => {}} label="3 results" hideWhenSingle />,
+    );
+    expect(container.querySelector('nav')).toBeNull();
+    expect(container.textContent).toContain('3 results');
+  });
+});
+
+describe('controlled surfaces', () => {
+  it('Tabs controlled value fires onValueChange and renders counts with roving tabindex', () => {
+    const changed: string[] = [];
+    render(
+      <Tabs
+        value="a"
+        onValueChange={(v) => changed.push(v)}
+        ariaLabel="Views"
+        tabs={[
+          { value: 'a', label: 'Alpha', count: 4 },
+          { value: 'b', label: 'Beta' },
+        ]}
+      />,
+    );
+    const list = screen.getByRole('tablist', { name: 'Views' });
+    const alpha = screen.getByRole('tab', { name: /alpha/i });
+    expect(alpha.getAttribute('aria-selected')).toBe('true');
+    expect(alpha.textContent).toContain('4');
+    expect(alpha.getAttribute('tabIndex')).toBe('0');
+    const beta = screen.getByRole('tab', { name: /beta/i });
+    expect(beta.getAttribute('tabIndex')).toBe('-1');
+    fireEvent.click(beta);
+    expect(changed).toEqual(['b']);
+    fireEvent.keyDown(list, { key: 'ArrowRight' });
+    expect(changed).toEqual(['b', 'b']);
+  });
+
+  it('EmptyState accepts a node icon and a node action', () => {
+    render(
+      <EmptyState
+        icon={<span>icon-node</span>}
+        title="Nothing found"
+        action={
+          <button type="button" onClick={() => {}}>
+            create one
+          </button>
+        }
+      />,
+    );
+    expect(screen.getByText('icon-node')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'create one' })).toBeTruthy();
+  });
+
+  it('Progress tone paints the fill and exposes aria values', () => {
+    render(<Progress value={40} tone="destructive" aria-label="upload" />);
+    const track = screen.getByRole('progressbar', { name: 'upload' });
+    const fill = track.querySelector('div');
+    expect(fill?.className).toContain('bg-destructive');
+    expect(track.getAttribute('aria-valuenow')).toBe('40');
+    expect(track.getAttribute('aria-valuemin')).toBe('0');
   });
 });
