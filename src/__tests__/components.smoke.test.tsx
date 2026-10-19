@@ -512,6 +512,14 @@ describe('fleet surface supersets', () => {
     expect(el.className).toContain('bg-destructive');
   });
 
+  it('KpiCard flat delta renders muted without an icon', () => {
+    const { container } = render(<KpiCard label="Renewals" value="4" delta={{ value: '4 renew ≤45d', direction: 'flat' }} />);
+    expect(container.textContent).toContain('4 renew ≤45d');
+    const delta = container.querySelector('.text-muted-foreground + span, span.inline-flex');
+    expect(container.querySelector('svg.lucide-trending-up, svg.lucide-trending-down')).toBeNull();
+    expect(delta).not.toBeNull();
+  });
+
   it('KpiCard onClick is interactive and fires', () => {
     const onClick = vi.fn();
     const { container } = render(<KpiCard label="Open" value="7" onClick={onClick} />);

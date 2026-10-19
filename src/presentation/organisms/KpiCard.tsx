@@ -14,7 +14,7 @@ export type KpiIconTone = 'primary' | 'success' | 'warning' | 'destructive' | 'i
 
 export interface KpiDelta {
   value: ReactNode;
-  direction?: 'up' | 'down';
+  direction?: 'up' | 'down' | 'flat';
   good?: boolean;
 }
 
@@ -45,8 +45,9 @@ const toneTextClasses: Record<KpiIconTone, string> = {
 export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(
   ({ className, label, value, delta, hint, icon, iconTone = 'primary', spark, sparkTone = 'primary', alert, onClick, ...props }, ref) => {
     const deltaDirection = delta?.direction ?? (delta?.good === false ? 'down' : 'up');
+    const deltaFlat = deltaDirection === 'flat';
     const deltaGood = delta?.good ?? deltaDirection === 'up';
-    const DeltaIcon = deltaDirection === 'up' ? TrendingUp : TrendingDown;
+    const DeltaIcon = deltaFlat ? null : deltaDirection === 'up' ? TrendingUp : TrendingDown;
     const interactive = onClick !== undefined;
     return (
       <Card
@@ -81,10 +82,10 @@ export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(
                   <span
                     className={cn(
                       'inline-flex items-center gap-1 font-medium',
-                      deltaGood ? 'text-success' : 'text-destructive'
+                      deltaFlat ? 'text-muted-foreground' : deltaGood ? 'text-success' : 'text-destructive'
                     )}
                   >
-                    <DeltaIcon className="h-3.5 w-3.5" />
+                    {DeltaIcon !== null && <DeltaIcon className="h-3.5 w-3.5" />}
                     {delta.value}
                   </span>
                 )}
