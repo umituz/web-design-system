@@ -1,10 +1,3 @@
-/**
- * FormModal Component (Organism)
- * @description Schema-driven multi-step form inside a modal (or embedded card).
- * Steps declare typed fields; the engine renders controls, validates per step
- * and submits the collected values as a flat record.
- */
-
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { ChevronLeft } from 'lucide-react';
@@ -32,7 +25,6 @@ export interface FormModalField {
   hint?: string;
   placeholder?: string;
   options?: FormModalOption[];
-  /** Span both grid columns on wide layouts. */
   span?: boolean;
   min?: number;
   max?: number;
@@ -54,8 +46,21 @@ export interface FormModalProps {
   onClose: () => void;
   submitLabel?: string;
   wide?: boolean;
-  /** Render as an inline card instead of an overlay dialog. */
   embedded?: boolean;
+  cancelLabel?: string;
+  backLabel?: string;
+  continueLabel?: string;
+  requiredMessage?: string;
+  invalidEmailMessage?: string;
+  invalidTelMessage?: string;
+  invalidNumberMessage?: string;
+}
+
+export interface FormModalMessages {
+  required: string;
+  invalidEmail: string;
+  invalidTel: string;
+  invalidNumber: string;
 }
 
 function initialValues(steps: FormStep[]): FormModalValues {
@@ -69,15 +74,18 @@ function initialValues(steps: FormStep[]): FormModalValues {
   return v;
 }
 
-function validateField(f: FormModalField, val: string | number | boolean | undefined): string {
-  if (f.required && (val === '' || val === undefined || val === null)) return 'This field is required.';
-  if (f.type === 'email' && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(val))) return 'Enter a valid email address.';
-  if (f.type === 'tel' && val && !/[\d+()-\s]{7,}/.test(String(val))) return 'Enter a valid phone number.';
-  if (f.type === 'number' && val !== '' && isNaN(Number(val))) return 'Enter a number.';
+function validateField(f: FormModalField, val: string | number | boolean | undefined, m: FormModalMessages): string {
+  if (f.required && (val === '' || val === undefined || val === null)) return m.required;
+  if (f.type === 'email' && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(val))) return m.invalidEmail;
+  if (f.type === 'tel' && val && !/[\d+()-\s]{7,}/.test(String(val))) return m.invalidTel;
+  if (f.type === 'number' && val !== '' && isNaN(Number(val))) return m.invalidNumber;
   return '';
 }
 
-export function FormModal({ title, steps, onSubmit, onClose, submitLabel = 'Save', wide, embedded }: FormModalProps) {
+export function FormModal(
+  { title, steps, onSubmit, onClose, submitLabel = 'Save', wide, embedded, cancelLabel = 'Cancel', backLabel = 'Back', continueLabel = 'Continue', requiredMessage = 'This field is required.', invalidEmailMessage = 'Enter a valid email address.', invalidTelMessage = 'Enter a valid phone number.', invalidNumberMessage = 'Enter a number.' }: FormModalProps
+) {
+  const messages: FormModalMessages = { required: requiredMessage, invalidEmail: invalidEmailMessage, invalidTel: invalidTelMessage, invalidNumber: invalidNumberMessage };
   const [values, setValues] = useState<FormModalValues>(() => initialValues(steps));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [step, setStep] = useState(0);
@@ -93,7 +101,7 @@ export function FormModal({ title, steps, onSubmit, onClose, submitLabel = 'Save
   const validateStep = (idx: number): boolean => {
     const errs: Record<string, string> = {};
     for (const f of steps[idx]!.fields) {
-      const err = validateField(f, values[f.name]);
+      const err = validateField(f, values[f.name], messages);
       if (err) errs[f.name] = err;
     }
     setErrors(errs);
@@ -108,7 +116,7 @@ export function FormModal({ title, steps, onSubmit, onClose, submitLabel = 'Save
     }
     for (let i = 0; i < total; i++) {
       for (const f of steps[i]!.fields) {
-        const err = validateField(f, values[f.name]);
+        const err = validateField(f, values[f.name], messages);
         if (err) {
           setStep(i);
           setErrors({ [f.name]: err });
@@ -129,14 +137,14 @@ export function FormModal({ title, steps, onSubmit, onClose, submitLabel = 'Save
       )}
       {step > 0 && (
         <Button variant="secondary" size="sm" onClick={() => setStep(step - 1)}>
-          Back
+          {backLabel}
         </Button>
       )}
       <Button variant="secondary" size="sm" onClick={onClose}>
-        Cancel
+        {cancelLabel}
       </Button>
       <Button size="sm" onClick={submit}>
-        {step < total - 1 ? 'Continue' : submitLabel}
+        {step < total - 1 ? continueLabel : submitLabel}
       </Button>
     </>
   );

@@ -882,6 +882,39 @@ describe('accessia supersets', () => {
     expect(onSubmit).toHaveBeenCalledWith({ welcome: true });
   });
 
+  it('FormModal honours custom button and validation labels', () => {
+    const onSubmit = vi.fn();
+    render(
+      <FormModal
+        title="FM i18n"
+        cancelLabel="Vazgeç"
+        continueLabel="Devam"
+        backLabel="Geri"
+        submitLabel="Kaydet"
+        requiredMessage="Zorunlu alan."
+        steps={[
+          {
+            title: 'Kimlik',
+            fields: [
+              { name: 'name', label: 'Ad', type: 'text', required: true },
+            ],
+          },
+          { title: 'İletişim', fields: [{ name: 'email', label: 'E-posta', type: 'email' }] },
+        ]}
+        onSubmit={onSubmit}
+        onClose={() => {}}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Devam' }));
+    expect(screen.getByText('Zorunlu alan.')).toBeTruthy();
+    fireEvent.change(screen.getByLabelText(/Ad/), { target: { value: 'Ada' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Devam' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Geri' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Devam' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Kaydet' }));
+    expect(onSubmit).toHaveBeenCalledWith({ name: 'Ada', email: '' });
+  });
+
   it('ConfirmDialog confirms and closes, cancel only closes', () => {
     const onConfirm = vi.fn();
     const onClose = vi.fn();
