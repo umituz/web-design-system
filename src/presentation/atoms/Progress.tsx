@@ -12,7 +12,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps
   value?: number;
   max?: number;
   size?: 'sm' | 'md' | 'lg';
-  tone?: 'primary' | 'success' | 'warning' | 'destructive';
+  tone?: 'primary' | 'success' | 'warning' | 'destructive' | 'info';
   label?: string;
 }
 
@@ -22,11 +22,12 @@ const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
   lg: 'h-3',
 };
 
-const toneStyles: Record<'primary' | 'success' | 'warning' | 'destructive', string> = {
+const toneStyles: Record<'primary' | 'success' | 'warning' | 'destructive' | 'info', string> = {
   primary: 'bg-primary',
   success: 'bg-success',
   warning: 'bg-warning',
   destructive: 'bg-destructive',
+  info: 'bg-info',
 };
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(

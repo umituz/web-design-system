@@ -67,6 +67,7 @@ export interface DataTableProps<T> extends BaseProps {
   size?: MediumSizes;
   sortable?: boolean;
   sort?: SortState;
+  initialSort?: SortState;
   onSortChange?: (id: string) => void;
   rowKey?: (row: T) => string;
   selectedId?: string;
@@ -229,6 +230,7 @@ export function DataTable<T>({
   size = 'md',
   sortable = false,
   sort,
+  initialSort,
   onSortChange,
   rowKey,
   selectedId,
@@ -244,7 +246,7 @@ export function DataTable<T>({
   rowLabel,
   ...props
 }: DataTableProps<T>) {
-  const [internalSort, setInternalSort] = useState<SortState | null>(null);
+  const [internalSort, setInternalSort] = useState<SortState | null>(initialSort ?? null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const activeSort = sort ?? internalSort;

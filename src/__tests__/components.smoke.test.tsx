@@ -652,4 +652,28 @@ describe('accessia supersets', () => {
     expect(options[0]?.textContent).toBe('Newest');
     expect(options[2]?.textContent).toBe('Other');
   });
+
+  it('DataTable initialSort orders rows before any header click', () => {
+    interface Local {
+      id: string;
+      name: string;
+    }
+    render(
+      <DataTable<Local>
+        data={[
+          { id: 'b', name: 'bravo' },
+          { id: 'a', name: 'alpha' },
+        ]}
+        sortable
+        initialSort={{ id: 'name', dir: 'asc' }}
+        columns={[{ id: 'name', header: 'Name', accessor: 'name', sortable: true, sortValue: (r) => r.name }]}
+      />,
+    );
+    expect(screen.getAllByRole('row')[1]?.textContent).toContain('alpha');
+  });
+
+  it('Progress info tone paints the fill info', () => {
+    render(<Progress value={60} tone="info" aria-label="load" />);
+    expect(screen.getByRole('progressbar', { name: 'load' }).querySelector('div')?.className).toContain('bg-info');
+  });
 });
