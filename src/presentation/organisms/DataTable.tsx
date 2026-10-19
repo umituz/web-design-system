@@ -42,7 +42,8 @@ export interface SortState {
 export interface Column<T> {
   id: string;
   header: ReactNode;
-  accessor: keyof T | ((row: T) => ReactNode);
+  /** Data source; optional when the column renders through `cell` only. */
+  accessor?: keyof T | ((row: T) => ReactNode);
   cell?: (row: T) => ReactNode;
   sortValue?: (row: T) => string | number;
   sortable?: boolean;
@@ -66,8 +67,8 @@ export interface DataTableProps<T> extends BaseProps {
   caption?: string;
   size?: MediumSizes;
   sortable?: boolean;
-  sort?: SortState;
-  initialSort?: SortState;
+  sort?: SortState | null;
+  initialSort?: SortState | null;
   onSortChange?: (id: string) => void;
   rowKey?: (row: T) => string;
   selectedId?: string;
@@ -114,6 +115,7 @@ const hideBelowStyles: Record<ColumnHideBelow, string> = {
 
 function displayValue<T>(column: Column<T>, row: T): ReactNode {
   if (column.cell) return column.cell(row);
+  if (column.accessor === undefined) return null;
   return typeof column.accessor === 'function'
     ? column.accessor(row)
     : (row[column.accessor] as ReactNode);
@@ -121,6 +123,7 @@ function displayValue<T>(column: Column<T>, row: T): ReactNode {
 
 function sortValueOf<T>(column: Column<T>, row: T): string | number | null {
   if (column.sortValue) return column.sortValue(row);
+  if (column.accessor === undefined) return null;
   const value =
     typeof column.accessor === 'function' ? column.accessor(row) : row[column.accessor];
   if (typeof value === 'number') return value;
@@ -252,7 +255,7 @@ export function DataTable<T>({
   const [internalSort, setInternalSort] = useState<SortState | null>(initialSort ?? null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const activeSort = sort ?? internalSort;
+  const activeSort = sort !== undefined ? sort : internalSort;
   const controlled = sort !== undefined;
 
   const handleSort = (id: string) => {

@@ -704,6 +704,28 @@ describe('accessia supersets', () => {
     expect(screen.getAllByRole('row')[1]?.textContent).toContain('alpha');
   });
 
+  it('DataTable cell-only column works without accessor and honors controlled null sort', () => {
+    interface Local {
+      id: string;
+      name: string;
+    }
+    const { container } = render(
+      <DataTable<Local>
+        data={[
+          { id: 'cn-b', name: 'cn-bravo' },
+          { id: 'cn-a', name: 'cn-alpha' },
+        ]}
+        sortable
+        sort={null}
+        onSortChange={() => {}}
+        columns={[{ id: 'name', header: 'Name', cell: (r) => <em>{r.name}</em> }]}
+      />,
+    );
+    const firstCell = container.querySelector('tbody td');
+    expect(firstCell?.textContent).toContain('cn-bravo');
+    expect(firstCell?.innerHTML).toContain('<em>');
+  });
+
   it('Progress info tone paints the fill info', () => {
     render(<Progress value={60} tone="info" aria-label="load" />);
     expect(screen.getByRole('progressbar', { name: 'load' }).querySelector('div')?.className).toContain('bg-info');
