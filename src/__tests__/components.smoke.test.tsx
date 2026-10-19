@@ -632,19 +632,20 @@ describe('accessia supersets', () => {
   });
 
   it('DataTable rowClass applies a per-row class', () => {
-    render(
+    const { container } = render(
       <DataTable<{ id: string; name: string; qty: number }>
         data={[
-          { id: 'r2', name: 'bravo', qty: 2 },
-          { id: 'r1', name: 'alpha', qty: 10 },
+          { id: 'rc-b', name: 'rc-bravo', qty: 2 },
+          { id: 'rc-a', name: 'rc-alpha', qty: 10 },
         ]}
         columns={[{ id: 'name', header: 'Name', accessor: 'name' }]}
         rowKey={(r) => r.id}
         rowClass={(r) => (r.qty > 5 ? 'row-overdue' : undefined)}
       />,
     );
-    const alphaRow = screen.getByText('alpha').closest('tr');
-    const bravoRow = screen.getByText('bravo').closest('tr');
+    const trs = Array.from(container.querySelectorAll('tbody tr'));
+    const alphaRow = trs.find((tr) => tr.textContent?.includes('rc-alpha'));
+    const bravoRow = trs.find((tr) => tr.textContent?.includes('rc-bravo'));
     expect(alphaRow?.className).toContain('row-overdue');
     expect(bravoRow?.className).not.toContain('row-overdue');
   });
