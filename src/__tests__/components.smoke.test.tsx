@@ -23,6 +23,7 @@ import { Tabs } from '../presentation/organisms/Tabs';
 import { Progress } from '../presentation/atoms/Progress';
 import { ProgressRing } from '../presentation/atoms/ProgressRing';
 import { Input } from '../presentation/atoms/Input';
+import { Textarea } from '../presentation/atoms/Textarea';
 import { NativeSelect } from '../presentation/atoms/NativeSelect';
 import { Sparkline } from '../presentation/atoms/Sparkline';
 import { Avatar } from '../presentation/molecules/Avatar';
@@ -66,6 +67,14 @@ describe('atoms', () => {
   it('Spinner renders an accessible status', () => {
     render(<Spinner />);
     expect(screen.getByRole('status')).toBeTruthy();
+  });
+
+  it('Textarea wires label, error text and rows', () => {
+    render(<Textarea label="Notes" error="required" rows={4} />);
+    const box = screen.getByRole('textbox', { name: 'Notes' });
+    expect(box.getAttribute('rows')).toBe('4');
+    expect(box.getAttribute('aria-invalid')).toBe('true');
+    expect(screen.getByText('required').className).toContain('text-destructive');
   });
 });
 
