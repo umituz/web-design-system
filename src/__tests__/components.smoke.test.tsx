@@ -33,6 +33,9 @@ import { Timeline } from '../presentation/organisms/Timeline';
 import { Checklist } from '../presentation/organisms/Checklist';
 import { FormModal } from '../presentation/organisms/FormModal';
 import { ConfirmDialog } from '../presentation/organisms/ConfirmDialog';
+import { StatusBadge } from '../presentation/organisms/StatusBadge';
+import { Lightbox } from '../presentation/organisms/Lightbox';
+import { StatPill } from '../presentation/molecules/StatPill';
 import { BatteryPill } from '../presentation/atoms/BatteryPill';
 import { Kbd } from '../presentation/atoms/Kbd';
 
@@ -929,5 +932,46 @@ describe('accessia supersets', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
     expect(onConfirm).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('status + stat surfaces', () => {
+  it('StatusBadge resolves vocab entries and falls back to neutral raw value', () => {
+    const vocab = {
+      active: { label: 'Active', tone: 'success' as const },
+      held: { label: 'On hold', tone: 'warning' as const },
+    };
+    const { rerender } = render(<StatusBadge vocab={vocab} value="active" />);
+    const el = screen.getByText('Active');
+    expect(el.className).toContain('bg-success');
+    expect(el.className).toContain('font-mono');
+    rerender(<StatusBadge vocab={vocab} value="unknown-state" />);
+    expect(screen.getByText('unknown-state').className).toContain('bg-secondary');
+  });
+
+  it('StatPill renders value over label with tone coloring', () => {
+    const { container } = render(<StatPill label="Open tasks" value={12} tone="destructive" />);
+    const pill = container.firstElementChild as HTMLElement;
+    expect(pill.className).toContain('bg-muted/40');
+    const value = pill.firstElementChild as HTMLElement;
+    expect(value.className).toContain('text-destructive');
+    expect(screen.getByText('Open tasks').className).toContain('text-muted-foreground');
+  });
+
+  it('Lightbox opens with media, zoom toggles on click and Escape closes', () => {
+    const onClose = vi.fn();
+    render(
+      <Lightbox open onClose={onClose} alt="Engine bay photo" caption="Motor · 12.400 km">
+        <img src="engine.png" alt="" />
+      </Lightbox>,
+    );
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toBeTruthy();
+    const zoomWrap = dialog.querySelector('.cursor-zoom-in') as HTMLElement;
+    expect(zoomWrap).toBeTruthy();
+    fireEvent.click(zoomWrap);
+    expect(zoomWrap.className).toContain('cursor-zoom-out');
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(onClose).toHaveBeenCalled();
   });
 });

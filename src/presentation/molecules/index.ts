@@ -13,6 +13,9 @@ export type { SearchBoxProps } from './SearchBox';
 export { Avatar, AvatarImage, AvatarFallback } from './Avatar';
 export type { AvatarProps, AvatarImageProps, AvatarFallbackProps } from './Avatar';
 
+export { StatPill } from './StatPill';
+export type { StatPillProps, StatPillTone } from './StatPill';
+
 export { Chip } from './Chip';
 export type { ChipProps } from './Chip';
 

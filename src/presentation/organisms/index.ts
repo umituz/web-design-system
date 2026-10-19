@@ -120,6 +120,12 @@ export type { ModalProps, ModalSize } from './Modal';
 export { Drawer } from './Drawer';
 export type { DrawerProps, DrawerSide } from './Drawer';
 
+export { StatusBadge } from './StatusBadge';
+export type { StatusBadgeProps, StatusEntry, StatusVocab } from './StatusBadge';
+
+export { Lightbox } from './Lightbox';
+export type { LightboxProps } from './Lightbox';
+
 export type { ToastShorthandOptions } from './Toaster';
 
 export { Timeline } from './Timeline';
