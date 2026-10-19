@@ -16,6 +16,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   size?: MediumSizes;
   small?: boolean;
   dot?: boolean;
+  mono?: boolean;
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
@@ -38,7 +39,7 @@ const sizeStyles: Record<MediumSizes, string> = {
 };
 
 export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
-  ({ className, variant, tone, size, small = false, dot = false, children, ...props }, ref) => {
+  ({ className, variant, tone, size, small = false, dot = false, mono = false, children, ...props }, ref) => {
     const resolvedVariant = variant ?? tone ?? 'primary';
     const resolvedSize = size ?? (small ? 'sm' : 'md');
     return (
@@ -48,6 +49,7 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
           'inline-flex items-center rounded-full border font-medium',
           variantStyles[resolvedVariant],
           sizeStyles[resolvedSize],
+          mono && 'font-mono',
           className
         )}
         {...props}

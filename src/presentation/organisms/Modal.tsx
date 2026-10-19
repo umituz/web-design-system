@@ -4,6 +4,8 @@
  */
 
 import type { ReactNode } from 'react';
+import { AlertTriangle } from 'lucide-react';
+import { cn } from '../../infrastructure/utils';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +24,7 @@ export interface ModalProps {
   description?: ReactNode;
   subtitle?: ReactNode;
   size?: ModalSize;
+  danger?: boolean;
   footer?: ReactNode;
   children?: ReactNode;
   className?: string;
@@ -41,6 +44,7 @@ export function Modal({
   description,
   subtitle,
   size = 'md',
+  danger = false,
   footer,
   children,
   className,
@@ -48,10 +52,15 @@ export function Modal({
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
-      <DialogContent className={`${sizeWidths[size]} ${className ?? ''}`} {...contentProps}>
+      <DialogContent className={cn(sizeWidths[size], danger && 'border-destructive', className)} {...contentProps}>
         {(title !== undefined || description !== undefined || subtitle !== undefined) && (
           <DialogHeader>
-            {title !== undefined && <DialogTitle>{title}</DialogTitle>}
+            {title !== undefined && (
+              <DialogTitle className={danger ? 'flex items-center gap-2 text-destructive' : undefined}>
+                {danger && <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                {title}
+              </DialogTitle>
+            )}
             {(subtitle ?? description) !== undefined && <DialogDescription>{subtitle ?? description}</DialogDescription>}
           </DialogHeader>
         )}

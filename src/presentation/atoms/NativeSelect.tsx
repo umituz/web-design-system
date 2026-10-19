@@ -8,15 +8,21 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
+export interface NativeSelectOption {
+  value: string;
+  label: string;
+}
+
 export interface NativeSelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'>, BaseProps {
   error?: boolean | string;
   hint?: ReactNode;
   label?: ReactNode;
   fullWidth?: boolean;
+  options?: readonly NativeSelectOption[];
 }
 
 export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
-  ({ className, error, hint, label, id, children, fullWidth = true, ...props }, ref) => {
+  ({ className, error, hint, label, id, children, options, fullWidth = true, ...props }, ref) => {
     const generatedId = useId();
     const selectId = id ?? generatedId;
     const hasError = Boolean(error);
@@ -38,6 +44,11 @@ export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
           )}
           {...props}
         >
+          {options?.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
           {children}
         </select>
         <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

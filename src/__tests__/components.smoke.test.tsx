@@ -25,6 +25,7 @@ import { Sparkline } from '../presentation/atoms/Sparkline';
 import { Avatar } from '../presentation/molecules/Avatar';
 import { KpiCard } from '../presentation/organisms/KpiCard';
 import { Modal } from '../presentation/organisms/Modal';
+import { Drawer } from '../presentation/organisms/Drawer';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -582,5 +583,73 @@ describe('fleet aliases', () => {
   it('KpiCard violet icon tone applies violet chip classes', () => {
     const { container } = render(<KpiCard label="Market" value="12" icon={<span>x</span>} iconTone="violet" />);
     expect(container.querySelector('.text-violet-600')).not.toBeNull();
+  });
+});
+
+describe('accessia supersets', () => {
+  it('Drawer renders title, subtitle, footer and the wide size class', () => {
+    render(
+      <Drawer
+        open
+        onClose={() => {}}
+        title="Panel"
+        subtitle="Quick actions"
+        wide
+        footer={<button type="button">Save</button>}
+      >
+        <p>Panel body</p>
+      </Drawer>
+    );
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('Panel')).toBeTruthy();
+    expect(screen.getByText('Quick actions')).toBeTruthy();
+    expect(screen.getByText('Panel body')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeTruthy();
+    expect(screen.getByRole('dialog').className).toContain('sm:max-w-2xl');
+  });
+
+  it('Drawer hides header and footer when only children are given', () => {
+    render(
+      <Drawer open onClose={() => {}}>
+        <p>Only body</p>
+      </Drawer>
+    );
+    expect(screen.getByText('Only body')).toBeTruthy();
+    expect(screen.getByRole('dialog').querySelector('h2')).toBeNull();
+  });
+
+  it('Badge mono applies the mono font class', () => {
+    const { container } = render(<Badge tone="danger" mono>ERR-4021</Badge>);
+    expect(container.querySelector('div')?.className).toContain('font-mono');
+  });
+
+  it('Modal danger paints the title destructive with a warning icon', () => {
+    render(
+      <Modal open onClose={() => {}} title="Delete row" danger>
+        <p>This cannot be undone</p>
+      </Modal>
+    );
+    expect(screen.getByRole('dialog').className).toContain('border-destructive');
+    expect(screen.getByText('Delete row').className).toContain('text-destructive');
+    expect(screen.getByRole('dialog').querySelector('h2 svg')).not.toBeNull();
+  });
+
+  it('NativeSelect options prop renders option elements before children', () => {
+    const { container } = render(
+      <NativeSelect
+        label="Sort"
+        defaultValue="new"
+        options={[
+          { value: 'new', label: 'Newest' },
+          { value: 'old', label: 'Oldest' },
+        ]}
+      >
+        <option value="other">Other</option>
+      </NativeSelect>
+    );
+    const options = container.querySelectorAll('option');
+    expect(options).toHaveLength(3);
+    expect(options[0]?.textContent).toBe('Newest');
+    expect(options[2]?.textContent).toBe('Other');
   });
 });

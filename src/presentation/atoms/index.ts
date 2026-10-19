@@ -71,4 +71,4 @@ export { Sparkline } from './Sparkline';
 export type { SparklineProps } from './Sparkline';
 
 export { NativeSelect } from './NativeSelect';
-export type { NativeSelectProps } from './NativeSelect';
+export type { NativeSelectProps, NativeSelectOption } from './NativeSelect';
