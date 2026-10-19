@@ -44,6 +44,8 @@ export interface FormModalProps {
   steps: FormStep[];
   onSubmit: (values: FormModalValues) => void;
   onClose: () => void;
+  initial?: FormModalValues;
+  preview?: ReactNode;
   submitLabel?: string;
   wide?: boolean;
   embedded?: boolean;
@@ -63,7 +65,7 @@ export interface FormModalMessages {
   invalidNumber: string;
 }
 
-function initialValues(steps: FormStep[]): FormModalValues {
+function initialValues(steps: FormStep[], initial?: FormModalValues): FormModalValues {
   const v: FormModalValues = {};
   steps.forEach((s) =>
     s.fields.forEach((f) => {
@@ -71,6 +73,11 @@ function initialValues(steps: FormStep[]): FormModalValues {
         f.defaultValue ?? (f.type === 'checkbox' ? false : f.type === 'number' ? '' : f.type === 'select' ? f.options?.[0]?.value ?? '' : '');
     })
   );
+  if (initial) {
+    for (const [name, value] of Object.entries(initial)) {
+      if (value !== undefined && value !== null) v[name] = value;
+    }
+  }
   return v;
 }
 
@@ -83,10 +90,10 @@ function validateField(f: FormModalField, val: string | number | boolean | undef
 }
 
 export function FormModal(
-  { title, steps, onSubmit, onClose, submitLabel = 'Save', wide, embedded, cancelLabel = 'Cancel', backLabel = 'Back', continueLabel = 'Continue', requiredMessage = 'This field is required.', invalidEmailMessage = 'Enter a valid email address.', invalidTelMessage = 'Enter a valid phone number.', invalidNumberMessage = 'Enter a number.' }: FormModalProps
+  { title, steps, onSubmit, onClose, initial, preview, submitLabel = 'Save', wide, embedded, cancelLabel = 'Cancel', backLabel = 'Back', continueLabel = 'Continue', requiredMessage = 'This field is required.', invalidEmailMessage = 'Enter a valid email address.', invalidTelMessage = 'Enter a valid phone number.', invalidNumberMessage = 'Enter a number.' }: FormModalProps
 ) {
   const messages: FormModalMessages = { required: requiredMessage, invalidEmail: invalidEmailMessage, invalidTel: invalidTelMessage, invalidNumber: invalidNumberMessage };
-  const [values, setValues] = useState<FormModalValues>(() => initialValues(steps));
+  const [values, setValues] = useState<FormModalValues>(() => initialValues(steps, initial));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [step, setStep] = useState(0);
 
@@ -151,6 +158,7 @@ export function FormModal(
 
   const body = (
     <>
+      {preview && <div className="mb-4 first:mt-0">{preview}</div>}
       {total > 1 && (
         <div aria-hidden="true" className="mb-4 flex gap-1.5">
           {steps.map((_, i) => (

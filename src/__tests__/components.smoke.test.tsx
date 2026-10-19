@@ -974,6 +974,33 @@ describe('accessia supersets', () => {
     expect(onSubmit).toHaveBeenCalledWith({ name: 'Ada', tier: 'basic', email: 'ada@example.com' });
   });
 
+  it('FormModal seeds values from initial and renders preview above fields', () => {
+    const onSubmit = vi.fn();
+    render(
+      <FormModal
+        title="FM edit"
+        initial={{ name: 'Ada', tier: 'pro' }}
+        preview={<p>Edit note</p>}
+        steps={[
+          {
+            title: 'Ident',
+            fields: [
+              { name: 'name', label: 'Full name', type: 'text', required: true },
+              { name: 'tier', label: 'Tier', type: 'select', options: [{ value: 'basic', label: 'Basic' }, { value: 'pro', label: 'Pro' }] },
+            ],
+          },
+        ]}
+        onSubmit={onSubmit}
+        onClose={() => {}}
+      />,
+    );
+    expect(screen.getByText('Edit note')).toBeTruthy();
+    expect((screen.getByLabelText(/full name/i) as HTMLInputElement).value).toBe('Ada');
+    expect((screen.getByLabelText(/tier/i) as HTMLSelectElement).value).toBe('pro');
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(onSubmit).toHaveBeenCalledWith({ name: 'Ada', tier: 'pro' });
+  });
+
   it('FormModal embedded mode renders a card with a checkbox field', () => {
     const onSubmit = vi.fn();
     render(
