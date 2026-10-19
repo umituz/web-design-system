@@ -27,6 +27,9 @@ export interface KpiCardProps extends HTMLAttributes<HTMLDivElement>, BaseProps 
   iconTone?: KpiIconTone;
   spark?: readonly number[];
   sparkTone?: KpiIconTone;
+  /** Danger emphasis for metrics that need attention, e.g. open incidents. */
+  alert?: boolean;
+  onClick?: () => void;
 }
 
 const toneTextClasses: Record<KpiIconTone, string> = {
@@ -40,12 +43,25 @@ const toneTextClasses: Record<KpiIconTone, string> = {
 };
 
 export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(
-  ({ className, label, value, delta, hint, icon, iconTone = 'primary', spark, sparkTone = 'primary', ...props }, ref) => {
+  ({ className, label, value, delta, hint, icon, iconTone = 'primary', spark, sparkTone = 'primary', alert, onClick, ...props }, ref) => {
     const deltaDirection = delta?.direction ?? (delta?.good === false ? 'down' : 'up');
     const deltaGood = delta?.good ?? deltaDirection === 'up';
     const DeltaIcon = deltaDirection === 'up' ? TrendingUp : TrendingDown;
+    const interactive = onClick !== undefined;
     return (
-      <Card ref={ref} className={className} {...props}>
+      <Card
+        ref={ref}
+        className={cn(
+          className,
+          alert && 'border-destructive/45 bg-destructive/5',
+          interactive && 'cursor-pointer transition-colors hover:border-primary/40'
+        )}
+        onClick={onClick}
+        role={interactive ? 'button' : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        onKeyDown={interactive ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
+        {...props}
+      >
         <CardContent className="p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">

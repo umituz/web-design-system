@@ -4,6 +4,7 @@
  */
 
 import { forwardRef } from 'react';
+import { X } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import { Input } from '../atoms/Input';
@@ -35,8 +36,18 @@ export const SearchBox = forwardRef<HTMLInputElement, SearchBoxProps>(
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
-          className="pl-9"
+          className={cn('pl-9', value && 'pr-8')}
         />
+        {value ? (
+          <button
+            type="button"
+            aria-label="Clear search"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+            onClick={() => onChange?.('')}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        ) : null}
       </div>
     );
   }

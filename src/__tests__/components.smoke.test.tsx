@@ -23,6 +23,7 @@ import { Input } from '../presentation/atoms/Input';
 import { NativeSelect } from '../presentation/atoms/NativeSelect';
 import { Sparkline } from '../presentation/atoms/Sparkline';
 import { Avatar } from '../presentation/molecules/Avatar';
+import { SearchBox } from '../presentation/molecules/SearchBox';
 import { KpiCard } from '../presentation/organisms/KpiCard';
 import { Modal } from '../presentation/organisms/Modal';
 import { Drawer } from '../presentation/organisms/Drawer';
@@ -495,6 +496,36 @@ describe('fleet surface supersets', () => {
       <KpiCard label="Churn" value="4%" delta={{ value: '+1', direction: 'up', good: false }} />
     );
     expect(container.querySelector('.text-destructive')).not.toBeNull();
+  });
+
+  it('KpiCard alert applies destructive emphasis', () => {
+    const { container } = render(<KpiCard label="Offline" value="3" alert />);
+    const el = container.firstChild as HTMLElement;
+    expect(el.className).toContain('border-destructive');
+    expect(el.className).toContain('bg-destructive');
+  });
+
+  it('KpiCard onClick is interactive and fires', () => {
+    const onClick = vi.fn();
+    const { container } = render(<KpiCard label="Open" value="7" onClick={onClick} />);
+    const el = container.firstChild as HTMLElement;
+    expect(el.getAttribute('role')).toBe('button');
+    expect(el.className).toContain('cursor-pointer');
+    fireEvent.click(el);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('SearchBox clears a non-empty value', () => {
+    const onChange = vi.fn();
+    render(<SearchBox value="wheat" onChange={onChange} placeholder="Find" />);
+    expect(screen.getByPlaceholderText('Find')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+    expect(onChange).toHaveBeenCalledWith('');
+  });
+
+  it('SearchBox renders no clear control when value is empty', () => {
+    const { container } = render(<SearchBox value="" onChange={() => {}} />);
+    expect(container.querySelector('button[aria-label="Clear search"]')).toBeNull();
   });
 
   it('Modal opens content, title and footer through the convenience API', () => {
