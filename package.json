@@ -1,6 +1,6 @@
 {
   "name": "@umituz/web-design-system",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "private": false,
   "type": "module",
   "description": "Web Design System - Tailwind v4 authored, precompiled CSS shipped. Atomic Design components (Atoms, Molecules, Organisms, Templates) for React applications.",
