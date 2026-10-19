@@ -25,9 +25,11 @@ export interface ToastShorthandOptions {
 
 interface ToastApi {
   /** Fire a toast — after every mutating action is the fleet idiom. */
-  toast(t: ToastOptions): void;
-  /** Shorthand call: toast('Saved', { tone: 'success', message: '…' }). */
-  toast(title: string, options?: ToastShorthandOptions): void;
+  toast: {
+    (t: ToastOptions): void;
+    /** Shorthand call: toast('Saved', { tone: 'success', message: '…' }). */
+    (title: string, options?: ToastShorthandOptions): void;
+  };
 }
 
 interface ToastEntry extends ToastOptions {
