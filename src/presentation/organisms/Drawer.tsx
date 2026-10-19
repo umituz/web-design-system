@@ -21,6 +21,8 @@ export interface DrawerProps {
   open: boolean;
   onClose: () => void;
   title?: ReactNode;
+  /** Small overline above the title, e.g. an entity code. */
+  eyebrow?: ReactNode;
   subtitle?: ReactNode;
   description?: ReactNode;
   side?: DrawerSide;
@@ -35,6 +37,7 @@ export function Drawer({
   open,
   onClose,
   title,
+  eyebrow,
   subtitle,
   description,
   side = 'right',
@@ -52,8 +55,13 @@ export function Drawer({
         className={cn('flex flex-col overflow-hidden', wideSize, className)}
         {...contentProps}
       >
-        {(title !== undefined || description !== undefined || subtitle !== undefined) && (
+        {(title !== undefined || description !== undefined || subtitle !== undefined || eyebrow !== undefined) && (
           <SheetHeader>
+            {eyebrow !== undefined && (
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {eyebrow}
+              </p>
+            )}
             {title !== undefined && <SheetTitle>{title}</SheetTitle>}
             {(subtitle ?? description) !== undefined && (
               <SheetDescription>{subtitle ?? description}</SheetDescription>

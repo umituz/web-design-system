@@ -84,6 +84,8 @@ export interface DataTableProps<T> extends BaseProps {
   };
   onRowClick?: (row: T) => void;
   rowLabel?: (row: T) => string;
+  /** Row-level class, e.g. a tone accent for overdue rows. */
+  rowClass?: (row: T) => string | undefined;
 }
 
 const INTERACTIVE_SELECTOR = 'button, a, input, select, textarea, label';
@@ -244,6 +246,7 @@ export function DataTable<T>({
   emptyState,
   onRowClick,
   rowLabel,
+  rowClass,
   ...props
 }: DataTableProps<T>) {
   const [internalSort, setInternalSort] = useState<SortState | null>(initialSort ?? null);
@@ -412,7 +415,8 @@ export function DataTable<T>({
                 aria-label={onRowClick && rowLabel ? rowLabel(row) : undefined}
                 className={cn(
                   onRowClick && 'cursor-pointer hover:bg-muted/50',
-                  selected && 'bg-muted/60'
+                  selected && 'bg-muted/60',
+                  rowClass?.(row)
                 )}
                 onClick={
                   onRowClick

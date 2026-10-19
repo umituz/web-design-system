@@ -618,6 +618,37 @@ describe('accessia supersets', () => {
     expect(screen.getByRole('dialog').querySelector('h2')).toBeNull();
   });
 
+  it('Drawer eyebrow renders as the overline above the title', () => {
+    render(
+      <Drawer open onClose={() => {}} eyebrow="TASK · 2026" title="Panel">
+        <p>Body</p>
+      </Drawer>
+    );
+    const dialog = screen.getByRole('dialog');
+    const overline = dialog.querySelector('p');
+    expect(overline?.textContent).toBe('TASK · 2026');
+    expect(overline?.className).toContain('uppercase');
+    expect(dialog.querySelector('h2')?.textContent).toBe('Panel');
+  });
+
+  it('DataTable rowClass applies a per-row class', () => {
+    render(
+      <DataTable<{ id: string; name: string; qty: number }>
+        data={[
+          { id: 'r2', name: 'bravo', qty: 2 },
+          { id: 'r1', name: 'alpha', qty: 10 },
+        ]}
+        columns={[{ id: 'name', header: 'Name', accessor: 'name' }]}
+        rowKey={(r) => r.id}
+        rowClass={(r) => (r.qty > 5 ? 'row-overdue' : undefined)}
+      />,
+    );
+    const alphaRow = screen.getByText('alpha').closest('tr');
+    const bravoRow = screen.getByText('bravo').closest('tr');
+    expect(alphaRow?.className).toContain('row-overdue');
+    expect(bravoRow?.className).not.toContain('row-overdue');
+  });
+
   it('Badge mono applies the mono font class', () => {
     const { container } = render(<Badge tone="danger" mono>ERR-4021</Badge>);
     expect(container.querySelector('div')?.className).toContain('font-mono');
