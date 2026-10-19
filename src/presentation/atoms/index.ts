@@ -72,3 +72,9 @@ export type { SparklineProps } from './Sparkline';
 
 export { NativeSelect } from './NativeSelect';
 export type { NativeSelectProps, NativeSelectOption } from './NativeSelect';
+
+export { BatteryPill } from './BatteryPill';
+export type { BatteryPillProps } from './BatteryPill';
+
+export { Kbd } from './Kbd';
+export type { KbdProps } from './Kbd';

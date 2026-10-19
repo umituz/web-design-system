@@ -4,8 +4,10 @@
  * styles contract test).
  */
 
-import { describe, expect, it, vi } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+
+afterEach(cleanup);
 import { Button } from '../presentation/atoms/Button';
 import { Badge } from '../presentation/atoms/Badge';
 import { Spinner } from '../presentation/atoms/Spinner';
@@ -27,6 +29,11 @@ import { SearchBox } from '../presentation/molecules/SearchBox';
 import { KpiCard } from '../presentation/organisms/KpiCard';
 import { Modal } from '../presentation/organisms/Modal';
 import { Drawer } from '../presentation/organisms/Drawer';
+import { Timeline } from '../presentation/organisms/Timeline';
+import { Checklist } from '../presentation/organisms/Checklist';
+import { FormModal } from '../presentation/organisms/FormModal';
+import { BatteryPill } from '../presentation/atoms/BatteryPill';
+import { Kbd } from '../presentation/atoms/Kbd';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -760,5 +767,109 @@ describe('accessia supersets', () => {
   it('Progress info tone paints the fill info', () => {
     render(<Progress value={60} tone="info" aria-label="load" />);
     expect(screen.getByRole('progressbar', { name: 'load' }).querySelector('div')?.className).toContain('bg-info');
+  });
+
+  it('BatteryPill clamps charge and tones low values destructive', () => {
+    const neg = render(<BatteryPill pct={-5} />);
+    expect(neg.container.textContent).toContain('0%');
+    const crit = render(<BatteryPill pct={15} />);
+    expect(crit.container.querySelector('span')?.className).toContain('text-destructive');
+    const good = render(<BatteryPill pct={80} />);
+    expect(good.container.querySelector('span')?.className).toContain('text-success');
+  });
+
+  it('Kbd renders key cap content', () => {
+    const { container } = render(<Kbd>⌘K</Kbd>);
+    expect(container.querySelector('kbd')?.textContent).toBe('⌘K');
+  });
+
+  it('Timeline renders newest first with tone dots and meta override', () => {
+    const { container } = render(
+      <Timeline
+        items={[
+          { at: '2026-01-01T09:00:00Z', title: 'First entry', tone: 'success' },
+          { at: '2026-01-02T09:00:00Z', title: 'Second entry', tone: 'destructive', meta: 'Manual meta', body: 'detail copy' },
+        ]}
+      />,
+    );
+    const items = container.querySelectorAll('ol > li');
+    expect(items).toHaveLength(2);
+    expect(items[0]?.textContent).toContain('Second entry');
+    expect(items[0]?.textContent).toContain('Manual meta');
+    expect(items[0]?.textContent).toContain('detail copy');
+    expect(items[1]?.textContent).toContain('First entry');
+    const dots = container.querySelectorAll('li > span');
+    expect(dots[0]?.className).toContain('bg-destructive');
+    expect(dots[1]?.className).toContain('bg-success');
+  });
+
+  it('Checklist shows progress and toggles by id', () => {
+    const onToggle = vi.fn();
+    render(
+      <Checklist
+        onToggle={onToggle}
+        items={[
+          { id: 'a', label: 'Survey site', done: true, doneBy: 'Naomi', doneAt: '2026-10-01T10:00:00Z' },
+          { id: 'b', label: 'Mount panel', done: false },
+          { id: 'c', label: 'Wire zones', done: false },
+        ]}
+      />,
+    );
+    expect(screen.getByText('1 of 3 complete')).toBeTruthy();
+    fireEvent.click(screen.getByText('Mount panel'));
+    expect(onToggle).toHaveBeenCalledWith('b');
+  });
+
+  it('FormModal validates, advances steps and submits collected values', () => {
+    const onSubmit = vi.fn();
+    render(
+      <FormModal
+        title="FM submit flow"
+        steps={[
+          {
+            title: 'Ident',
+            fields: [
+              { name: 'name', label: 'Full name', type: 'text', required: true },
+              { name: 'tier', label: 'Tier', type: 'select', options: [{ value: 'basic', label: 'Basic' }, { value: 'pro', label: 'Pro' }] },
+            ],
+          },
+          { title: 'Contact', fields: [{ name: 'email', label: 'Contact email', type: 'email', required: true, span: true }] },
+        ]}
+        onSubmit={onSubmit}
+        onClose={() => {}}
+      />,
+    );
+    expect(screen.getByText('Step 1 of 2')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    expect(screen.getByText('This field is required.')).toBeTruthy();
+    fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Ada' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    expect(screen.getByText('Step 2 of 2')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(screen.getByText('Step 1 of 2')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    fireEvent.change(screen.getByLabelText(/contact email/i), { target: { value: 'ada@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(onSubmit).toHaveBeenCalledWith({ name: 'Ada', tier: 'basic', email: 'ada@example.com' });
+  });
+
+  it('FormModal embedded mode renders a card with a checkbox field', () => {
+    const onSubmit = vi.fn();
+    render(
+      <FormModal
+        title="FM embedded card"
+        embedded
+        steps={[{ title: 'Only step', fields: [{ name: 'welcome', label: 'Send welcome email', type: 'checkbox', hint: 'First touch' }] }]}
+        onSubmit={onSubmit}
+        onClose={() => {}}
+        submitLabel="Create"
+      />,
+    );
+    expect(screen.queryByRole('dialog')).toBeNull();
+    const box = screen.getByRole('checkbox');
+    expect(box).toBeTruthy();
+    fireEvent.click(box);
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    expect(onSubmit).toHaveBeenCalledWith({ welcome: true });
   });
 });
