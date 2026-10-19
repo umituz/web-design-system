@@ -37,17 +37,21 @@ Card.displayName = 'Card';
 export interface CardHeaderProps extends Omit<CardProps, 'title'> {
   title?: React.ReactNode;
   subtitle?: React.ReactNode;
+  eyebrow?: React.ReactNode;
+  icon?: React.ReactNode;
   actions?: React.ReactNode;
+  bordered?: boolean;
 }
 
 export const CardHeader = React.memo(forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ className, title, subtitle, actions, children, ...props }, ref) => {
-    const hasStructuralProps = title !== undefined || subtitle !== undefined || actions !== undefined;
+  ({ className, title, subtitle, eyebrow, icon, actions, bordered = false, children, ...props }, ref) => {
+    const hasStructuralProps =
+      title !== undefined || subtitle !== undefined || actions !== undefined || eyebrow !== undefined || icon !== undefined;
     if (!hasStructuralProps) {
       return (
         <div
           ref={ref}
-          className={cn('flex flex-col space-y-1.5 p-6', className)}
+          className={cn('flex flex-col space-y-1.5 p-6', bordered && 'border-b border-border', className)}
           {...props}
         >
           {children}
@@ -57,11 +61,19 @@ export const CardHeader = React.memo(forwardRef<HTMLDivElement, CardHeaderProps>
     return (
       <div
         ref={ref}
-        className={cn('flex items-start justify-between gap-4 p-6', className)}
+        className={cn('flex items-start justify-between gap-4 p-6', bordered && 'border-b border-border', className)}
         {...props}
       >
-        <div className="flex flex-col space-y-1.5">
-          {title !== undefined && <CardTitle>{title}</CardTitle>}
+        <div className="flex min-w-0 flex-col space-y-1.5">
+          {eyebrow !== undefined && (
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{eyebrow}</p>
+          )}
+          {title !== undefined && (
+            <div className="flex items-center gap-2">
+              {icon}
+              <CardTitle>{title}</CardTitle>
+            </div>
+          )}
           {subtitle !== undefined && <CardDescription>{subtitle}</CardDescription>}
           {children}
         </div>
