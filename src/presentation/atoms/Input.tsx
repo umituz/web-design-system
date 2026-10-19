@@ -13,6 +13,8 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   hint?: ReactNode;
   icon?: ReactNode;
   label?: ReactNode;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
   size?: MediumSizes;
 }
 
@@ -23,7 +25,7 @@ const sizeStyles: Record<MediumSizes, string> = {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, error, hint, icon, label, size = 'md', type = 'text', id, ...props }, ref) => {
+  ({ className, error, hint, icon, label, prefix, suffix, size = 'md', type = 'text', id, ...props }, ref) => {
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const hasError = Boolean(error);
@@ -46,15 +48,29 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           sizeStyles[size],
           hasError ? 'border-destructive' : 'border-input',
           icon !== undefined && 'pl-9',
+          prefix !== undefined && 'pl-7',
+          suffix !== undefined && 'pr-7',
           className
         )}
         {...props}
       />
     );
-    const decorated = icon !== undefined ? (
+    const decorated = icon !== undefined || prefix !== undefined || suffix !== undefined ? (
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground [&_svg]:size-4">{icon}</span>
+        {icon !== undefined && (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground [&_svg]:size-4">{icon}</span>
+        )}
+        {prefix !== undefined && (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" aria-hidden>
+            {prefix}
+          </span>
+        )}
         {control}
+        {suffix !== undefined && (
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" aria-hidden>
+            {suffix}
+          </span>
+        )}
       </div>
     ) : (
       control

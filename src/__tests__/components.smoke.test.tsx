@@ -722,6 +722,13 @@ describe('fleet aliases', () => {
     expect(container.querySelector('input')?.className).toContain('pl-9');
   });
 
+  it('Input renders prefix and suffix adornments with padded control', () => {
+    const { container } = render(<Input prefix="$" suffix="per book" />);
+    expect(container.querySelector('input')?.className).toContain('pl-7');
+    expect(container.querySelector('input')?.className).toContain('pr-7');
+    expect(container.querySelector('span[aria-hidden]')?.textContent).toBe('$');
+  });
+
   it('Modal subtitle renders as the description line', () => {
     render(<Modal open onClose={() => {}} title="Compare" subtitle="Two vehicles side by side" />);
     expect(screen.getByText('Two vehicles side by side')).toBeTruthy();
