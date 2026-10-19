@@ -944,7 +944,7 @@ describe('status + stat surfaces', () => {
     const { rerender } = render(<StatusBadge vocab={vocab} value="active" />);
     const el = screen.getByText('Active');
     expect(el.className).toContain('bg-success');
-    expect(el.className).toContain('font-mono');
+    expect(el.className).not.toContain('font-mono');
     rerender(<StatusBadge vocab={vocab} value="unknown-state" />);
     expect(screen.getByText('unknown-state').className).toContain('bg-secondary');
   });

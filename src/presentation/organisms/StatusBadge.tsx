@@ -24,7 +24,7 @@ export interface StatusBadgeProps {
   className?: string;
 }
 
-export function StatusBadge({ vocab, value, dot, mono = true, className }: StatusBadgeProps) {
+export function StatusBadge({ vocab, value, dot, mono = false, className }: StatusBadgeProps) {
   const entry: StatusEntry | undefined = vocab[value];
   return (
     <Badge tone={entry?.tone ?? 'neutral'} dot={dot ?? entry?.dot ?? true} mono={mono} className={className}>
