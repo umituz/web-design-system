@@ -8,7 +8,7 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
-export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'prefix'>, BaseProps {
   error?: boolean | string;
   hint?: ReactNode;
   icon?: ReactNode;
