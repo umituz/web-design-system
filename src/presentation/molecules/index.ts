@@ -47,3 +47,6 @@ export type { ActiveFilterTagsProps } from './ActiveFilterTags';
 
 export { CodeBlock } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
+
+export { OptionCard } from './OptionCard';
+export type { OptionCardProps } from './OptionCard';
