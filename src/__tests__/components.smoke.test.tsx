@@ -573,4 +573,14 @@ describe('fleet aliases', () => {
     render(<Modal open onClose={() => {}} title="Compare" subtitle="Two vehicles side by side" />);
     expect(screen.getByText('Two vehicles side by side')).toBeTruthy();
   });
+
+  it('Progress label feeds the accessible name', () => {
+    const { container } = render(<Progress value={50} label="Health score" />);
+    expect(container.querySelector('[role="progressbar"]')?.getAttribute('aria-label')).toBe('Health score');
+  });
+
+  it('KpiCard violet icon tone applies violet chip classes', () => {
+    const { container } = render(<KpiCard label="Market" value="12" icon={<span>x</span>} iconTone="violet" />);
+    expect(container.querySelector('.text-violet-600')).not.toBeNull();
+  });
 });

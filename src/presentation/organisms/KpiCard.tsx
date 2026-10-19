@@ -10,7 +10,7 @@ import type { BaseProps } from '../../domain/types';
 import { Card, CardContent } from './Card';
 import { Sparkline } from '../atoms/Sparkline';
 
-export type KpiIconTone = 'primary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted';
+export type KpiIconTone = 'primary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted' | 'violet';
 
 export interface KpiDelta {
   value: ReactNode;
@@ -36,6 +36,7 @@ const toneTextClasses: Record<KpiIconTone, string> = {
   destructive: 'text-destructive bg-destructive/10',
   info: 'text-info bg-info/10',
   muted: 'text-muted-foreground bg-muted',
+  violet: 'text-violet-600 bg-violet-500/10',
 };
 
 export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(

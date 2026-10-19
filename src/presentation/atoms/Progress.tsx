@@ -13,6 +13,7 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps
   max?: number;
   size?: 'sm' | 'md' | 'lg';
   tone?: 'primary' | 'success' | 'warning' | 'destructive';
+  label?: string;
 }
 
 const sizeStyles: Record<'sm' | 'md' | 'lg', string> = {
@@ -29,13 +30,14 @@ const toneStyles: Record<'primary' | 'success' | 'warning' | 'destructive', stri
 };
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
-  ({ className, value = 0, max = 100, size = 'md', tone = 'primary', ...props }, ref) => {
+  ({ className, value = 0, max = 100, size = 'md', tone = 'primary', label, ...props }, ref) => {
     const percentage = percentOfMax(value, max);
 
     return (
       <div
         ref={ref}
         role="progressbar"
+        aria-label={label}
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={max}
