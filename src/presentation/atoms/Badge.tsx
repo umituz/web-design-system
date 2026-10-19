@@ -8,16 +8,23 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
-export type BadgeVariant = ColorVariant | 'info';
+export type BadgeVariant = ColorVariant | 'info' | 'danger' | 'neutral' | 'accent' | 'violet';
 
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: BadgeVariant;
+  tone?: BadgeVariant;
   size?: MediumSizes;
+  small?: boolean;
+  dot?: boolean;
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
   primary: 'bg-primary text-primary-foreground border-primary',
   info: 'bg-info text-info-foreground border-info',
+  danger: 'bg-destructive text-destructive-foreground border-destructive',
+  neutral: 'bg-secondary text-secondary-foreground border-secondary',
+  accent: 'bg-primary text-primary-foreground border-primary',
+  violet: 'bg-secondary text-secondary-foreground border-secondary',
   secondary: 'bg-secondary text-secondary-foreground border-secondary',
   success: 'bg-success text-success-foreground border-success',
   warning: 'bg-warning text-warning-foreground border-warning',
@@ -31,18 +38,23 @@ const sizeStyles: Record<MediumSizes, string> = {
 };
 
 export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
-  ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
+  ({ className, variant, tone, size, small = false, dot = false, children, ...props }, ref) => {
+    const resolvedVariant = variant ?? tone ?? 'primary';
+    const resolvedSize = size ?? (small ? 'sm' : 'md');
     return (
       <div
         ref={ref}
         className={cn(
           'inline-flex items-center rounded-full border font-medium',
-          variantStyles[variant],
-          sizeStyles[size],
+          variantStyles[resolvedVariant],
+          sizeStyles[resolvedSize],
           className
         )}
         {...props}
-      />
+      >
+        {dot && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-current" />}
+        {children}
+      </div>
     );
   }
 );

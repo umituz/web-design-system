@@ -11,6 +11,7 @@ import type { MediumSizes } from '../../infrastructure/constants';
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>, BaseProps {
   error?: boolean | string;
   hint?: ReactNode;
+  icon?: ReactNode;
   label?: ReactNode;
   size?: MediumSizes;
 }
@@ -22,7 +23,7 @@ const sizeStyles: Record<MediumSizes, string> = {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, error, hint, label, size = 'md', type = 'text', id, ...props }, ref) => {
+  ({ className, error, hint, icon, label, size = 'md', type = 'text', id, ...props }, ref) => {
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const hasError = Boolean(error);
@@ -44,13 +45,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           'disabled:cursor-not-allowed disabled:opacity-50',
           sizeStyles[size],
           hasError ? 'border-destructive' : 'border-input',
+          icon !== undefined && 'pl-9',
           className
         )}
         {...props}
       />
     );
+    const decorated = icon !== undefined ? (
+      <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground [&_svg]:size-4">{icon}</span>
+        {control}
+      </div>
+    ) : (
+      control
+    );
     if (label === undefined && hint === undefined && !errorText) {
-      return control;
+      return decorated;
     }
     return (
       <div className="w-full">
@@ -59,7 +69,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {label}
           </label>
         )}
-        {control}
+        {decorated}
         {(errorText !== undefined || hint !== undefined) && (
           <p id={hintId} className={cn('mt-1.5 text-xs', errorText ? 'text-destructive' : 'text-muted-foreground')}>
             {errorText ?? hint}

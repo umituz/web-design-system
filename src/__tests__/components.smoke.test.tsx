@@ -548,3 +548,29 @@ describe('fleet surface supersets', () => {
     expect(container.querySelector('.border-l-destructive')).not.toBeNull();
   });
 });
+
+describe('fleet aliases', () => {
+  it('Badge tone alias, small and dot compose onto variant surface', () => {
+    const { container } = render(<Badge tone="danger" small dot>Urgent</Badge>);
+    const badge = container.querySelector('div');
+    expect(badge?.className).toContain('bg-destructive');
+    expect(badge?.className).toContain('text-xs');
+    expect(badge?.querySelector('span')).not.toBeNull();
+  });
+
+  it('Button block stretches full width', () => {
+    const { container } = render(<Button block>Continue</Button>);
+    expect(container.querySelector('button')?.className).toContain('w-full');
+  });
+
+  it('Input renders a leading icon with padded control', () => {
+    const { container } = render(<Input icon={<svg data-testid="i" />} placeholder="Search" />);
+    expect(container.querySelector('[data-testid="i"]')).not.toBeNull();
+    expect(container.querySelector('input')?.className).toContain('pl-9');
+  });
+
+  it('Modal subtitle renders as the description line', () => {
+    render(<Modal open onClose={() => {}} title="Compare" subtitle="Two vehicles side by side" />);
+    expect(screen.getByText('Two vehicles side by side')).toBeTruthy();
+  });
+});

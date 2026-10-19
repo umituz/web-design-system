@@ -20,6 +20,7 @@ export interface ModalProps {
   onClose: () => void;
   title?: ReactNode;
   description?: ReactNode;
+  subtitle?: ReactNode;
   size?: ModalSize;
   footer?: ReactNode;
   children?: ReactNode;
@@ -38,6 +39,7 @@ export function Modal({
   onClose,
   title,
   description,
+  subtitle,
   size = 'md',
   footer,
   children,
@@ -47,10 +49,10 @@ export function Modal({
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
       <DialogContent className={`${sizeWidths[size]} ${className ?? ''}`} {...contentProps}>
-        {(title !== undefined || description !== undefined) && (
+        {(title !== undefined || description !== undefined || subtitle !== undefined) && (
           <DialogHeader>
             {title !== undefined && <DialogTitle>{title}</DialogTitle>}
-            {description !== undefined && <DialogDescription>{description}</DialogDescription>}
+            {(subtitle ?? description) !== undefined && <DialogDescription>{subtitle ?? description}</DialogDescription>}
           </DialogHeader>
         )}
         {children}
