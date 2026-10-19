@@ -146,3 +146,11 @@ export type {
 
 export { ConfirmDialog } from './ConfirmDialog';
 export type { ConfirmDialogProps } from './ConfirmDialog';
+export { CalendarBoard } from './CalendarBoard';
+export type {
+  CalendarBoardProps,
+  CalendarEvent,
+  CalendarEventTone,
+  CalendarLegendItem,
+  CalendarView,
+} from './CalendarBoard';

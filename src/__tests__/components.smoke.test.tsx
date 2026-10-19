@@ -38,6 +38,8 @@ import { Lightbox } from '../presentation/organisms/Lightbox';
 import { StatPill } from '../presentation/molecules/StatPill';
 import { BatteryPill } from '../presentation/atoms/BatteryPill';
 import { Kbd } from '../presentation/atoms/Kbd';
+import { CalendarBoard } from '../presentation/organisms/CalendarBoard';
+import type { CalendarEvent } from '../presentation/organisms/CalendarBoard';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -973,5 +975,60 @@ describe('status + stat surfaces', () => {
     expect(zoomWrap.className).toContain('cursor-zoom-out');
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(onClose).toHaveBeenCalled();
+  });
+});
+
+describe('calendar board', () => {
+  const events: CalendarEvent[] = [
+    { id: 'f1', date: '2026-03-10', time: '09:30', title: 'IST to GVA', tone: 'primary' },
+    { id: 'f2', date: '2026-03-10', time: '07:00', title: 'AOG check', tone: 'warning' },
+    { id: 'f3', date: '2026-03-10', time: '07:15', title: 'Crew brief', tone: 'info' },
+    { id: 'f4', date: '2026-03-10', time: '07:45', title: 'Catering', tone: 'neutral' },
+    { id: 'm1', date: '2026-03-12', time: '14:00', title: 'C-check window', tone: 'danger' },
+  ];
+
+  it('renders a 42-cell month grid with the event chip on its day and +N overflow', () => {
+    render(
+      <CalendarBoard
+        events={events}
+        initialDate="2026-03-10"
+        legend={[{ tone: 'primary', label: 'Flight' }, { tone: 'danger', label: 'Maintenance' }]}
+      />,
+    );
+    expect(screen.getByText('Flight')).toBeTruthy();
+    expect(screen.getByText('Maintenance')).toBeTruthy();
+    expect(screen.getByText('AOG check')).toBeTruthy(); // earliest three, time-sorted, survive the cap
+    expect(screen.queryByText('IST to GVA')).toBeNull(); // 09:30 falls past maxPerDay
+    expect(screen.getByText('+1')).toBeTruthy();
+    // month title + 42 day numbers rendered
+    expect(screen.getByText('March 2026')).toBeTruthy();
+    expect(screen.getAllByText('10').length).toBeGreaterThan(0);
+  });
+
+  it('fires onViewEvent from a chip and onSelectDate from a cell', () => {
+    const onViewEvent = vi.fn();
+    const onSelectDate = vi.fn();
+    render(<CalendarBoard events={events} initialDate="2026-03-10" onViewEvent={onViewEvent} onSelectDate={onSelectDate} />);
+    fireEvent.click(screen.getByText('C-check window'));
+    expect(onViewEvent).toHaveBeenCalledWith(expect.objectContaining({ id: 'm1' }));
+    fireEvent.click(screen.getAllByText('15')[0]!);
+    expect(onSelectDate).toHaveBeenCalledWith(expect.stringMatching(/^2026-03-1[05]$/));
+  });
+
+  it('groups the day view by hour rows and switches views through the header', () => {
+    render(<CalendarBoard events={events} initialDate="2026-03-10" view="day" />);
+    expect(screen.getAllByText('07:00').length).toBe(2); // hour label + chip time
+    expect(screen.getAllByText('09:00').length).toBe(1); // hour label only — the chip reads 09:30
+    expect(screen.queryByText('C-check window')).toBeNull(); // other day entirely — its hour label still grids
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByText('Nothing scheduled.')).toBeTruthy();
+    fireEvent.click(screen.getByText('Today'));
+    expect(screen.getByText(/October \d{1,2}, 2026/)).toBeTruthy(); // cursor jumped to the real today
+  });
+
+  it('stacks the week view by weekday columns', () => {
+    render(<CalendarBoard events={events} initialDate="2026-03-10" view="week" />);
+    expect(screen.getByText('C-check window')).toBeTruthy();
+    expect(screen.getByText('Crew brief')).toBeTruthy();
   });
 });
