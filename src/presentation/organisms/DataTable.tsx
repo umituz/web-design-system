@@ -8,6 +8,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   ChevronsUpDown,
+  Columns3,
 } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
 import {
@@ -22,6 +23,13 @@ import {
 } from './Table';
 import { Button } from '../atoms/Button';
 import { Skeleton } from '../atoms/Skeleton';
+import { Checkbox } from '../atoms/Checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from './DropdownMenu';
 import {
   computeTotalPages,
   clampPageNumber,
@@ -51,6 +59,8 @@ export interface Column<T> {
   hideBelow?: ColumnHideBelow;
   width?: string;
   className?: string;
+  /** Hidden until the reader enables it from the built-in columns menu. */
+  optional?: boolean;
 }
 
 export interface TablePaginationProps extends BaseProps {
@@ -72,6 +82,11 @@ export interface DataTableProps<T> extends BaseProps {
   onSortChange?: (id: string) => void;
   rowKey?: (row: T) => string;
   selectedId?: string;
+  selectable?: boolean;
+  selectedIds?: string[];
+  onSelectionChange?: (ids: string[]) => void;
+  bulkBar?: (selection: { ids: string[]; clear: () => void }) => ReactNode;
+  toolbar?: ReactNode;
   dense?: boolean;
   loading?: boolean;
   empty?: ReactNode;
@@ -239,6 +254,11 @@ export function DataTable<T>({
   onSortChange,
   rowKey,
   selectedId,
+  selectable = false,
+  selectedIds,
+  onSelectionChange,
+  bulkBar,
+  toolbar,
   dense = false,
   loading = false,
   empty,
@@ -254,9 +274,27 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const [internalSort, setInternalSort] = useState<SortState | null>(initialSort ?? null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [internalSelection, setInternalSelection] = useState<string[]>([]);
+  const [hiddenColumnIds, setHiddenColumnIds] = useState<string[]>(() =>
+    columns.filter((column) => column.optional).map((column) => column.id),
+  );
 
   const activeSort = sort !== undefined ? sort : internalSort;
   const controlled = sort !== undefined;
+
+  const selectionEnabled = selectable && rowKey !== undefined;
+  const selectionControlled = selectedIds !== undefined;
+  const selection = selectionControlled ? selectedIds : internalSelection;
+  const selectionSet = useMemo(() => new Set(selection), [selection]);
+
+  const commitSelection = (next: string[]) => {
+    if (!selectionControlled) setInternalSelection(next);
+    onSelectionChange?.(next);
+  };
+
+  const toggleRowSelection = (key: string) => {
+    commitSelection(selectionSet.has(key) ? selection.filter((id) => id !== key) : [...selection, key]);
+  };
 
   const handleSort = (id: string) => {
     if (!sortable) return;
@@ -291,6 +329,29 @@ export function DataTable<T>({
   const totalPages = computeTotalPages(data.length, pageSize);
   const safePage = clampPageNumber(currentPage, totalPages);
   const pageBounds = computePageBounds(currentPage, pageSize, data.length);
+
+  const knownColumnIds = useMemo(() => new Set(columns.map((column) => column.id)), [columns]);
+  const effectiveHiddenColumnIds = useMemo(
+    () => hiddenColumnIds.filter((id) => knownColumnIds.has(id)),
+    [hiddenColumnIds, knownColumnIds],
+  );
+  const hasOptionalColumns = useMemo(() => columns.some((column) => column.optional), [columns]);
+  const visibleColumns = useMemo(
+    () => columns.filter((column) => !effectiveHiddenColumnIds.includes(column.id)),
+    [columns, effectiveHiddenColumnIds],
+  );
+
+  const pageKeys = selectionEnabled ? paginatedData.map((row) => rowKey!(row)) : [];
+  const allPageSelected = pageKeys.length > 0 && pageKeys.every((key) => selectionSet.has(key));
+  const somePageSelected = pageKeys.some((key) => selectionSet.has(key));
+  const togglePageSelection = () => {
+    if (!selectionEnabled || pageKeys.length === 0) return;
+    commitSelection(
+      allPageSelected
+        ? selection.filter((id) => !pageKeys.includes(id))
+        : [...new Set([...selection, ...pageKeys])],
+    );
+  };
 
   const sizeStyles: Record<MediumSizes, string> = {
     sm: 'text-xs',
@@ -341,11 +402,71 @@ export function DataTable<T>({
 
   return (
     <div className={cn('space-y-4', stackable && 'ds-datatable-stack', className)} {...props}>
+      {(toolbar !== undefined || hasOptionalColumns) && (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          {toolbar !== undefined && <div className="flex flex-wrap items-center gap-2">{toolbar}</div>}
+          {hasOptionalColumns && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Columns3 className="h-4 w-4" aria-hidden="true" />
+                  Columns
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {columns.map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    checked={!effectiveHiddenColumnIds.includes(column.id)}
+                    disabled={!column.optional}
+                    onCheckedChange={(checked) =>
+                      setHiddenColumnIds((prev) =>
+                        checked
+                          ? prev.filter((id) => id !== column.id)
+                          : prev.includes(column.id)
+                            ? prev
+                            : [...prev, column.id],
+                      )
+                    }
+                    onSelect={(event) => event.preventDefault()}
+                  >
+                    {typeof column.header === 'string' ? column.header : column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      )}
+      {selectionEnabled && bulkBar && selection.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 rounded-md border bg-muted/40 px-3 py-2 text-sm">
+          {bulkBar({ ids: selection, clear: () => commitSelection([]) })}
+        </div>
+      )}
       <Table>
         {caption && <TableCaption>{caption}</TableCaption>}
         <TableHeader>
           <TableRow>
-            {columns.map((column) => {
+            {selectionEnabled && (
+              <TableHead
+                className={cn(
+                  'w-10',
+                  pxStyles[size],
+                  pyStyles[size],
+                  sticky && 'sticky top-0 z-[1] bg-background/95 backdrop-blur',
+                )}
+              >
+                <Checkbox
+                  size="sm"
+                  checked={allPageSelected}
+                  indeterminate={!allPageSelected && somePageSelected}
+                  onCheckedChange={togglePageSelection}
+                  disabled={pageKeys.length === 0}
+                  aria-label="Select all rows on this page"
+                />
+              </TableHead>
+            )}
+            {visibleColumns.map((column) => {
               const isActiveSort = activeSort?.id === column.id;
               return (
                 <TableHead
@@ -404,6 +525,7 @@ export function DataTable<T>({
           {paginatedData.map((row, index) => {
             const key = rowKey ? rowKey(row) : index;
             const selected = rowKey !== undefined && selectedId !== undefined && rowKey(row) === selectedId;
+            const rowSelected = selectionEnabled && typeof key === 'string' && selectionSet.has(key);
             const handleRowKeyDown = (event: ReactKeyboardEvent<HTMLTableRowElement>) => {
               if (event.target !== event.currentTarget) return;
               if (event.key === 'Enter' || event.key === ' ') {
@@ -418,7 +540,7 @@ export function DataTable<T>({
                 aria-label={onRowClick && rowLabel ? rowLabel(row) : undefined}
                 className={cn(
                   onRowClick && 'cursor-pointer hover:bg-muted/50',
-                  selected && 'bg-muted/60',
+                  (selected || rowSelected) && 'bg-muted/60',
                   rowClass?.(row)
                 )}
                 onClick={
@@ -430,7 +552,17 @@ export function DataTable<T>({
                 }
                 onKeyDown={onRowClick ? handleRowKeyDown : undefined}
               >
-                {columns.map((column) => (
+                {selectionEnabled && typeof key === 'string' && (
+                  <TableCell className={cn('w-10', pxStyles[size], pyStyles[size])}>
+                    <Checkbox
+                      size="sm"
+                      checked={rowSelected}
+                      onCheckedChange={() => toggleRowSelection(key)}
+                      aria-label={rowLabel ? `Select ${rowLabel(row)}` : 'Select row'}
+                    />
+                  </TableCell>
+                )}
+                {visibleColumns.map((column) => (
                   <TableCell
                     key={column.id}
                     data-label={stackable ? stackLabel(column) : undefined}
@@ -452,7 +584,7 @@ export function DataTable<T>({
         {paginated && (
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={columns.length}>
+              <TableCell colSpan={visibleColumns.length + (selectionEnabled ? 1 : 0)}>
                 <div className="flex items-center justify-between gap-2">
                   <p className={cn('text-muted-foreground', sizeStyles[size])}>
                     Showing {pageBounds.startIndex} to {pageBounds.endIndex} of {data.length} results

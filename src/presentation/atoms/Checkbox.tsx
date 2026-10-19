@@ -3,7 +3,15 @@
  * @description Checkbox input element with optional label
  */
 
-import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, useCallback } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
@@ -13,6 +21,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
   size?: 'sm' | 'md' | 'lg';
   label?: ReactNode;
   hint?: ReactNode;
+  indeterminate?: boolean;
 }
 
 const sizeStyles = {
@@ -22,10 +31,22 @@ const sizeStyles = {
 };
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, checked, onCheckedChange, size = 'md', disabled, onChange, label, hint, id, ...props }, ref) => {
+  ({ className, checked, onCheckedChange, size = 'md', disabled, onChange, label, hint, id, indeterminate, ...props }, ref) => {
     const generatedId = useId();
     const checkboxId = id ?? generatedId;
     const hintId = `${checkboxId}-hint`;
+    const innerRef = useRef<HTMLInputElement | null>(null);
+    useEffect(() => {
+      if (innerRef.current) innerRef.current.indeterminate = indeterminate === true;
+    }, [indeterminate]);
+    const setRef = useCallback(
+      (node: HTMLInputElement | null) => {
+        innerRef.current = node;
+        if (typeof ref === 'function') ref(node);
+        else if (ref) ref.current = node;
+      },
+      [ref],
+    );
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       onCheckedChange?.(e.target.checked);
       onChange?.(e);
@@ -33,7 +54,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
     const control = (
       <input
-        ref={ref}
+        ref={setRef}
         id={checkboxId}
         type="checkbox"
         checked={checked}

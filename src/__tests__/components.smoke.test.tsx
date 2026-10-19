@@ -346,6 +346,75 @@ describe('DataTable', () => {
     expect(container.querySelector('nav')).toBeNull();
     expect(container.textContent).toContain('3 results');
   });
+
+  it('selectable rows fire onSelectionChange and expose the bulkBar selection', () => {
+    const calls: string[][] = [];
+    render(
+      <DataTable<Row>
+        data={rows}
+        rowKey={(r) => r.id}
+        selectable
+        onSelectionChange={(ids) => calls.push([...ids])}
+        bulkBar={({ ids, clear }) => (
+          <div>
+            <span>{ids.length} selected</span>
+            <button type="button" onClick={clear}>
+              clear
+            </button>
+          </div>
+        )}
+        columns={[{ id: 'name', header: 'Name', accessor: 'name' }]}
+      />,
+    );
+    const boxes = screen.getAllByRole('checkbox');
+    expect(boxes.length).toBe(3);
+    expect(screen.queryByText('1 selected')).toBeNull();
+    fireEvent.click(boxes[1]!);
+    expect(calls[calls.length - 1]).toEqual(['r2']);
+    expect(screen.getByText('1 selected')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'clear' }));
+    expect(calls[calls.length - 1]).toEqual([]);
+    expect(screen.queryByText('1 selected')).toBeNull();
+  });
+
+  it('header checkbox toggles the page and reflects partial selection', () => {
+    render(
+      <DataTable<Row>
+        data={rows}
+        rowKey={(r) => r.id}
+        selectable
+        columns={[{ id: 'name', header: 'Name', accessor: 'name' }]}
+      />,
+    );
+    const header = screen.getAllByRole('checkbox')[0] as HTMLInputElement;
+    const first = screen.getAllByRole('checkbox')[1] as HTMLInputElement;
+    fireEvent.click(first);
+    expect(header.indeterminate).toBe(true);
+    fireEvent.click(header);
+    const boxes = screen.getAllByRole('checkbox') as HTMLInputElement[];
+    expect(boxes.map((box) => box.checked)).toEqual([true, true, true]);
+    fireEvent.click(header);
+    expect(boxes.slice(1).every((box) => !box.checked)).toBe(true);
+    expect(header.indeterminate).toBe(false);
+  });
+
+  it('hides optional columns until enabled and offers the columns menu with the toolbar', () => {
+    render(
+      <DataTable<Row>
+        data={rows}
+        toolbar={<input aria-label="filter rows" />}
+        columns={[
+          { id: 'name', header: 'Name', accessor: 'name' },
+          { id: 'qty', header: 'Qty', accessor: 'qty', optional: true },
+        ]}
+      />,
+    );
+    expect(screen.getByRole('columnheader', { name: /name/i })).toBeTruthy();
+    expect(screen.queryByRole('columnheader', { name: /qty/i })).toBeNull();
+    expect(screen.queryByText('10')).toBeNull();
+    expect(screen.getByRole('button', { name: /columns/i })).toBeTruthy();
+    expect(screen.getByLabelText('filter rows')).toBeTruthy();
+  });
 });
 
 describe('controlled surfaces', () => {
