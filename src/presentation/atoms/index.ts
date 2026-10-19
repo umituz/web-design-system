@@ -45,6 +45,8 @@ export type { TooltipProps } from './Tooltip';
 
 export { Progress } from './Progress';
 export type { ProgressProps } from './Progress';
+export { ProgressRing } from './ProgressRing';
+export type { ProgressRingProps } from './ProgressRing';
 
 export { Label } from './Label';
 

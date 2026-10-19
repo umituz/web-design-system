@@ -21,6 +21,7 @@ import { KeyValueList } from '../presentation/organisms/KeyValueList';
 import { DataTable, TablePagination } from '../presentation/organisms/DataTable';
 import { Tabs } from '../presentation/organisms/Tabs';
 import { Progress } from '../presentation/atoms/Progress';
+import { ProgressRing } from '../presentation/atoms/ProgressRing';
 import { Input } from '../presentation/atoms/Input';
 import { NativeSelect } from '../presentation/atoms/NativeSelect';
 import { Sparkline } from '../presentation/atoms/Sparkline';
@@ -397,6 +398,22 @@ describe('controlled surfaces', () => {
     expect(fill?.className).toContain('bg-destructive');
     expect(track.getAttribute('aria-valuenow')).toBe('40');
     expect(track.getAttribute('aria-valuemin')).toBe('0');
+  });
+
+  it('ProgressRing paints the arc, clamps overshoot and shows the percentage', () => {
+    render(<ProgressRing value={140} tone="success" label="gear readiness" />);
+    const ring = screen.getByRole('progressbar', { name: 'gear readiness' });
+    expect(ring.getAttribute('aria-valuenow')).toBe('100');
+    const arc = ring.querySelectorAll('circle')[1];
+    expect(arc?.getAttribute('class')).toContain('stroke-success');
+    expect(screen.getByText('100%')).toBeTruthy();
+  });
+
+  it('ProgressRing hides the value label on demand', () => {
+    render(<ProgressRing value={62} showValue={false} aria-label="capacity" />);
+    expect(screen.queryByText('62%')).toBeNull();
+    const ring = screen.getByRole('progressbar', { name: 'capacity' });
+    expect(ring.getAttribute('aria-valuenow')).toBe('62');
   });
 });
 
