@@ -137,3 +137,6 @@ export type {
   FormModalValues,
   FormStep,
 } from './FormModal';
+
+export { ConfirmDialog } from './ConfirmDialog';
+export type { ConfirmDialogProps } from './ConfirmDialog';

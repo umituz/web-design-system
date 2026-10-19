@@ -32,6 +32,7 @@ import { Drawer } from '../presentation/organisms/Drawer';
 import { Timeline } from '../presentation/organisms/Timeline';
 import { Checklist } from '../presentation/organisms/Checklist';
 import { FormModal } from '../presentation/organisms/FormModal';
+import { ConfirmDialog } from '../presentation/organisms/ConfirmDialog';
 import { BatteryPill } from '../presentation/atoms/BatteryPill';
 import { Kbd } from '../presentation/atoms/Kbd';
 
@@ -879,5 +880,21 @@ describe('accessia supersets', () => {
     fireEvent.click(box);
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
     expect(onSubmit).toHaveBeenCalledWith({ welcome: true });
+  });
+
+  it('ConfirmDialog confirms and closes, cancel only closes', () => {
+    const onConfirm = vi.fn();
+    const onClose = vi.fn();
+    render(
+      <ConfirmDialog title="Delete row?" body="This cannot be undone." confirmLabel="Delete" onConfirm={onConfirm} onClose={onClose} />,
+    );
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('This cannot be undone.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onConfirm).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(2);
   });
 });
