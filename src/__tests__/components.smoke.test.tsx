@@ -198,7 +198,7 @@ describe('DataTable', () => {
     expect(cellsBefore.join()).toContain('bravo');
     fireEvent.click(screen.getByRole('columnheader', { name: /name/i }));
     const firstDataRow = screen.getAllByRole('row')[1];
-    expect(firstDataRow.textContent).toContain('alpha');
+    expect(firstDataRow?.textContent).toContain('alpha');
   });
 
   it('controlled sort delegates to onSortChange', () => {
