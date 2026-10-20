@@ -73,6 +73,8 @@ export { IconButton } from './IconButton';
 export type { IconButtonProps } from './IconButton';
 
 export { Sparkline } from './Sparkline';
+export { HeatmapStrip } from './HeatmapStrip';
+export type { HeatmapStripProps, HeatmapCell } from './HeatmapStrip';
 export type { SparklineProps } from './Sparkline';
 
 export { NativeSelect } from './NativeSelect';

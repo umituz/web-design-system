@@ -50,3 +50,5 @@ export type { CodeBlockProps } from './CodeBlock';
 
 export { OptionCard } from './OptionCard';
 export type { OptionCardProps } from './OptionCard';
+export { OptionTile } from './OptionTile';
+export type { OptionTileProps, OptionTileState } from './OptionTile';

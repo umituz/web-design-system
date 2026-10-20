@@ -15,6 +15,9 @@ import { Alert, AlertTitle, AlertDescription } from '../presentation/organisms/A
 import { Breadcrumbs } from '../presentation/organisms/Breadcrumb';
 import { Card, CardHeader, CardTitle, CardContent } from '../presentation/organisms/Card';
 import { CommandPalette } from '../presentation/organisms/CommandPalette';
+import { ErrorBoundary } from '../presentation/organisms/ErrorBoundary';
+import { OptionTile } from '../presentation/molecules/OptionTile';
+import { HeatmapStrip } from '../presentation/atoms/HeatmapStrip';
 import { EmptyState } from '../presentation/organisms/EmptyState';
 import { StatCard } from '../presentation/organisms/StatCard';
 import { ToastProvider, useToast } from '../presentation/organisms/Toaster';
@@ -1310,5 +1313,124 @@ describe('CommandPalette (4.19)', () => {
     renderPalette();
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
     expect(open).toHaveBeenCalledWith(false);
+  });
+});
+
+describe('ErrorBoundary (4.20)', () => {
+  function Bomb({ boom }: { boom: boolean }): React.ReactElement {
+    if (boom) throw new Error('kaboom');
+    return <p>alive</p>;
+  }
+
+  // React error-boundary recovery needs a fresh render boundary per test.
+  afterEach(cleanup);
+
+  it('renders children while nothing throws', () => {
+    render(
+      <ErrorBoundary>
+        <Bomb boom={false} />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByText('alive')).toBeTruthy();
+  });
+
+  it('catches a crash and shows the recovery screen with the error message', () => {
+    const onError = vi.fn();
+    render(
+      <ErrorBoundary kicker="Something broke" onError={onError}>
+        <Bomb boom />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(screen.getByText('Something broke')).toBeTruthy();
+    expect(screen.getByText('kaboom')).toBeTruthy();
+    expect(onError).toHaveBeenCalledTimes(1);
+  });
+
+  it('recovers via the reset button', () => {
+    let boom = true;
+    function ToggleBomb(): React.ReactElement {
+      return <Bomb boom={boom} />;
+    }
+    const { rerender } = render(
+      <ErrorBoundary>
+        <ToggleBomb />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByRole('alert')).toBeTruthy();
+    boom = false;
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    rerender(
+      <ErrorBoundary>
+        <ToggleBomb />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByText('alive')).toBeTruthy();
+  });
+
+  it('renders a custom fallback when provided', () => {
+    render(
+      <ErrorBoundary fallback={(error) => <em>custom: {error.message}</em>}>
+        <Bomb boom />
+      </ErrorBoundary>,
+    );
+    expect(screen.getByText('custom: kaboom')).toBeTruthy();
+  });
+});
+
+describe('OptionTile (4.20)', () => {
+  it('renders label, key badge and a visually hidden native radio', () => {
+    const onChange = vi.fn();
+    render(<OptionTile label="Present perfect" keyBadge="A" checked onChange={onChange} name="q1" />);
+    const input = screen.getByRole('radio', { name: /present perfect/i }) as HTMLInputElement;
+    expect(input.checked).toBe(true);
+    expect(input.className).toContain('sr-only');
+    expect(screen.getByText('A')).toBeTruthy();
+  });
+
+  it('reports checkbox toggles from the multi-select variant', () => {
+    const onChange = vi.fn();
+    render(<OptionTile label="Both A and C" type="checkbox" onChange={onChange} />);
+    fireEvent.click(screen.getByRole('checkbox', { name: /both a and c/i }));
+    expect(onChange).toHaveBeenCalledWith(true);
+  });
+
+  it('styles reveal states — correct keeps the answer visible, wrong marks the miss', () => {
+    render(
+      <>
+        <OptionTile label="right" state="correct" onChange={vi.fn()} />
+        <OptionTile label="wrong" state="wrong" onChange={vi.fn()} />
+        <OptionTile label="missed" state="missed" onChange={vi.fn()} />
+      </>,
+    );
+    const tiles = screen.getByText('right').closest('label') as HTMLElement;
+    expect(tiles.className).toContain('border-success');
+    expect((screen.getByText('wrong').closest('label') as HTMLElement).className).toContain('border-destructive');
+    expect((screen.getByText('missed').closest('label') as HTMLElement).className).toContain('opacity-60');
+  });
+});
+
+describe('HeatmapStrip (4.20)', () => {
+  it('renders one cell per datum with tone and opacity ramps', () => {
+    render(
+      <HeatmapStrip
+        label="Skill coverage"
+        cells={[
+          { percent: 92, label: 'Reading: 92%' },
+          { percent: 45, label: 'Writing: 45%' },
+          { percent: 10, label: 'Speaking: 10%' },
+          { percent: null, label: 'Listening: no attempts' },
+        ]}
+      />,
+    );
+    expect(screen.getByRole('img', { name: 'Skill coverage' })).toBeTruthy();
+    expect(screen.getByTitle('Reading: 92%').style.opacity).toContain('0.94');
+    expect(screen.getByTitle('Listening: no attempts').style.backgroundColor).toContain('var(--color-muted)');
+  });
+
+  it('honours custom thresholds', () => {
+    render(<HeatmapStrip cells={[{ percent: 55 }]} goodAt={90} lowAt={50} />);
+    // 55 >= lowAt(50) but < goodAt(90) → primary tone
+    expect((document.querySelector('[role="img"] span') as HTMLElement).style.backgroundColor).toContain('var(--color-primary)');
   });
 });

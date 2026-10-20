@@ -41,6 +41,9 @@ export {
 } from './Dialog';
 
 export { CommandPalette } from './CommandPalette';
+
+export { ErrorBoundary } from './ErrorBoundary';
+export type { ErrorBoundaryProps } from './ErrorBoundary';
 export type { CommandPaletteProps, CommandGroup, CommandItem } from './CommandPalette';
 
 export { Breadcrumbs } from './Breadcrumb';
