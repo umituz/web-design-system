@@ -15,17 +15,24 @@ export interface ChipProps extends BaseProps {
   onRemove?: () => void;
   onClick?: () => void;
   removable?: boolean;
+  /** Toggle state for filter chips — renders as a pressed button when set. */
+  selected?: boolean;
 }
 
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
-  ({ label, variant = 'secondary', onRemove, onClick, removable = true, className, ...props }, ref) => {
+  ({ label, variant = 'secondary', onRemove, onClick, removable = true, selected, className, ...props }, ref) => {
+    const isFilter = selected !== undefined;
+    const resolvedVariant = selected ? 'primary' : variant;
     return (
       <Badge
         ref={ref}
-        variant={variant}
+        variant={resolvedVariant}
+        role={isFilter && onClick ? 'button' : undefined}
+        aria-pressed={isFilter ? selected : undefined}
         className={cn(
           'gap-1.5 pr-2',
           onClick && 'cursor-pointer hover:opacity-80',
+          isFilter && !selected && 'hover:border-primary/40',
           className
         )}
         onClick={onClick}

@@ -23,6 +23,8 @@ export interface TabsProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'pills' | 'underline';
   ariaLabel?: string;
   panelId?: string;
+  /** Render only the tab list (e.g. URL-driven tabs whose content lives elsewhere). */
+  showPanel?: boolean;
 }
 
 const variantStyles: Record<'default' | 'pills' | 'underline', string> = {
@@ -46,7 +48,7 @@ const tabVariantStyles: Record<'default' | 'pills' | 'underline', { base: string
   },
 };
 
-export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'default', ariaLabel, panelId, className, ...props }: TabsProps) {
+export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'default', ariaLabel, panelId, showPanel = true, className, ...props }: TabsProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const [internalTab, setInternalTab] = useState(defaultValue || tabs[0]?.value);
   const activeTab = value ?? internalTab;
@@ -112,7 +114,7 @@ export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'defa
               role="tab"
               aria-selected={isActive}
               data-state={isActive ? 'active' : 'inactive'}
-              aria-controls={panelId}
+              aria-controls={showPanel ? panelId : undefined}
               tabIndex={isActive ? 0 : -1}
               disabled={tab.disabled}
               onClick={() => handleTabChange(tab.value)}
@@ -137,13 +139,15 @@ export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'defa
       </div>
 
       {/* Tab Content */}
-      <div
-        role="tabpanel"
-        id={panelId}
-        className="mt-4"
-      >
-        {currentTab?.content}
-      </div>
+      {showPanel && (
+        <div
+          role="tabpanel"
+          id={panelId}
+          className="mt-4"
+        >
+          {currentTab?.content}
+        </div>
+      )}
     </div>
   );
 }

@@ -29,6 +29,7 @@ import { NativeSelect } from '../presentation/atoms/NativeSelect';
 import { Sparkline } from '../presentation/atoms/Sparkline';
 import { Avatar } from '../presentation/molecules/Avatar';
 import { SearchBox } from '../presentation/molecules/SearchBox';
+import { Chip } from '../presentation/molecules/Chip';
 import { KpiCard } from '../presentation/organisms/KpiCard';
 import { Modal } from '../presentation/organisms/Modal';
 import { Drawer } from '../presentation/organisms/Drawer';
@@ -747,6 +748,43 @@ describe('fleet surface supersets', () => {
     });
     expect(container.textContent).toContain('Deleted');
     expect(container.querySelector('.border-l-destructive')).not.toBeNull();
+  });
+});
+
+describe('shell sweep surface (4.18)', () => {
+  it('Button ink and onInk variants paint their surfaces', () => {
+    const { container } = render(<Button variant="ink">Ink</Button>);
+    expect(container.querySelector('button')?.className).toContain('bg-foreground');
+    const { container: onInk } = render(<Button variant="onInk">On ink</Button>);
+    expect(onInk.querySelector('button')?.className).toContain('bg-background');
+  });
+
+  it('Card asChild merges onto the child and interactive adds pointer classes', () => {
+    const { container } = render(
+      <Card asChild interactive>
+        <a href="/x">Card link</a>
+      </Card>
+    );
+    const link = container.querySelector('a');
+    expect(link?.className).toContain('bg-card');
+    expect(link?.className).toContain('cursor-pointer');
+    expect(container.querySelector('div')).toBeNull();
+  });
+
+  it('Tabs showPanel=false renders the list only', () => {
+    const { container } = render(
+      <Tabs tabs={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} value="a" showPanel={false} />
+    );
+    expect(container.querySelector('[role="tablist"]')).not.toBeNull();
+    expect(container.querySelector('[role="tabpanel"]')).toBeNull();
+  });
+
+  it('Chip selected toggles primary tone with aria-pressed', () => {
+    const { container } = render(
+      <Chip label="Active" selected removable={false} onClick={() => {}} />
+    );
+    const chip = container.querySelector('[aria-pressed="true"]');
+    expect(chip?.className).toContain('bg-primary');
   });
 });
 

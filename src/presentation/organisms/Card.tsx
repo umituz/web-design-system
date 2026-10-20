@@ -5,11 +5,16 @@
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import React from 'react';
+import { Slot } from '@radix-ui/react-slot';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'outlined' | 'elevated';
+  /** Render as the single child element (e.g. a router Link) instead of a div. */
+  asChild?: boolean;
+  /** Interactive card: pointer cursor, hover border and a visible focus ring. */
+  interactive?: boolean;
 }
 
 const variantStyles: Record<'default' | 'outlined' | 'elevated', string> = {
@@ -19,15 +24,22 @@ const variantStyles: Record<'default' | 'outlined' | 'elevated', string> = {
 };
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant = 'default', children, ...props }, ref) => {
+  ({ className, variant = 'default', asChild = false, interactive = false, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'div';
     return (
-      <div
+      <Comp
         ref={ref}
-        className={cn('rounded-lg', variantStyles[variant], className)}
+        className={cn(
+          'rounded-lg text-left',
+          variantStyles[variant],
+          interactive &&
+            'cursor-pointer transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          className
+        )}
         {...props}
       >
         {children}
-      </div>
+      </Comp>
     );
   }
 );
