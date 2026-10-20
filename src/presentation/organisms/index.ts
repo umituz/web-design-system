@@ -40,6 +40,9 @@ export {
   DialogDescription,
 } from './Dialog';
 
+export { CommandPalette } from './CommandPalette';
+export type { CommandPaletteProps, CommandGroup, CommandItem } from './CommandPalette';
+
 export { Breadcrumbs } from './Breadcrumb';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 

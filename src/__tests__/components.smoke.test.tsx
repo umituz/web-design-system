@@ -14,6 +14,7 @@ import { Spinner } from '../presentation/atoms/Spinner';
 import { Alert, AlertTitle, AlertDescription } from '../presentation/organisms/Alert';
 import { Breadcrumbs } from '../presentation/organisms/Breadcrumb';
 import { Card, CardHeader, CardTitle, CardContent } from '../presentation/organisms/Card';
+import { CommandPalette } from '../presentation/organisms/CommandPalette';
 import { EmptyState } from '../presentation/organisms/EmptyState';
 import { StatCard } from '../presentation/organisms/StatCard';
 import { ToastProvider, useToast } from '../presentation/organisms/Toaster';
@@ -1250,5 +1251,64 @@ describe('calendar board', () => {
     render(<CalendarBoard events={events} initialDate="2026-03-10" view="week" />);
     expect(screen.getByText('C-check window')).toBeTruthy();
     expect(screen.getByText('Crew brief')).toBeTruthy();
+  });
+});
+
+describe('CommandPalette (4.19)', () => {
+  const coursesSelect = vi.fn();
+  const groups = [
+    {
+      heading: 'Go to',
+      items: [
+        { id: 'home', label: 'Home', hint: '/app', onSelect: vi.fn() },
+        { id: 'courses', label: 'Courses', keywords: 'lessons learning', onSelect: coursesSelect },
+      ],
+    },
+    {
+      heading: 'Actions',
+      items: [
+        { id: 'theme', label: 'Toggle theme', onSelect: vi.fn() },
+        { id: 'nuke', label: 'Delete everything', danger: true, onSelect: vi.fn() },
+      ],
+    },
+  ];
+  const open = vi.fn();
+
+  const renderPalette = () => render(<CommandPalette open onOpenChange={open} groups={groups} />);
+
+  it('renders grouped options and the combobox when open', () => {
+    renderPalette();
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    expect(screen.getByRole('option', { name: /home/i })).toBeTruthy();
+    expect(screen.getByText('Go to')).toBeTruthy();
+    expect(screen.getByText('Actions')).toBeTruthy();
+    expect(screen.getByRole('option', { name: /delete everything/i })).toBeTruthy();
+  });
+
+  it('filters by label and keywords, hides empty groups', () => {
+    renderPalette();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'less' } });
+    expect(screen.getByRole('option', { name: /courses/i })).toBeTruthy();
+    expect(screen.queryByRole('option', { name: /home/i })).toBeNull();
+    expect(screen.getByText('Go to')).toBeTruthy(); // Courses survived via keywords
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'delete' } });
+    expect(screen.queryByText('Go to')).toBeNull(); // only the Actions group matched
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'zzz' } });
+    expect(screen.getByText('No results.')).toBeTruthy();
+  });
+
+  it('Enter runs the highlighted option and closes; arrows move the selection', () => {
+    renderPalette();
+    const input = screen.getByRole('combobox');
+    fireEvent.keyDown(input, { key: 'ArrowDown' }); // Home → Courses
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(coursesSelect).toHaveBeenCalled();
+    expect(open).toHaveBeenCalledWith(false);
+  });
+
+  it('Escape closes via the Radix dialog', () => {
+    renderPalette();
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
+    expect(open).toHaveBeenCalledWith(false);
   });
 });
