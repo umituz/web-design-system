@@ -7,7 +7,7 @@ import * as React from 'react';
 import { cn } from '../../infrastructure/utils';
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'destructive';
+  variant?: 'default' | 'destructive' | 'info' | 'warning' | 'success';
 }
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
@@ -19,6 +19,9 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         'relative w-full rounded-lg border border-border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground',
         variant === 'default' && 'bg-background text-foreground',
         variant === 'destructive' && 'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',
+        variant === 'info' && 'border-info/50 bg-info/10 [&>svg]:text-info',
+        variant === 'warning' && 'border-warning/50 bg-warning/10 [&>svg]:text-warning',
+        variant === 'success' && 'border-success/50 bg-success/10 [&>svg]:text-success',
         className
       )}
       {...props}

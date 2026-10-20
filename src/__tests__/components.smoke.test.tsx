@@ -12,6 +12,7 @@ import { Button } from '../presentation/atoms/Button';
 import { Badge } from '../presentation/atoms/Badge';
 import { Spinner } from '../presentation/atoms/Spinner';
 import { Alert, AlertTitle, AlertDescription } from '../presentation/organisms/Alert';
+import { Breadcrumbs } from '../presentation/organisms/Breadcrumb';
 import { Card, CardHeader, CardTitle, CardContent } from '../presentation/organisms/Card';
 import { EmptyState } from '../presentation/organisms/EmptyState';
 import { StatCard } from '../presentation/organisms/StatCard';
@@ -64,6 +65,12 @@ describe('atoms', () => {
     }
   });
 
+  it('Badge outline variant stays transparent', () => {
+    render(<Badge variant="outline">draft</Badge>);
+    expect(screen.getByText('draft').className).toContain('bg-transparent');
+    expect(screen.getByText('draft').className).toContain('border-border');
+  });
+
   it('Spinner renders an accessible status', () => {
     render(<Spinner />);
     expect(screen.getByRole('status')).toBeTruthy();
@@ -100,6 +107,47 @@ describe('organisms', () => {
       </Alert>
     );
     expect(screen.getByRole('alert').className).toContain('border-destructive');
+  });
+
+  it('Alert carries tone classes for info, warning and success', () => {
+    const { rerender } = render(
+      <Alert variant="info">
+        <AlertTitle>Heads up</AlertTitle>
+      </Alert>
+    );
+    expect(screen.getByRole('alert').className).toContain('border-info');
+    rerender(
+      <Alert variant="warning">
+        <AlertTitle>Check</AlertTitle>
+      </Alert>
+    );
+    expect(screen.getByRole('alert').className).toContain('border-warning');
+    rerender(
+      <Alert variant="success">
+        <AlertTitle>Done</AlertTitle>
+      </Alert>
+    );
+    expect(screen.getByRole('alert').className).toContain('border-success');
+  });
+
+  it('Breadcrumbs renders custom content nodes for SPA router links', () => {
+    render(
+      <Breadcrumbs
+        items={[
+          { label: 'Home', content: <a href="/home">Home</a> },
+          { label: 'Library', href: '/library' },
+          { label: 'Word list' },
+        ]}
+      />
+    );
+    const nav = screen.getByRole('navigation', { name: 'Breadcrumb' });
+    expect(nav.textContent).toContain('Home');
+    expect(nav.textContent).toContain('Word list');
+    // custom content anchor + the href-based Link, plain label renders no anchor
+    const anchors = nav.querySelectorAll('a');
+    expect(anchors.length).toBe(2);
+    expect(anchors[0]?.getAttribute('href')).toBe('/home');
+    expect(anchors[1]?.getAttribute('href')).toBe('/library');
   });
 
   it('EmptyState renders message and action', () => {

@@ -13,6 +13,10 @@ export interface BreadcrumbItem {
   label: string;
   href?: string;
   icon?: ReactNode;
+  /** Renders this node instead of the default anchor — for hosts that need
+   *  SPA router links (react-router `Link`, Next `Link`, …). When set, label
+   *  and href are ignored for rendering. */
+  content?: ReactNode;
 }
 
 export interface BreadcrumbsProps extends HTMLAttributes<HTMLElement>, BaseProps {
@@ -46,7 +50,16 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(
             <div key={index} className="flex items-center gap-2">
               {index > 0 && (separator || defaultSeparator)}
 
-              {item.href ? (
+              {item.content ? (
+                <span
+                  className={cn(
+                    'flex items-center gap-1.5',
+                    isLast ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {item.content}
+                </span>
+              ) : item.href ? (
                 <Link
                   href={item.href}
                   className={cn(

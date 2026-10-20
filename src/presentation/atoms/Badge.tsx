@@ -8,7 +8,7 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
 
-export type BadgeVariant = ColorVariant | 'info' | 'danger' | 'neutral' | 'accent' | 'violet';
+export type BadgeVariant = ColorVariant | 'info' | 'danger' | 'neutral' | 'accent' | 'violet' | 'outline';
 
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: BadgeVariant;
@@ -30,6 +30,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   success: 'bg-success text-success-foreground border-success',
   warning: 'bg-warning text-warning-foreground border-warning',
   destructive: 'bg-destructive text-destructive-foreground border-destructive',
+  outline: 'bg-transparent text-foreground border-border',
 };
 
 const sizeStyles: Record<MediumSizes, string> = {
