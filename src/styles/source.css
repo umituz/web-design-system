@@ -1,0 +1,15 @@
+/**
+ * @umituz/web-design-system — Tailwind v4 host entry
+ *
+ * Tailwind v4 hosts import this file right after `@import "tailwindcss"`:
+ * it registers the theme token layer and scans the component sources so
+ * the package's classes compile inside the host's own Tailwind build,
+ * restyled by the host's `@theme` overrides. Hosts must NOT also import
+ * the precompiled `dist/styles.css` (that is the vanilla-host path).
+ *
+ * The `@source` directive is resolved relative to this file, so hosts
+ * never write node_modules paths themselves.
+ */
+
+@import "./theme.css";
+@source "../presentation";

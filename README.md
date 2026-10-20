@@ -87,10 +87,14 @@ you pass via `className` merge naturally with the package's:
 ```css
 /* app.css */
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "@umituz/web-design-system/theme.css";
-@source "../node_modules/@umituz/web-design-system/src";
+@import "@umituz/web-design-system/source.css";
 ```
+
+`source.css` imports the `@theme` token layer and scans the package's
+component sources for classes; the `@source` directive inside it resolves
+relative to the package, so hosts never write `node_modules` paths (the
+old relative-`@source` recipe broke silently twice in the fleet — a wrong
+depth compiled zero classes).
 
 You control the palette the same way (override `--color-*` in your theme),
 and your `@theme` extensions apply everywhere.
@@ -134,7 +138,8 @@ is three variables:
 
 ```bash
 @umituz/web-design-system/styles.css   # precompiled stylesheet (vanilla hosts)
-@umituz/web-design-system/theme.css     # @theme layer (Tailwind v4 hosts)
+@umituz/web-design-system/source.css    # theme + @source scan (Tailwind v4 hosts)
+@umituz/web-design-system/theme.css     # @theme layer alone
 @umituz/web-design-system/bridge.css    # --color-* → --app-* palette bridge
 @umituz/web-design-system/atoms         # Button, Input, Badge, Spinner, …
 @umituz/web-design-system/molecules     # FormField, Select, Avatar, …
