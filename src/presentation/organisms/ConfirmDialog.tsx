@@ -15,11 +15,14 @@ export interface ConfirmDialogProps {
   cancelLabel?: string;
   /** Visual weight of the confirm action; defaults to danger. */
   tone?: 'danger' | 'primary';
+  /** Renders nothing when false; defaults to true (conditional mounting also works). */
+  open?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 }
 
-export function ConfirmDialog({ title, body, confirmLabel = 'Confirm', cancelLabel = 'Cancel', tone = 'danger', onConfirm, onClose }: ConfirmDialogProps) {
+export function ConfirmDialog({ title, body, confirmLabel = 'Confirm', cancelLabel = 'Cancel', tone = 'danger', open = true, onConfirm, onClose }: ConfirmDialogProps) {
+  if (!open) return null;
   return (
     <Modal
       open

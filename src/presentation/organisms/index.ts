@@ -52,6 +52,8 @@ export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
 export { HoverCard, HoverCardTrigger, HoverCardContent } from './HoverCard';
 
 export { Popover, PopoverTrigger, PopoverContent } from './Popover';
+export { FilterPopover } from './FilterPopover';
+export type { FilterPopoverProps } from './FilterPopover';
 
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './Collapsible';
 
