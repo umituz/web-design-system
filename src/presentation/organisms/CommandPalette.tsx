@@ -35,6 +35,8 @@ export interface CommandPaletteProps {
   emptyLabel?: string;
   /** Accessible name for the dialog. */
   label?: string;
+  /** Notifies the host on every query change (typing and reset-on-open). */
+  onQueryChange?: (q: string) => void;
 }
 
 interface FlatEntry {
@@ -58,6 +60,7 @@ export const CommandPalette = ({
   placeholder = 'Type a command or search…',
   emptyLabel = 'No results.',
   label = 'Command palette',
+  onQueryChange,
 }: CommandPaletteProps) => {
   const [query, setQuery] = React.useState('');
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -81,6 +84,7 @@ export const CommandPalette = ({
     if (open) {
       setQuery('');
       setActiveIndex(0);
+      onQueryChange?.('');
     }
   }
 
@@ -139,6 +143,7 @@ export const CommandPalette = ({
               onChange={(e) => {
                 setQuery(e.target.value);
                 setActiveIndex(0);
+                onQueryChange?.(e.target.value);
               }}
               onKeyDown={onKeyDown}
               placeholder={placeholder}

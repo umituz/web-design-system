@@ -49,6 +49,8 @@
   --color-warning-foreground: #ffffff;
   --color-info: #2563eb;
   --color-info-foreground: #ffffff;
+  --color-violet: #7c3aed;
+  --color-violet-foreground: #ffffff;
 
   /* Focus */
   --color-ring: rgba(37, 99, 235, 0.45);
