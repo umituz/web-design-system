@@ -54,6 +54,7 @@ import { DateRangePicker, presetRange } from '../presentation/organisms/DateRang
 import { FileUploader } from '../presentation/organisms/FileUploader';
 import { MapPreview } from '../presentation/organisms/MapPreview';
 import { PhotoGallery } from '../presentation/organisms/PhotoGallery';
+import { AvatarStack } from '../presentation/organisms/AvatarStack';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -1643,5 +1644,27 @@ describe('PhotoGallery (4.26)', () => {
   it('shows the dashed empty state when there are no photos', () => {
     render(<PhotoGallery photos={[]} emptyLabel="No photos yet" />);
     expect(screen.getByText('No photos yet')).toBeTruthy();
+  });
+});
+
+describe('AvatarStack (4.27)', () => {
+  it('stacks avatars and caps the row with a +N badge', () => {
+    render(
+      <AvatarStack
+        people={[
+          { id: '1', name: 'Ada Lovelace' },
+          { id: '2', name: 'Grace Hopper' },
+          { id: '3', name: 'Alan Turing' },
+          { id: '4', name: 'Katherine Johnson' },
+          { id: '5', name: 'Mary Jackson' },
+        ]}
+        max={3}
+      />,
+    );
+    expect(screen.getByText('AL')).toBeTruthy();
+    expect(screen.getByText('GH')).toBeTruthy();
+    expect(screen.getByText('AT')).toBeTruthy();
+    expect(screen.queryByText('KJ')).toBeNull();
+    expect(screen.getByText('+2')).toBeTruthy();
   });
 });

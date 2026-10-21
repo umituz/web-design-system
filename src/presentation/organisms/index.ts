@@ -156,6 +156,9 @@ export type { ToastShorthandOptions } from './Toaster';
 export { Timeline } from './Timeline';
 export type { TimelineProps, TimelineItem, TimelineTone } from './Timeline';
 
+export { AvatarStack } from './AvatarStack';
+export type { AvatarStackProps, AvatarPerson } from './AvatarStack';
+
 export { Checklist } from './Checklist';
 export type { ChecklistProps, ChecklistItem } from './Checklist';
 
