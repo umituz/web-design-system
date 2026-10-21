@@ -1,9 +1,3 @@
-/**
- * CommandPalette Component (Organism)
- * @description ⌘K-style command palette — filterable grouped actions with
- * full keyboard navigation, built on the Radix dialog primitives.
- */
-
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Search } from 'lucide-react';
@@ -13,9 +7,7 @@ export interface CommandItem {
   id: string;
   label: string;
   icon?: React.ReactNode;
-  /** Right-aligned hint (e.g. a navigation target). */
   hint?: string;
-  /** Extra match targets beyond the label. */
   keywords?: string;
   danger?: boolean;
   disabled?: boolean;
@@ -30,13 +22,10 @@ export interface CommandGroup {
 export interface CommandPaletteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Static entry groups; palettes driven purely by `search` may omit them. */
   groups?: CommandGroup[];
   placeholder?: string;
   emptyLabel?: string;
-  /** Accessible name for the dialog. */
   label?: string;
-  /** Notifies the host on every query change (typing and reset-on-open). */
   onQueryChange?: (q: string) => void;
 }
 
@@ -77,8 +66,6 @@ export const CommandPalette = ({
     [groups, query]
   );
 
-  // Fresh query + selection every time the palette opens (render-time
-  // adjustment — the React-endorsed replacement for a reset effect).
   const [prevOpen, setPrevOpen] = React.useState(open);
   if (open !== prevOpen) {
     setPrevOpen(open);
@@ -88,20 +75,22 @@ export const CommandPalette = ({
     }
   }
 
+  const onQueryChangeRef = React.useRef(onQueryChange);
+  React.useEffect(() => {
+    onQueryChangeRef.current = onQueryChange;
+  });
   React.useEffect(() => {
     if (open) {
-      onQueryChange?.('');
+      onQueryChangeRef.current?.('');
     }
-  }, [open, onQueryChange]);
+  }, [open]);
 
-  // Keep the highlighted index inside the (possibly filtered) list.
   const [prevFlatLength, setPrevFlatLength] = React.useState(flat.length);
   if (flat.length !== prevFlatLength) {
     setPrevFlatLength(flat.length);
     setActiveIndex((i) => Math.min(i, Math.max(flat.length - 1, 0)));
   }
 
-  // Keep the highlighted option in view while arrowing through the list.
   React.useEffect(() => {
     const active = flat[activeIndex];
     if (!active) return;
