@@ -1,10 +1,5 @@
-/**
- * EmptyState Component (Organism)
- * @description Component for displaying empty states with optional actions (Responsive)
- */
-
 import { forwardRef, isValidElement } from 'react';
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { cn, getSpacing, getGap } from '../../infrastructure/utils';
 import type { BaseProps, SizeVariant } from '../../domain/types';
 
@@ -23,8 +18,18 @@ function isActionConfig(action: EmptyStateAction | ReactNode): action is EmptySt
   );
 }
 
+const FORWARD_REF = Symbol.for('react.forward_ref');
+const MEMO = Symbol.for('react.memo');
+
+function isComponentType(value: unknown): value is ComponentType<{ className?: string }> {
+  if (typeof value === 'function') return true;
+  if (typeof value !== 'object' || value === null) return false;
+  const tag = (value as { $$typeof?: symbol }).$$typeof;
+  return tag === FORWARD_REF || tag === MEMO;
+}
+
 export interface EmptyStateProps extends BaseProps {
-  icon?: React.ComponentType<{ className?: string }> | ReactNode;
+  icon?: ComponentType<{ className?: string }> | ReactNode;
   title: string;
   description?: string;
   action?: EmptyStateAction | ReactNode;
@@ -45,6 +50,7 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
     },
     ref
   ) => {
+    const iconBox = size === 'sm' ? 'h-8 w-8 sm:h-10 sm:w-10' : size === 'md' ? 'h-12 w-12 sm:h-14 sm:w-14' : size === 'lg' ? 'h-16 w-16 sm:h-20 sm:w-20' : 'h-20 w-20 sm:h-24 sm:w-24';
     return (
       <div
         ref={ref}
@@ -56,18 +62,18 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
         )}
         {...props}
       >
-        {typeof icon === 'function' &&
+        {isComponentType(icon) &&
           (() => {
             const Icon = icon;
             return (
-              <Icon className={cn(size === 'sm' ? 'h-8 w-8 sm:h-10 sm:w-10' : size === 'md' ? 'h-12 w-12 sm:h-14 sm:w-14' : size === 'lg' ? 'h-16 w-16 sm:h-20 sm:w-20' : 'h-20 w-20 sm:h-24 sm:w-24', 'text-muted-foreground/50 mx-auto mb-2')} />
+              <Icon className={cn(iconBox, 'text-muted-foreground/50 mx-auto mb-2')} />
             );
           })()}
-        {typeof icon !== 'function' && icon && (
+        {!isComponentType(icon) && icon && (
           <span
             className={cn(
               'inline-flex items-center justify-center text-muted-foreground/50 mx-auto mb-2',
-              size === 'sm' ? 'h-8 w-8 sm:h-10 sm:w-10' : size === 'md' ? 'h-12 w-12 sm:h-14 sm:w-14' : size === 'lg' ? 'h-16 w-16 sm:h-20 sm:w-20' : 'h-20 w-20 sm:h-24 sm:w-24'
+              iconBox
             )}
           >
             {icon}
