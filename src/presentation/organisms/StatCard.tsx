@@ -20,6 +20,8 @@ export interface StatCardProps extends BaseProps {
     value: number;
     label?: string;
   };
+  /** Secondary context line rendered under the title. */
+  meta?: string;
   target?: {
     value: string;
     progress: number;
@@ -38,6 +40,7 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
       className,
       title,
       value,
+      meta,
       icon: Icon,
       iconColor = 'text-primary',
       trend,
@@ -111,6 +114,9 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
                 {typeof value === 'number' ? value.toLocaleString() : value}
               </p>
               <p className={cn('text-muted-foreground', getTextSize(size))}>{title}</p>
+              {meta && (
+                <p className="text-xs text-muted-foreground/80 leading-snug">{meta}</p>
+              )}
             </div>
 
             {target && (

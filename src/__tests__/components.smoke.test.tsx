@@ -173,6 +173,12 @@ describe('organisms', () => {
     expect(screen.getAllByText('+12.3%').length).toBeGreaterThan(0);
   });
 
+  it('StatCard renders the secondary meta line when provided (4.28)', () => {
+    render(<StatCard title="Visits today" value={6} meta="14 open work orders" />);
+    expect(screen.getByText('6')).toBeTruthy();
+    expect(screen.getByText('14 open work orders')).toBeTruthy();
+  });
+
   it('ToastProvider renders a fired toast with its kind accent', async () => {
     function Harness({ kind }: { kind: ToastKind }) {
       const { toast } = useToast();
