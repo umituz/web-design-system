@@ -49,6 +49,11 @@ import { BatteryPill } from '../presentation/atoms/BatteryPill';
 import { Kbd } from '../presentation/atoms/Kbd';
 import { CalendarBoard } from '../presentation/organisms/CalendarBoard';
 import type { CalendarEvent } from '../presentation/organisms/CalendarBoard';
+import { statusVocab } from '../presentation/organisms/StatusBadge';
+import { DateRangePicker, presetRange } from '../presentation/organisms/DateRangePicker';
+import { FileUploader } from '../presentation/organisms/FileUploader';
+import { MapPreview } from '../presentation/organisms/MapPreview';
+import { PhotoGallery } from '../presentation/organisms/PhotoGallery';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -1542,5 +1547,101 @@ describe('CommandPalette without static groups (4.23)', () => {
     expect(combobox).toBeTruthy();
     fireEvent.change(combobox, { target: { value: 'zzz' } });
     expect(screen.getByText('No results.')).toBeTruthy();
+  });
+});
+
+describe('statusVocab fabric (4.26)', () => {
+  it('merges a label map with a tone table and defaults to no tone', () => {
+    const vocab = statusVocab(
+      { active: 'Active', paused: 'Paused' },
+      { active: 'success' },
+    );
+    expect(vocab.active).toEqual({ label: 'Active', tone: 'success' });
+    expect(vocab.paused).toEqual({ label: 'Paused' });
+  });
+});
+
+describe('presetRange (4.26)', () => {
+  it('resolves presets around the given today anchor', () => {
+    expect(presetRange('7d', '2026-10-22')).toEqual({
+      from: '2026-10-16',
+      to: '2026-10-22',
+      preset: '7d',
+    });
+    expect(presetRange('month', '2026-10-22')).toEqual({
+      from: '2026-10-01',
+      to: '2026-10-22',
+      preset: 'month',
+    });
+    expect(presetRange('year', '2026-10-22')).toEqual({
+      from: '2026-01-01',
+      to: '2026-10-22',
+      preset: 'year',
+    });
+  });
+});
+
+describe('DateRangePicker (4.26)', () => {
+  it('renders the formatted window on the trigger', () => {
+    render(
+      <DateRangePicker
+        value={{ from: '2026-10-01', to: '2026-10-22', preset: 'month' }}
+        onChange={vi.fn()}
+        formatDay={(iso) => iso.slice(5)}
+      />
+    );
+    expect(screen.getByRole('button', { name: /10-01 – 10-22/ })).toBeTruthy();
+  });
+});
+
+describe('FileUploader (4.26)', () => {
+  it('queues picked names and clears them', () => {
+    const onFiles = vi.fn();
+    render(<FileUploader onFiles={onFiles} />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['x'], 'site-plan.pdf', { type: 'application/pdf' });
+    fireEvent.change(input, { target: { files: [file] } });
+    expect(onFiles).toHaveBeenCalledWith([file]);
+    expect(screen.getByText('site-plan.pdf')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
+    expect(screen.queryByText('site-plan.pdf')).toBeNull();
+  });
+});
+
+describe('MapPreview (4.26)', () => {
+  it('renders the location caption, coordinate readout and hint', () => {
+    render(
+      <MapPreview
+        label="Torba, Bodrum"
+        coordinates={{ lat: 37.0916, lng: 27.3744 }}
+        hint="Map preview — GIS integration coming soon"
+      />,
+    );
+    const figure = screen.getByRole('img', { name: 'Map preview — Torba, Bodrum' });
+    expect(figure).toBeTruthy();
+    expect(screen.getByText('Torba, Bodrum')).toBeTruthy();
+    expect(screen.getByText('37.0916° N · 27.3744° E')).toBeTruthy();
+    expect(screen.getByText('Map preview — GIS integration coming soon')).toBeTruthy();
+  });
+});
+
+describe('PhotoGallery (4.26)', () => {
+  it('renders captioned placeholder tiles', () => {
+    render(
+      <PhotoGallery
+        photos={[
+          { id: 'p1', label: 'North border', meta: 'after' },
+          { id: 'p2', label: 'Terrace' },
+        ]}
+      />,
+    );
+    expect(screen.getByText('North border')).toBeTruthy();
+    expect(screen.getByText('· after')).toBeTruthy();
+    expect(screen.getByTitle('Terrace')).toBeTruthy();
+  });
+
+  it('shows the dashed empty state when there are no photos', () => {
+    render(<PhotoGallery photos={[]} emptyLabel="No photos yet" />);
+    expect(screen.getByText('No photos yet')).toBeTruthy();
   });
 });

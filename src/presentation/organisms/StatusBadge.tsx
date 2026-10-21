@@ -16,6 +16,22 @@ export interface StatusEntry {
 
 export type StatusVocab = Record<string, StatusEntry>;
 
+/**
+ * Status vocab fabric — build a vocab from a domain label map (raw value →
+ * display label) plus an optional tone table (raw value → badge tone).
+ * Entries without a tone render neutral.
+ */
+export function statusVocab(
+  labels: Record<string, string>,
+  tones: Record<string, BadgeVariant> = {},
+): StatusVocab {
+  const vocab: StatusVocab = {};
+  for (const [value, label] of Object.entries(labels)) {
+    vocab[value] = tones[value] !== undefined ? { label, tone: tones[value] } : { label };
+  }
+  return vocab;
+}
+
 export interface StatusBadgeProps {
   vocab: StatusVocab;
   value: string;

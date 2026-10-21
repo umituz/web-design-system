@@ -128,8 +128,25 @@ export type { ModalProps, ModalSize } from './Modal';
 export { Drawer } from './Drawer';
 export type { DrawerProps, DrawerSide } from './Drawer';
 
-export { StatusBadge } from './StatusBadge';
+export { StatusBadge, statusVocab } from './StatusBadge';
 export type { StatusBadgeProps, StatusEntry, StatusVocab } from './StatusBadge';
+
+export { DateRangePicker, presetRange, DEFAULT_RANGE_PRESETS } from './DateRangePicker';
+export type {
+  DateRangePickerProps,
+  DateRange,
+  RangePreset,
+  RangePresetOption,
+} from './DateRangePicker';
+
+export { FileUploader } from './FileUploader';
+export type { FileUploaderProps } from './FileUploader';
+
+export { MapPreview } from './MapPreview';
+export type { MapPreviewProps } from './MapPreview';
+
+export { PhotoGallery } from './PhotoGallery';
+export type { PhotoGalleryProps, PhotoTile } from './PhotoGallery';
 
 export { Lightbox } from './Lightbox';
 export type { LightboxProps } from './Lightbox';
