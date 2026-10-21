@@ -85,9 +85,14 @@ export const CommandPalette = ({
     if (open) {
       setQuery('');
       setActiveIndex(0);
-      onQueryChange?.('');
     }
   }
+
+  React.useEffect(() => {
+    if (open) {
+      onQueryChange?.('');
+    }
+  }, [open, onQueryChange]);
 
   // Keep the highlighted index inside the (possibly filtered) list.
   const [prevFlatLength, setPrevFlatLength] = React.useState(flat.length);
@@ -100,7 +105,7 @@ export const CommandPalette = ({
   React.useEffect(() => {
     const active = flat[activeIndex];
     if (!active) return;
-    const el = listRef.current?.querySelector(`#cmd-opt-${active.item.id}`);
+    const el = document.getElementById(`cmd-opt-${active.item.id}`);
     if (typeof el?.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
   }, [activeIndex, flat]);
 
