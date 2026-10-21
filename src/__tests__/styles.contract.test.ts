@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest';
 
 const css = readFileSync(resolve(__dirname, '../../dist/styles.css'), 'utf8');
 const bridge = readFileSync(resolve(__dirname, '../styles/bridge.css'), 'utf8');
+const appEntry = readFileSync(resolve(__dirname, '../styles/app.css'), 'utf8');
 
 describe('dist/styles.css contract', () => {
   it('exists and is non-trivial', () => {
@@ -105,5 +106,12 @@ describe('bridge.css contract (published as-is)', () => {
     const declarations = bridge.replace(/\/\*[\s\S]*?\*\//g, '');
     expect(declarations).not.toContain('--radius-');
     expect(declarations).not.toContain('--font-mono');
+  });
+});
+
+describe('app.css contract (Tailwind host entry, 4.23)', () => {
+  it('chains the source compile entry and the --app-* bridge, nothing else', () => {
+    const stripped = appEntry.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+    expect(stripped).toBe('@import "./source.css";\n@import "./bridge.css";');
   });
 });

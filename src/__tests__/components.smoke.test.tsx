@@ -15,6 +15,7 @@ import { Alert, AlertTitle, AlertDescription } from '../presentation/organisms/A
 import { Breadcrumbs } from '../presentation/organisms/Breadcrumb';
 import { Card, CardHeader, CardTitle, CardContent } from '../presentation/organisms/Card';
 import { CommandPalette } from '../presentation/organisms/CommandPalette';
+import { CodeChip } from '../presentation/atoms/CodeChip';
 import { ErrorBoundary } from '../presentation/organisms/ErrorBoundary';
 import { OptionTile } from '../presentation/molecules/OptionTile';
 import { HeatmapStrip } from '../presentation/atoms/HeatmapStrip';
@@ -1511,5 +1512,35 @@ describe('NativeSelect onValueChange (4.22)', () => {
     );
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'b' } });
     expect(onValueChange).toHaveBeenCalledWith('b');
+  });
+});
+
+describe('CodeChip (4.23)', () => {
+  it('renders the value and copies it to the clipboard on click', () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    render(<CodeChip>CASE-0042</CodeChip>);
+    const chip = screen.getByRole('button', { name: 'Copy' });
+    expect(screen.getByText('CASE-0042')).toBeTruthy();
+    fireEvent.click(chip);
+    expect(writeText).toHaveBeenCalledWith('CASE-0042');
+    expect(screen.getByRole('button', { name: 'Copied' })).toBeTruthy();
+  });
+
+  it('accepts custom copy labels for localized hosts', () => {
+    Object.assign(navigator, { clipboard: { writeText: vi.fn().mockResolvedValue(undefined) } });
+    render(<CodeChip copyLabel="Kopyala" copiedLabel="Kopyalandı">X-1</CodeChip>);
+    fireEvent.click(screen.getByRole('button', { name: 'Kopyala' }));
+    expect(screen.getByRole('button', { name: 'Kopyalandı' })).toBeTruthy();
+  });
+});
+
+describe('CommandPalette without static groups (4.23)', () => {
+  it('opens with zero groups and shows the empty result state for a query', () => {
+    render(<CommandPalette open onOpenChange={vi.fn()} />);
+    const combobox = screen.getByRole('combobox');
+    expect(combobox).toBeTruthy();
+    fireEvent.change(combobox, { target: { value: 'zzz' } });
+    expect(screen.getByText('No results.')).toBeTruthy();
   });
 });

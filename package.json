@@ -11,6 +11,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./app.css": "./src/styles/app.css",
     "./atoms": "./src/presentation/atoms/index.ts",
     "./bridge.css": "./src/styles/bridge.css",
     "./constants": "./src/infrastructure/constants/index.ts",

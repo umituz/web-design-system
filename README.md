@@ -10,6 +10,8 @@ bundler compiles the components. Styling is available two ways:
 
 - `@umituz/web-design-system/styles.css` — precompiled (`dist/styles.css`),
   Tailwind included. For vanilla-CSS hosts.
+- `@umituz/web-design-system/app.css` — the canonical Tailwind v4 host entry:
+  the source compile chain plus the semantic palette bridge in one import.
 - `@umituz/web-design-system/bridge.css` — the semantic palette bridge: maps
   the `--color-*` contract onto the host's `--app-*` tokens. For vanilla-CSS
   hosts that theme via their own token names (see below).
@@ -87,17 +89,36 @@ you pass via `className` merge naturally with the package's:
 ```css
 /* app.css */
 @import "tailwindcss";
-@import "@umituz/web-design-system/source.css";
+@import "tw-animate-css";
+@import "@umituz/web-design-system/app.css";
 ```
 
-`source.css` imports the `@theme` token layer and scans the package's
-component sources for classes; the `@source` directive inside it resolves
-relative to the package, so hosts never write `node_modules` paths (the
-old relative-`@source` recipe broke silently twice in the fleet — a wrong
-depth compiled zero classes).
+`app.css` is the single Tailwind-host entry: it chains `source.css` (the
+`@theme` token layer plus the `@source` scan of the component sources —
+the directive resolves relative to the package, so hosts never write
+`node_modules` paths; the old relative-`@source` recipe broke silently
+twice in the fleet) with `bridge.css` (the `--app-*` semantic palette).
+The bridge is unlayered, so it overrides the theme layer's defaults while
+utilities keep resolving through `var(--color-*)`.
 
-You control the palette the same way (override `--color-*` in your theme),
-and your `@theme` extensions apply everywhere.
+Theme by defining your palette as bare `--app-*` custom properties — the
+same contract as vanilla-CSS hosts (19 required slots, optional status
+trio, see the bridge section above). Hosts never hand-map `--color-*`
+semantic tokens themselves:
+
+```css
+:root {
+  --app-background: #f5f4f0;
+  --app-foreground: #1e2420;
+  --app-primary: #2f4c42;
+  --app-primary-foreground: #f5f4f0;
+  /* … */
+}
+```
+
+Importing `source.css` alone instead keeps the DS default palette and is
+overridden per token via the host's own `@theme`. Either way, your
+`@theme` extensions (fonts, ramps, shadows) apply everywhere.
 
 ## Theming
 
@@ -138,7 +159,8 @@ is three variables:
 
 ```bash
 @umituz/web-design-system/styles.css   # precompiled stylesheet (vanilla hosts)
-@umituz/web-design-system/source.css    # theme + @source scan (Tailwind v4 hosts)
+@umituz/web-design-system/app.css      # source + --app-* bridge (Tailwind v4 hosts, canonical)
+@umituz/web-design-system/source.css    # theme + @source scan (Tailwind v4 hosts, DS default palette)
 @umituz/web-design-system/theme.css     # @theme layer alone
 @umituz/web-design-system/bridge.css    # --color-* → --app-* palette bridge
 @umituz/web-design-system/atoms         # Button, Input, Badge, Spinner, …

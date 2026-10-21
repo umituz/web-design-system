@@ -30,7 +30,8 @@ export interface CommandGroup {
 export interface CommandPaletteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  groups: CommandGroup[];
+  /** Static entry groups; palettes driven purely by `search` may omit them. */
+  groups?: CommandGroup[];
   placeholder?: string;
   emptyLabel?: string;
   /** Accessible name for the dialog. */
@@ -56,7 +57,7 @@ const matches = (item: CommandItem, q: string): boolean => {
 export const CommandPalette = ({
   open,
   onOpenChange,
-  groups,
+  groups = [],
   placeholder = 'Type a command or search…',
   emptyLabel = 'No results.',
   label = 'Command palette',

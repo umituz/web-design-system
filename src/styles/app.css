@@ -1,0 +1,21 @@
+/**
+ * @umituz/web-design-system — Tailwind v4 host entry (semantic palette)
+ *
+ * Chains the source compile entry with the --app-* semantic bridge, so a
+ * Tailwind host imports exactly one package stylesheet and defines its
+ * palette as bare `--app-*` custom properties — it never writes `--color-*`
+ * mappings or node_modules `@source` paths itself:
+ *
+ *   @import "tailwindcss";
+ *   @import "tw-animate-css";
+ *   @import "@umituz/web-design-system/app.css";
+ *   :root { --app-primary: …; … }
+ *
+ * The bridge is unlayered, so its `:root` bindings override the theme
+ * layer's defaults while the utilities keep resolving through
+ * `var(--color-*)`. Required slots fail loudly when a host omits them —
+ * see bridge.css for the full contract.
+ */
+
+@import "./source.css";
+@import "./bridge.css";

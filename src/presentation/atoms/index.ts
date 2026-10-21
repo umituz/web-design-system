@@ -83,5 +83,8 @@ export type { NativeSelectProps, NativeSelectOption } from './NativeSelect';
 export { BatteryPill } from './BatteryPill';
 export type { BatteryPillProps } from './BatteryPill';
 
+export { CodeChip } from './CodeChip';
+export type { CodeChipProps } from './CodeChip';
+
 export { Kbd } from './Kbd';
 export type { KbdProps } from './Kbd';
