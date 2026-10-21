@@ -52,3 +52,9 @@ export { OptionCard } from './OptionCard';
 export type { OptionCardProps } from './OptionCard';
 export { OptionTile } from './OptionTile';
 export type { OptionTileProps, OptionTileState } from './OptionTile';
+
+export { Field } from './Field';
+export type { FieldProps } from './Field';
+
+export { Segmented } from './Segmented';
+export type { SegmentedProps, SegmentedOption } from './Segmented';

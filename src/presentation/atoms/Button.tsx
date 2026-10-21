@@ -1,13 +1,9 @@
-/**
- * Button Component (Atom) - Shadcn/ui format
- * @description Interactive button element using class-variance-authority
- */
-
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '../../infrastructure/utils';
+import { Spinner } from './Spinner';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
@@ -27,7 +23,9 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-10 px-4 py-2',
+        xs: 'h-7 gap-1.5 rounded-md px-2 text-xs [&_svg]:size-3.5',
         sm: 'h-9 rounded-md px-3',
+        md: 'h-9 rounded-md px-3.5 text-[13px]',
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
       },
@@ -46,17 +44,18 @@ export interface ButtonProps
   block?: boolean;
   icon?: React.ReactNode;
   iconRight?: React.ReactNode;
+  loading?: boolean;
 }
 
 const Button = React.memo(React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, block = false, icon, iconRight, children, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, block = false, icon, iconRight, loading = false, children, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     if (asChild) {
-      return <Comp className={cn(block && 'w-full', buttonVariants({ variant, size, className }))} ref={ref} {...props}>{children}</Comp>;
+      return <Comp className={cn(block && 'w-full', buttonVariants({ variant, size, className }))} ref={ref} disabled={disabled || loading} {...props}>{children}</Comp>;
     }
     return (
-      <Comp className={cn(block && 'w-full', buttonVariants({ variant, size, className }))} ref={ref} {...props}>
-        {icon}
+      <Comp className={cn(block && 'w-full', buttonVariants({ variant, size, className }))} ref={ref} disabled={disabled || loading} {...props}>
+        {loading ? <Spinner size="sm" /> : icon}
         {children}
         {iconRight}
       </Comp>

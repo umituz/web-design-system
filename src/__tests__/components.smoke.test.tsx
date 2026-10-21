@@ -1434,3 +1434,82 @@ describe('HeatmapStrip (4.20)', () => {
     expect((document.querySelector('[role="img"] span') as HTMLElement).style.backgroundColor).toContain('var(--color-primary)');
   });
 });
+import { Field } from '../presentation/molecules/Field';
+import { Segmented } from '../presentation/molecules/Segmented';
+
+describe('Button density + loading', () => {
+  it('renders the xs and md sizes', () => {
+    const { rerender } = render(<Button size="xs">Go</Button>);
+    expect(screen.getByRole('button', { name: 'Go' }).className).toContain('h-7');
+    rerender(<Button size="md">Go</Button>);
+    expect(screen.getByRole('button', { name: 'Go' }).className).toContain('h-9');
+  });
+
+  it('loading disables the button and shows the spinner', () => {
+    render(<Button loading>Save</Button>);
+    const btn = screen.getByRole('button');
+    expect(btn.hasAttribute('disabled')).toBe(true);
+    expect(document.querySelector('.animate-spin')).not.toBeNull();
+  });
+});
+
+describe('Field (4.22)', () => {
+  it('renders label, required marker, control and hint', () => {
+    render(
+      <Field label="Name" hint="Shown on invoices" required htmlFor="n">
+        <input id="n" />
+      </Field>
+    );
+    expect(screen.getByText('Name')).toBeTruthy();
+    expect(screen.getByText('*')).toBeTruthy();
+    expect(screen.getByText('Shown on invoices')).toBeTruthy();
+  });
+
+  it('error replaces the hint when set', () => {
+    render(
+      <Field error="Required" hint="ignored">
+        <input />
+      </Field>
+    );
+    expect(screen.getByText('Required')).toBeTruthy();
+    expect(screen.queryByText('ignored')).toBeNull();
+  });
+});
+
+describe('Segmented (4.22)', () => {
+  it('marks the active option and reports changes', () => {
+    const onChange = vi.fn();
+    render(
+      <Segmented
+        options={[
+          { value: 'day', label: 'Day' },
+          { value: 'week', label: 'Week' },
+        ]}
+        value="week"
+        onChange={onChange}
+      />
+    );
+    const active = screen.getByRole('button', { name: 'Week' });
+    expect(active.className).toContain('bg-background');
+    fireEvent.click(screen.getByRole('button', { name: 'Day' }));
+    expect(onChange).toHaveBeenCalledWith('day');
+  });
+});
+
+describe('NativeSelect onValueChange (4.22)', () => {
+  it('reports the picked value without the event', () => {
+    const onValueChange = vi.fn();
+    render(
+      <NativeSelect
+        value="a"
+        onValueChange={onValueChange}
+        options={[
+          { value: 'a', label: 'A' },
+          { value: 'b', label: 'B' },
+        ]}
+      />
+    );
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'b' } });
+    expect(onValueChange).toHaveBeenCalledWith('b');
+  });
+});

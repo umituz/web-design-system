@@ -1,8 +1,3 @@
-/**
- * NativeSelect Component (Atom)
- * @description Styled native select element with optional label and helper text
- */
-
 import { forwardRef, useId, type ReactNode, type SelectHTMLAttributes } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
@@ -19,10 +14,11 @@ export interface NativeSelectProps extends Omit<SelectHTMLAttributes<HTMLSelectE
   label?: ReactNode;
   fullWidth?: boolean;
   options?: readonly NativeSelectOption[];
+  onValueChange?: (value: string) => void;
 }
 
 export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
-  ({ className, error, hint, label, id, children, options, fullWidth = true, ...props }, ref) => {
+  ({ className, error, hint, label, id, children, options, fullWidth = true, onValueChange, ...props }, ref) => {
     const generatedId = useId();
     const selectId = id ?? generatedId;
     const hasError = Boolean(error);
@@ -43,6 +39,10 @@ export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
             className
           )}
           {...props}
+          onChange={(event) => {
+            props.onChange?.(event);
+            onValueChange?.(event.currentTarget.value);
+          }}
         >
           {options?.map((option) => (
             <option key={option.value} value={option.value}>
