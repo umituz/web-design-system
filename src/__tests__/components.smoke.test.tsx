@@ -1787,3 +1787,20 @@ describe('RatingStars (4.29)', () => {
     expect(half).toBeTruthy();
   });
 });
+
+import { FormField } from '../presentation/molecules/FormField';
+
+describe('FormField auto id (4.29.1)', () => {
+  it('links the label to a generated control id when none is given', () => {
+    render(<FormField label="Reference" inputProps={{ placeholder: 'x' }} />);
+    const control = screen.getByLabelText('Reference') as HTMLInputElement;
+    expect(control.id).toBeTruthy();
+    expect(control.getAttribute('aria-invalid')).toBe('false');
+  });
+
+  it('describes the control through helper text ids', () => {
+    render(<FormField label="Memo" helperText="Optional note" inputProps={{}} />);
+    const control = screen.getByLabelText('Memo') as HTMLInputElement;
+    expect((control.getAttribute('aria-describedby') ?? '').length).toBeGreaterThan(0);
+  });
+});

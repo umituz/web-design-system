@@ -3,7 +3,7 @@
  * @description Label + Input combination (Responsive)
  */
 
-import { forwardRef } from 'react';
+import { forwardRef, useId } from 'react';
 import { cn, getSpaceY } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import { Input } from '../atoms/Input';
@@ -21,7 +21,8 @@ export interface FormFieldProps extends BaseProps {
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
   ({ label, error, helperText, required, id, className, inputProps, fullWidth = true, ...props }, ref) => {
-    const fieldId = id || inputProps?.id || inputProps?.name;
+    const autoId = useId();
+    const fieldId = id || inputProps?.id || inputProps?.name || autoId;
     const errorId = error ? `${fieldId}-error` : undefined;
     const helperId = helperText ? `${fieldId}-helper` : undefined;
 
@@ -38,7 +39,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           ref={ref}
           id={fieldId}
           aria-invalid={!!error}
-          aria-describedby={cn(errorId, helperId)}
+          aria-describedby={cn(errorId, helperId) || undefined}
           error={!!error}
           {...inputProps}
         />
