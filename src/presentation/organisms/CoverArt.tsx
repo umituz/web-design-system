@@ -66,7 +66,11 @@ export function CoverArt({ seed, ratio = '16/9', rounded = 'md', colors, alt, ch
             'radial-gradient(120% 90% at 15% 10%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 55%), radial-gradient(140% 110% at 85% 95%, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0) 60%)',
         }}
       />
-      {children !== undefined && <div className="relative z-[1] w-full">{children}</div>}
+      {children !== undefined && (
+        <div className="absolute inset-0 z-[1] flex items-end">
+          <div className="w-full">{children}</div>
+        </div>
+      )}
     </div>
   );
 }
