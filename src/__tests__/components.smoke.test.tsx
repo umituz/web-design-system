@@ -1811,3 +1811,45 @@ describe('FormField auto id (4.29.1)', () => {
     expect((control.getAttribute('aria-describedby') ?? '').length).toBeGreaterThan(0);
   });
 });
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../presentation/organisms/Table';
+
+describe('Table compound colSpan (4.29.4)', () => {
+  it('renders a grouped header row with colSpan and scope on th', () => {
+    render(
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead />
+            <TableHead colSpan={2} scope="colgroup">
+              Orders
+            </TableHead>
+          </TableRow>
+          <TableRow>
+            <TableHead />
+            <TableHead>View</TableHead>
+            <TableHead>Edit</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>Editor</TableCell>
+            <TableCell>yes</TableCell>
+            <TableCell>no</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    );
+    const group = screen.getByText('Orders');
+    expect(group.getAttribute('colspan')).toBe('2');
+    expect(group.getAttribute('scope')).toBe('colgroup');
+    expect(screen.getByText('Editor')).toBeTruthy();
+  });
+});
