@@ -1771,6 +1771,13 @@ describe('CoverArt (4.29)', () => {
     expect(document.querySelector('[aria-hidden="true"]')).toBeTruthy();
     expect(screen.getByText('Overlay text')).toBeTruthy();
   });
+
+  it('prefers an explicit brand palette over the seeded gradient', () => {
+    render(<CoverArt seed="x" colors={['#123456', '#654321']} ratio="21/9" alt="brand" />);
+    const el = screen.getByRole('img') as HTMLElement;
+    expect(el.style.background).toContain('#123456');
+    expect(el.className).toContain('aspect-[21/9]');
+  });
 });
 
 describe('RatingStars (4.29)', () => {

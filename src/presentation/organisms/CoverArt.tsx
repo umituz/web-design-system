@@ -13,8 +13,10 @@ import type { BaseProps } from '../../domain/types';
 export interface CoverArtProps extends BaseProps {
   /** Any stable entity id/name — the same seed always renders the same gradient. */
   seed: string;
-  ratio?: '16/9' | '3/2' | '4/3' | '1/1';
+  ratio?: '16/9' | '3/2' | '4/3' | '1/1' | '21/9';
   rounded?: 'none' | 'md' | 'lg' | 'top';
+  /** Brand palette override ([from, to]); wins over the seeded gradient. */
+  colors?: readonly [string, string];
   /** Accessible description; omit for purely decorative usage. */
   alt?: string;
   children?: ReactNode;
@@ -36,6 +38,7 @@ const ratioStyles: Record<NonNullable<CoverArtProps['ratio']>, string> = {
   '3/2': 'aspect-[3/2]',
   '4/3': 'aspect-[4/3]',
   '1/1': 'aspect-square',
+  '21/9': 'aspect-[21/9]',
 };
 
 const roundedStyles: Record<NonNullable<CoverArtProps['rounded']>, string> = {
@@ -45,8 +48,8 @@ const roundedStyles: Record<NonNullable<CoverArtProps['rounded']>, string> = {
   top: 'rounded-t-lg rounded-b-none',
 };
 
-export function CoverArt({ seed, ratio = '16/9', rounded = 'md', alt, children, className }: CoverArtProps) {
-  const [from, to] = GRADIENTS[hashSeed(seed) % GRADIENTS.length]!;
+export function CoverArt({ seed, ratio = '16/9', rounded = 'md', colors, alt, children, className }: CoverArtProps) {
+  const [from, to] = colors ?? GRADIENTS[hashSeed(seed) % GRADIENTS.length]!;
   return (
     <div
       className={cn('relative flex w-full items-end overflow-hidden', ratioStyles[ratio], roundedStyles[rounded], className)}
