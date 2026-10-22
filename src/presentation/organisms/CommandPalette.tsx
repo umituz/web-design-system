@@ -11,6 +11,7 @@ export interface CommandItem {
   keywords?: string;
   danger?: boolean;
   disabled?: boolean;
+  prefiltered?: boolean;
   onSelect: () => void;
 }
 
@@ -35,7 +36,7 @@ interface FlatEntry {
 }
 
 const matches = (item: CommandItem, q: string): boolean => {
-  if (!q) return true;
+  if (!q || item.prefiltered) return true;
   const needle = q.toLowerCase();
   return (
     item.label.toLowerCase().includes(needle) ||
