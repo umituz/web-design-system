@@ -58,3 +58,6 @@ export type { FieldProps } from './Field';
 
 export { Segmented } from './Segmented';
 export type { SegmentedProps, SegmentedOption } from './Segmented';
+
+export { RatingStars } from './RatingStars';
+export type { RatingStarsProps } from './RatingStars';

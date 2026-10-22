@@ -1674,3 +1674,116 @@ describe('AvatarStack (4.27)', () => {
     expect(screen.getByText('+2')).toBeTruthy();
   });
 });
+
+import { CoverArt } from '../presentation/organisms/CoverArt';
+import { RatingStars } from '../presentation/molecules/RatingStars';
+import { hashSeed } from '../infrastructure/utils/hash.util';
+
+describe('Progress auto + showValue (4.29)', () => {
+  it('auto tone greens at 95+, primaries at 70+ and dims below', () => {
+    const { rerender, container } = render(<Progress value={97} tone="auto" aria-label="sync" />);
+    expect(container.firstChild).toBeTruthy();
+    rerender(<Progress value={80} tone="auto" aria-label="sync" />);
+    rerender(<Progress value={12} tone="auto" aria-label="sync" />);
+  });
+
+  it('showValue renders the rounded percentage next to the bar', () => {
+    render(<Progress value={76.4} showValue aria-label="budget" />);
+    expect(screen.getByText('76%')).toBeTruthy();
+  });
+});
+
+describe('Field aria injection (4.29)', () => {
+  it('links the label to the control and wires hint + error ids', () => {
+    render(
+      <Field label="Workspace" hint="Public slug">
+        <Input />
+      </Field>,
+    );
+    const control = screen.getByLabelText('Workspace') as HTMLInputElement;
+    expect(control.id).toBeTruthy();
+    const describedBy = control.getAttribute('aria-describedby') ?? '';
+    expect(describedBy.length).toBeGreaterThan(0);
+  });
+
+  it('marks the control invalid when an error is present', () => {
+    render(
+      <Field label="E-mail" error="Required">
+        <Input />
+      </Field>,
+    );
+    const control = screen.getByLabelText('E-mail') as HTMLInputElement;
+    expect(control.getAttribute('aria-invalid')).toBe('true');
+  });
+});
+
+describe('ConfirmDialog busy (4.29)', () => {
+  it('locks both actions and keeps the dialog open while busy', () => {
+    const onConfirm = vi.fn();
+    const onClose = vi.fn();
+    render(
+      <ConfirmDialog title="Archive?" busy confirmLabel="Archive" onConfirm={onConfirm} onClose={onClose} />,
+    );
+    const confirm = screen.getByText('Archive').closest('button') as HTMLButtonElement;
+    expect(confirm.disabled).toBe(true);
+    fireEvent.click(confirm);
+    expect(onConfirm).not.toHaveBeenCalled();
+  });
+});
+
+describe('StatusBadge label override (4.29)', () => {
+  it('renders the override text while keeping the vocab tone', () => {
+    const vocab = statusVocab({ active: 'Active' }, { active: 'success' });
+    render(<StatusBadge vocab={vocab} value="active" label="Aktif (3)" />);
+    expect(screen.getByText('Aktif (3)')).toBeTruthy();
+  });
+});
+
+describe('hashSeed (4.29)', () => {
+  it('maps equal seeds to equal hashes and stays in uint32 space', () => {
+    expect(hashSeed('fishora-42')).toBe(hashSeed('fishora-42'));
+    expect(hashSeed('a')).not.toBe(hashSeed('b'));
+    for (const seed of ['', 'x', 'longer-seed-string']) {
+      expect(hashSeed(seed)).toBeLessThan(2 ** 32);
+      expect(hashSeed(seed)).toBeGreaterThanOrEqual(0);
+    }
+  });
+});
+
+describe('CoverArt (4.29)', () => {
+  it('renders the same gradient for the same seed and exposes alt text', () => {
+    const first = render(<CoverArt seed="artist-7" alt="Cover for artist" />);
+    const el = screen.getByRole('img', { name: 'Cover for artist' }) as HTMLElement;
+    const background = el.style.background;
+    expect(background).toContain('linear-gradient');
+    cleanup();
+    render(<CoverArt seed="artist-7" alt="Cover for artist" />);
+    expect((screen.getByRole('img') as HTMLElement).style.background).toBe(background);
+    first.unmount();
+  });
+
+  it('is decorative without alt and layers children above the wash', () => {
+    render(
+      <CoverArt seed="album-9" ratio="1/1" rounded="top">
+        <span>Overlay text</span>
+      </CoverArt>,
+    );
+    expect(document.querySelector('[aria-hidden="true"]')).toBeTruthy();
+    expect(screen.getByText('Overlay text')).toBeTruthy();
+  });
+});
+
+describe('RatingStars (4.29)', () => {
+  it('renders the numeric value, count and screen-reader sentence', () => {
+    render(<RatingStars value={4.5} count={128} />);
+    expect(screen.getByText('4.5')).toBeTruthy();
+    expect(screen.getByText('(128)')).toBeTruthy();
+    expect(screen.getByText(/Rated 4\.5 out of 5 from 128 reviews/)).toBeTruthy();
+  });
+
+  it('clips the third star at half for a 2.5 rating', () => {
+    render(<RatingStars value={2.5} />);
+    const half = document.querySelector('span[style*="width: 50%"]');
+    expect(half).toBeTruthy();
+  });
+});

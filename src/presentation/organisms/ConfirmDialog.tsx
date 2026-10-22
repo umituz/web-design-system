@@ -17,11 +17,13 @@ export interface ConfirmDialogProps {
   tone?: 'danger' | 'primary';
   /** Renders nothing when false; defaults to true (conditional mounting also works). */
   open?: boolean;
+  /** While true the confirm action is locked and shows its loading state; the caller owns dismissal. */
+  busy?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 }
 
-export function ConfirmDialog({ title, body, confirmLabel = 'Confirm', cancelLabel = 'Cancel', tone = 'danger', open = true, onConfirm, onClose }: ConfirmDialogProps) {
+export function ConfirmDialog({ title, body, confirmLabel = 'Confirm', cancelLabel = 'Cancel', tone = 'danger', open = true, busy = false, onConfirm, onClose }: ConfirmDialogProps) {
   if (!open) return null;
   return (
     <Modal
@@ -29,13 +31,23 @@ export function ConfirmDialog({ title, body, confirmLabel = 'Confirm', cancelLab
       danger={tone === 'danger'}
       title={title}
       description={body}
-      onClose={onClose}
+      onClose={busy ? () => undefined : onClose}
       footer={
         <>
-          <Button variant="secondary" size="sm" onClick={onClose}>
+          <Button variant="secondary" size="sm" onClick={onClose} disabled={busy}>
             {cancelLabel}
           </Button>
-          <Button variant={tone === 'danger' ? 'danger' : 'default'} size="sm" onClick={() => { onConfirm(); onClose(); }}>
+          <Button
+            variant={tone === 'danger' ? 'danger' : 'default'}
+            size="sm"
+            loading={busy}
+            disabled={busy}
+            onClick={() => {
+              if (busy) return;
+              onConfirm();
+              onClose();
+            }}
+          >
             {confirmLabel}
           </Button>
         </>

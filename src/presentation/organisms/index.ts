@@ -182,3 +182,6 @@ export type {
   CalendarLegendItem,
   CalendarView,
 } from './CalendarBoard';
+
+export { CoverArt } from './CoverArt';
+export type { CoverArtProps } from './CoverArt';

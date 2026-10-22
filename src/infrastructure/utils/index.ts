@@ -30,3 +30,5 @@ export {
   computePageBounds,
 } from './calculation.utils';
 export type { PageBounds } from './calculation.utils';
+
+export { hashSeed } from './hash.util';
