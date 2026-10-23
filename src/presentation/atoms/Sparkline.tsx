@@ -11,7 +11,7 @@ export interface SparklineProps extends Omit<SVGAttributes<SVGSVGElement>, 'data
   data: readonly number[];
   width?: number;
   height?: number;
-  tone?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted' | 'violet';
+  tone?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted' | 'violet' | 'danger' | 'neutral';
 }
 
 const toneClasses: Record<NonNullable<SparklineProps['tone']>, string> = {
@@ -23,6 +23,8 @@ const toneClasses: Record<NonNullable<SparklineProps['tone']>, string> = {
   info: 'text-info',
   muted: 'text-muted-foreground',
   violet: 'text-violet-600',
+  danger: 'text-destructive',
+  neutral: 'text-muted-foreground',
 };
 
 export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(
