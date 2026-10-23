@@ -32,3 +32,16 @@ export {
 export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
+
+export {
+  currencyFractionDigits,
+  formatMoney,
+  formatMoneyCompact,
+  toMinor,
+  parseAmountToMinor,
+  pctOfMinor,
+  lineTotals,
+  sumTotals,
+  sumMinor,
+} from './money.utils';
+export type { LineTotals, TotalsInputLine } from './money.utils';

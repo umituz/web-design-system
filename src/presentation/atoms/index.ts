@@ -88,3 +88,6 @@ export type { CodeChipProps } from './CodeChip';
 
 export { Kbd } from './Kbd';
 export type { KbdProps } from './Kbd';
+
+export { Money } from './Money';
+export type { MoneyProps } from './Money';
