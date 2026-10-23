@@ -57,7 +57,8 @@ export interface Column<T> {
   sortable?: boolean;
   align?: ColumnAlign;
   hideBelow?: ColumnHideBelow;
-  width?: string;
+  /** Pixels when numeric. */
+  width?: string | number;
   className?: string;
   /** Hidden until the reader enables it from the built-in columns menu. */
   optional?: boolean;
@@ -471,7 +472,7 @@ export function DataTable<T>({
               return (
                 <TableHead
                   key={column.id}
-                  style={column.width ? { width: column.width } : undefined}
+                  style={column.width ? { width: typeof column.width === 'number' ? `${column.width}px` : column.width } : undefined}
                   className={cn(
                     sizeStyles[size],
                     pxStyles[size],
