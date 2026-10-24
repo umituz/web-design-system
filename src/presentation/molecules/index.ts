@@ -61,3 +61,6 @@ export type { SegmentedProps, SegmentedOption } from './Segmented';
 
 export { RatingStars } from './RatingStars';
 export type { RatingStarsProps } from './RatingStars';
+
+export { BookmarkButton } from './BookmarkButton';
+export type { BookmarkButtonProps, BookmarkTone } from './BookmarkButton';

@@ -85,5 +85,7 @@ export { InputGroup, GroupedInput } from './presentation/molecules/InputGroup';
 export { ScrollArea, ScrollBar } from './presentation/molecules/ScrollArea';
 export type { ListItemProps } from './presentation/molecules/ListItem';
 export { ListItem } from './presentation/molecules/ListItem';
+export type { BookmarkButtonProps, BookmarkTone } from './presentation/molecules/BookmarkButton';
+export { BookmarkButton } from './presentation/molecules/BookmarkButton';
 
 export * from './presentation/organisms';

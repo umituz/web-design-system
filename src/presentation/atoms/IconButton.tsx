@@ -15,6 +15,7 @@ export interface IconButtonProps
   label: string;
   size?: SmallSizes | MediumSizes;
   variant?: 'default' | 'ghost' | 'outline';
+  active?: boolean;
 }
 
 const sizeStyles: Record<SmallSizes | MediumSizes, string> = {
@@ -31,18 +32,21 @@ const variantStyles: Record<'default' | 'ghost' | 'outline', string> = {
 };
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ className, icon, label, size = 'md', variant = 'ghost', type = 'button', ...props }, ref) => (
+  ({ className, icon, label, size = 'md', variant = 'ghost', type = 'button', active = false, ...props }, ref) => (
     <button
       ref={ref}
       type={type}
       aria-label={label}
       title={label}
+      aria-pressed={active ? true : undefined}
+      data-state={active ? 'on' : 'off'}
       className={cn(
         'inline-flex shrink-0 items-center justify-center rounded-md transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        'disabled:pointer-events-none disabled:opacity-50',
+        'disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
         sizeStyles[size],
         variantStyles[variant],
+        active && (variant === 'ghost' || variant === 'outline' ? 'bg-accent text-accent-foreground' : 'bg-primary text-primary-foreground'),
         className
       )}
       {...props}
