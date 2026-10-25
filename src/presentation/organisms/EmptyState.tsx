@@ -8,7 +8,7 @@ export interface EmptyStateAction {
   onClick: () => void;
 }
 
-function isActionConfig(action: EmptyStateAction | ReactNode): action is EmptyStateAction {
+export function isActionConfig(action: EmptyStateAction | ReactNode): action is EmptyStateAction {
   return (
     typeof action === 'object' &&
     action !== null &&
@@ -21,7 +21,7 @@ function isActionConfig(action: EmptyStateAction | ReactNode): action is EmptySt
 const FORWARD_REF = Symbol.for('react.forward_ref');
 const MEMO = Symbol.for('react.memo');
 
-function isComponentType(value: unknown): value is ComponentType<{ className?: string }> {
+export function isComponentType(value: unknown): value is ComponentType<{ className?: string }> {
   if (typeof value === 'function') return true;
   if (typeof value !== 'object' || value === null) return false;
   const tag = (value as { $$typeof?: symbol }).$$typeof;

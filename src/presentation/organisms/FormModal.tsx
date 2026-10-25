@@ -24,7 +24,7 @@ export interface FormModalField {
   required?: boolean;
   hint?: string;
   placeholder?: string;
-  options?: FormModalOption[];
+  options?: FormModalOption[] | ((values: FormModalValues) => FormModalOption[]);
   span?: boolean;
   min?: number;
   max?: number;
@@ -65,12 +65,27 @@ export interface FormModalMessages {
   invalidNumber: string;
 }
 
+/** Resolves a field's options — static arrays pass through, functions
+ *  receive the current values so a select can depend on earlier fields. */
+function fieldOptions(f: FormModalField, values: FormModalValues): FormModalOption[] {
+  return typeof f.options === 'function' ? f.options(values) : (f.options ?? []);
+}
+
 function initialValues(steps: FormStep[], initial?: FormModalValues): FormModalValues {
   const v: FormModalValues = {};
   steps.forEach((s) =>
     s.fields.forEach((f) => {
       v[f.name] =
-        f.defaultValue ?? (f.type === 'checkbox' ? false : f.type === 'number' ? '' : f.type === 'select' ? f.options?.[0]?.value ?? '' : '');
+        f.defaultValue ??
+        (f.type === 'checkbox'
+          ? false
+          : f.type === 'number'
+            ? ''
+            : f.type === 'select'
+              ? Array.isArray(f.options)
+                ? f.options[0]?.value ?? ''
+                : ''
+              : '');
     })
   );
   if (initial) {
@@ -101,8 +116,22 @@ export function FormModal(
   const total = steps.length;
 
   const set = (name: string, val: string | number | boolean) => {
-    setValues((v) => ({ ...v, [name]: val }));
-    setErrors((e) => (e[name] ? { ...e, [name]: '' } : e));
+    const next: FormModalValues = { ...values, [name]: val };
+    const cleared = [name];
+    // A dependent select must never hold a value its resolved options no
+    // longer contain — snap it to the first option (or '') and clear its error.
+    for (const s of steps) {
+      for (const f of s.fields) {
+        if (f.type !== 'select' || typeof f.options !== 'function') continue;
+        const opts = f.options(next);
+        if (!opts.some((o) => o.value === String(next[f.name]))) {
+          next[f.name] = opts[0]?.value ?? '';
+          cleared.push(f.name);
+        }
+      }
+    }
+    setValues(next);
+    setErrors((e) => (cleared.some((n) => e[n]) ? { ...e, ...Object.fromEntries(cleared.map((n) => [n, ''])) } : e));
   };
 
   const validateStep = (idx: number): boolean => {
@@ -193,7 +222,7 @@ export function FormModal(
                   {f.type === 'select' ? (
                     <NativeSelect
                       id={fid}
-                      options={f.options}
+                      options={fieldOptions(f, values)}
                       value={String(values[f.name] ?? '')}
                       error={Boolean(err)}
                       onChange={(e) => set(f.name, e.target.value)}
