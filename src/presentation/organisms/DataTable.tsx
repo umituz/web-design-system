@@ -24,6 +24,7 @@ import {
 import { Button } from '../atoms/Button';
 import { Skeleton } from '../atoms/Skeleton';
 import { Checkbox } from '../atoms/Checkbox';
+import { NativeSelect } from '../atoms/NativeSelect';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -70,6 +71,13 @@ export interface TablePaginationProps extends BaseProps {
   onPage: (page: number) => void;
   label?: ReactNode;
   hideWhenSingle?: boolean;
+  /** Page-size choices offered in the rows-per-page select. */
+  pageSizeOptions?: readonly number[];
+  /** Currently selected page size; required with `pageSizeOptions`. */
+  pageSize?: number;
+  onPageSize?: (size: number) => void;
+  /** Accessible label for the rows-per-page select (default "Rows per page"). */
+  pageSizeLabel?: ReactNode;
 }
 
 export interface DataTableProps<T> extends BaseProps {
@@ -95,6 +103,9 @@ export interface DataTableProps<T> extends BaseProps {
   stackable?: boolean;
   paginated?: boolean;
   pageSize?: number;
+  /** Page-size choices offered in the footer rows-per-page select. */
+  pageSizeOptions?: readonly number[];
+  onPageSizeChange?: (size: number) => void;
   emptyState?: {
     title: string;
     description?: string;
@@ -156,7 +167,18 @@ function compareValues(a: string | number | null, b: string | number | null): nu
   return String(a).localeCompare(String(b));
 }
 
-export function TablePagination({ className, page, totalPages, onPage, label, hideWhenSingle = false }: TablePaginationProps) {
+export function TablePagination({
+  className,
+  page,
+  totalPages,
+  onPage,
+  label,
+  hideWhenSingle = false,
+  pageSizeOptions,
+  pageSize,
+  onPageSize,
+  pageSizeLabel,
+}: TablePaginationProps) {
   const safeTotalPages = Number.isFinite(totalPages) ? Math.max(Math.floor(totalPages), 1) : 1;
   const safePage = Number.isFinite(page) ? Math.min(Math.max(Math.floor(page), 1), safeTotalPages) : 1;
 
@@ -179,7 +201,19 @@ export function TablePagination({ className, page, totalPages, onPage, label, hi
 
   return (
     <nav className={cn('flex items-center justify-between gap-2', className)} aria-label="Pagination">
-      {label && <span className="text-sm text-muted-foreground">{label}</span>}
+      <div className="flex items-center gap-2">
+        {label && <span className="text-sm text-muted-foreground">{label}</span>}
+        {pageSizeOptions !== undefined && pageSizeOptions.length > 0 && pageSize !== undefined && onPageSize !== undefined && (
+          <NativeSelect
+            fullWidth={false}
+            aria-label={typeof pageSizeLabel === 'string' ? pageSizeLabel : 'Rows per page'}
+            className="h-8 w-auto min-w-20 text-xs"
+            value={String(pageSize)}
+            options={pageSizeOptions.map((size) => ({ value: String(size), label: `${size} / page` }))}
+            onValueChange={(value) => onPageSize(Number(value))}
+          />
+        )}
+      </div>
       <div className="flex items-center gap-1">
         <Button
           size="sm"
@@ -267,6 +301,8 @@ export function DataTable<T>({
   stackable = false,
   paginated = false,
   pageSize = 10,
+  pageSizeOptions,
+  onPageSizeChange,
   emptyState,
   onRowClick,
   rowLabel,
@@ -275,6 +311,7 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const [internalSort, setInternalSort] = useState<SortState | null>(initialSort ?? null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activePageSize, setActivePageSize] = useState(pageSize);
   const [internalSelection, setInternalSelection] = useState<string[]>([]);
   const [hiddenColumnIds, setHiddenColumnIds] = useState<string[]>(() =>
     columns.filter((column) => column.optional).map((column) => column.id),
@@ -322,14 +359,14 @@ export function DataTable<T>({
 
   const paginatedData = useMemo(() => {
     if (!paginated) return sortedData;
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
+    const start = (currentPage - 1) * activePageSize;
+    const end = start + activePageSize;
     return sortedData.slice(start, end);
-  }, [sortedData, currentPage, paginated, pageSize]);
+  }, [sortedData, currentPage, paginated, activePageSize]);
 
-  const totalPages = computeTotalPages(data.length, pageSize);
+  const totalPages = computeTotalPages(data.length, activePageSize);
   const safePage = clampPageNumber(currentPage, totalPages);
-  const pageBounds = computePageBounds(currentPage, pageSize, data.length);
+  const pageBounds = computePageBounds(currentPage, activePageSize, data.length);
 
   const knownColumnIds = useMemo(() => new Set(columns.map((column) => column.id)), [columns]);
   const effectiveHiddenColumnIds = useMemo(
@@ -594,6 +631,17 @@ export function DataTable<T>({
                     page={safePage}
                     totalPages={totalPages}
                     onPage={(p) => setCurrentPage(clampPageNumber(p, totalPages))}
+                    pageSizeOptions={pageSizeOptions}
+                    pageSize={activePageSize}
+                    onPageSize={
+                      onPageSizeChange !== undefined || pageSizeOptions !== undefined
+                        ? (size) => {
+                            setActivePageSize(size);
+                            setCurrentPage(1);
+                            onPageSizeChange?.(size);
+                          }
+                        : undefined
+                    }
                   />
                 </div>
               </TableCell>
