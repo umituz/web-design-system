@@ -64,3 +64,6 @@ export type { RatingStarsProps } from './RatingStars';
 
 export { BookmarkButton } from './BookmarkButton';
 export type { BookmarkButtonProps, BookmarkTone } from './BookmarkButton';
+
+export { TagInput } from './TagInput';
+export type { TagInputProps } from './TagInput';

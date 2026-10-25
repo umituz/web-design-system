@@ -42,6 +42,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         {removable && onRemove && (
           <button
             type="button"
+            aria-label={`Remove ${label}`}
             onClick={(e) => {
               e.stopPropagation();
               onRemove();
