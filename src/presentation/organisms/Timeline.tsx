@@ -19,6 +19,8 @@ export interface TimelineItem {
   meta?: ReactNode;
   /** Replaces the tone dot with an icon, tinted by `tone` (or muted when omitted). */
   icon?: ReactNode;
+  /** Replaces the tone dot with an avatar (e.g. the acting user); takes precedence over `icon`. */
+  avatar?: ReactNode;
 }
 
 export interface TimelineProps extends HTMLAttributes<HTMLOListElement>, BaseProps {
@@ -57,7 +59,14 @@ export const Timeline = forwardRef<HTMLOListElement, TimelineProps>(
     <ol ref={ref} className={cn('relative flex flex-col gap-4 border-l border-border pl-5', className)} {...props}>
       {(newestFirst ? [...items].reverse() : items).map((it, i) => (
         <li key={i} className="relative">
-          {it.icon !== undefined ? (
+          {it.avatar !== undefined ? (
+            <span
+              aria-hidden="true"
+              className="absolute -left-[1.86rem] top-0 flex h-6 w-6 items-center justify-center overflow-hidden rounded-full ring-2 ring-background"
+            >
+              {it.avatar}
+            </span>
+          ) : it.icon !== undefined ? (
             <span
               aria-hidden="true"
               className={cn(

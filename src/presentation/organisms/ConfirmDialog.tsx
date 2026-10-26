@@ -14,7 +14,7 @@ export interface ConfirmDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   /** Visual weight of the confirm action; defaults to danger. */
-  tone?: 'danger' | 'primary';
+  tone?: 'danger' | 'primary' | 'success';
   /** Renders nothing when false; defaults to true (conditional mounting also works). */
   open?: boolean;
   /** While true the confirm action is locked and shows its loading state; the caller owns dismissal. */
@@ -39,6 +39,7 @@ export function ConfirmDialog({ title, body, confirmLabel = 'Confirm', cancelLab
           </Button>
           <Button
             variant={tone === 'danger' ? 'danger' : 'default'}
+            className={tone === 'success' ? 'bg-success text-success-foreground hover:bg-success/90' : undefined}
             size="sm"
             loading={busy}
             disabled={busy}

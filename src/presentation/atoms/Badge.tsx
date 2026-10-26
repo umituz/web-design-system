@@ -3,7 +3,7 @@
  * @description Small status or label indicator
  */
 
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps, ColorVariant } from '../../domain/types';
 import type { MediumSizes } from '../../infrastructure/constants';
@@ -13,6 +13,8 @@ export type BadgeVariant = ColorVariant | 'info' | 'danger' | 'neutral' | 'accen
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: BadgeVariant;
   tone?: BadgeVariant;
+  /** Icon rendered before the label; svgs are sized to the badge text. */
+  icon?: ReactNode;
   size?: MediumSizes;
   small?: boolean;
   dot?: boolean;
@@ -40,7 +42,7 @@ const sizeStyles: Record<MediumSizes, string> = {
 };
 
 export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
-  ({ className, variant, tone, size, small = false, dot = false, mono = false, children, ...props }, ref) => {
+  ({ className, variant, tone, icon, size, small = false, dot = false, mono = false, children, ...props }, ref) => {
     const resolvedVariant = variant ?? tone ?? 'primary';
     const resolvedSize = size ?? (small ? 'sm' : 'md');
     return (
@@ -56,6 +58,7 @@ export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
         {...props}
       >
         {dot && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-current" />}
+        {icon != null && <span aria-hidden="true" className="mr-1.5 inline-flex items-center [&_svg]:size-3">{icon}</span>}
         {children}
       </div>
     );

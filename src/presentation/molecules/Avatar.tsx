@@ -11,6 +11,8 @@ import type { ExtendedSizes } from '../../infrastructure/constants';
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   name?: string;
   size?: ExtendedSizes;
+  /** Accent hue (0-360) for the initials fallback, overriding the name-hash tone. */
+  hue?: number;
 }
 
 const sizeStyles: Record<ExtendedSizes, string> = {
@@ -48,7 +50,7 @@ const toneIndexOf = (name: string): number => {
 };
 
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
-  ({ className, size = 'md', name, children, ...props }, ref) => {
+  ({ className, size = 'md', name, hue, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -60,7 +62,16 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         {...props}
       >
         {name !== undefined && !children ? (
-          <AvatarFallback className={nameTones[toneIndexOf(name)]}>{initialsOf(name)}</AvatarFallback>
+          hue !== undefined ? (
+            <AvatarFallback
+              className="font-medium"
+              style={{ backgroundColor: `hsl(${hue} 42% 88%)`, color: `hsl(${hue} 45% 30%)` }}
+            >
+              {initialsOf(name)}
+            </AvatarFallback>
+          ) : (
+            <AvatarFallback className={nameTones[toneIndexOf(name)]}>{initialsOf(name)}</AvatarFallback>
+          )
         ) : (
           children
         )}
