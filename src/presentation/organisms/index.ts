@@ -178,5 +178,8 @@ export type {
 export { ConfirmDialog } from './ConfirmDialog';
 export type { ConfirmDialogProps } from './ConfirmDialog';
 
+export { Stepper } from './Stepper';
+export type { StepperProps, StepperStep, StepperStepStatus } from './Stepper';
+
 export { CoverArt } from './CoverArt';
 export type { CoverArtProps } from './CoverArt';
