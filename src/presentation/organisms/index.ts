@@ -181,5 +181,8 @@ export type { ConfirmDialogProps } from './ConfirmDialog';
 export { Stepper } from './Stepper';
 export type { StepperProps, StepperStep, StepperStepStatus } from './Stepper';
 
+export { PlanPicker } from './PlanPicker';
+export type { PlanPickerProps, PlanPickerPlan, PlanPickerCycle } from './PlanPicker';
+
 export { CoverArt } from './CoverArt';
 export type { CoverArtProps } from './CoverArt';

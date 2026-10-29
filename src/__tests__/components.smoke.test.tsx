@@ -53,6 +53,8 @@ import { FileUploader } from '../presentation/organisms/FileUploader';
 import { MapPreview } from '../presentation/organisms/MapPreview';
 import { PhotoGallery } from '../presentation/organisms/PhotoGallery';
 import { AvatarStack } from '../presentation/organisms/AvatarStack';
+import { Stepper } from '../presentation/organisms/Stepper';
+import { PlanPicker } from '../presentation/organisms/PlanPicker';
 
 describe('atoms', () => {
   it('Button renders label with default variant classes', () => {
@@ -1615,6 +1617,38 @@ describe('AvatarStack (4.27)', () => {
     expect(screen.getByText('AT')).toBeTruthy();
     expect(screen.queryByText('KJ')).toBeNull();
     expect(screen.getByText('+2')).toBeTruthy();
+  });
+});
+
+describe('Stepper + PlanPicker smoke (5.1)', () => {
+  it('Stepper renders the ordered steps with a current marker', () => {
+    render(
+      <Stepper
+        ariaLabel="Setup"
+        steps={[{ id: 'a', label: 'Account' }, { id: 'b', label: 'Profile' }]}
+        currentStep={0}
+      />,
+    );
+    const items = screen.getByRole('list', { name: 'Setup' }).querySelectorAll('li');
+    expect(items).toHaveLength(2);
+    expect(items[0]?.getAttribute('aria-current')).toBe('step');
+    expect(items[0]?.textContent).toContain('Account');
+    expect(items[1]?.getAttribute('aria-current')).toBeNull();
+  });
+
+  it('PlanPicker renders cards with price and feature rows', () => {
+    render(
+      <PlanPicker
+        plans={[
+          { id: 'free', name: 'Free', price: '$0', features: ['1 project', 'Community support'] },
+          { id: 'pro', name: 'Pro', price: '$9', highlight: true, ctaLabel: 'Go Pro', onSelect: () => {} },
+        ]}
+        columns={2}
+      />,
+    );
+    expect(screen.getByText('Free')).toBeTruthy();
+    expect(screen.getByText('1 project')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Go Pro' })).toBeTruthy();
   });
 });
 
