@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from './Dialog';
 
-export type ModalSize = 'sm' | 'md' | 'lg';
+export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
 export interface ModalProps {
   open: boolean;
@@ -25,6 +25,7 @@ export interface ModalProps {
   subtitle?: ReactNode;
   size?: ModalSize;
   danger?: boolean;
+  scrollable?: boolean;
   footer?: ReactNode;
   children?: ReactNode;
   className?: string;
@@ -35,6 +36,8 @@ const sizeWidths: Record<ModalSize, string> = {
   sm: 'max-w-sm',
   md: 'max-w-lg',
   lg: 'max-w-2xl',
+  xl: 'max-w-4xl',
+  '2xl': 'max-w-5xl',
 };
 
 export function Modal({
@@ -45,6 +48,7 @@ export function Modal({
   subtitle,
   size = 'md',
   danger = false,
+  scrollable = false,
   footer,
   children,
   className,
@@ -52,7 +56,15 @@ export function Modal({
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
-      <DialogContent className={cn(sizeWidths[size], danger && 'border-destructive', className)} {...contentProps}>
+      <DialogContent
+        className={cn(
+          sizeWidths[size],
+          danger && 'border-destructive',
+          scrollable && 'flex max-h-[92vh] flex-col overflow-hidden',
+          className,
+        )}
+        {...contentProps}
+      >
         {(title !== undefined || description !== undefined || subtitle !== undefined) && (
           <DialogHeader>
             {title !== undefined && (
@@ -64,7 +76,7 @@ export function Modal({
             {(subtitle ?? description) !== undefined && <DialogDescription>{subtitle ?? description}</DialogDescription>}
           </DialogHeader>
         )}
-        {children}
+        {scrollable ? <div className="min-h-0 flex-1 overflow-y-auto">{children}</div> : children}
         {footer !== undefined && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
