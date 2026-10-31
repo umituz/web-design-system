@@ -67,3 +67,6 @@ export type { BookmarkButtonProps, BookmarkTone } from './BookmarkButton';
 
 export { TagInput } from './TagInput';
 export type { TagInputProps } from './TagInput';
+
+export { MarkdownText } from './MarkdownText';
+export type { MarkdownTextProps } from './MarkdownText';
