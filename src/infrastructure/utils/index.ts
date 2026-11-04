@@ -33,6 +33,10 @@ export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
 
+export { formatCount } from './format.util';
+
+export { uniqueId } from './id.util';
+
 export {
   currencyFractionDigits,
   formatMoney,
