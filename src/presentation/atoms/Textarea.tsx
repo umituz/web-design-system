@@ -1,7 +1,3 @@
-/**
- * Textarea Component (Atom)
- * @description Multiline text field with optional label and helper text
- */
 
 import { forwardRef, useId, type ReactNode, type TextareaHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

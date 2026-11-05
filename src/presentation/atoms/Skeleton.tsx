@@ -1,7 +1,3 @@
-/**
- * Skeleton Component (Atom)
- * @description Loading placeholder
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

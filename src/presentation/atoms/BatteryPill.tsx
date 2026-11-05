@@ -1,14 +1,9 @@
-/**
- * BatteryPill Component (Atom)
- * @description Battery charge indicator: outline cell with fill level and percentage
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface BatteryPillProps extends HTMLAttributes<HTMLSpanElement>, BaseProps {
-  /** Charge percentage, clamped to 0-100. */
   pct: number;
 }
 

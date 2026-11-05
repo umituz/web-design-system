@@ -1,7 +1,3 @@
-/**
- * Avatar Component (Molecule)
- * @description User avatar with image and fallback (shadcn/ui compatible)
- */
 
 import { forwardRef, type HTMLAttributes, type ComponentPropsWithoutRef } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -11,7 +7,6 @@ import type { ExtendedSizes } from '../../infrastructure/constants';
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   name?: string;
   size?: ExtendedSizes;
-  /** Accent hue (0-360) for the initials fallback, overriding the name-hash tone. */
   hue?: number;
 }
 

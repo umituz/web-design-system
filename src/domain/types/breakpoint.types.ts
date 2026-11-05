@@ -1,7 +1,3 @@
-/**
- * Responsive System Type Definitions
- * @description Centralized breakpoint types for responsive design
- */
 
 export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
@@ -22,15 +18,15 @@ export interface ResponsiveProps {
 }
 
 export interface ShowProps {
-  above?: Breakpoint;  // Show on larger screens (min-width)
-  below?: Breakpoint;  // Show on smaller screens (max-width)
-  at?: Breakpoint;     // Show only at this breakpoint
+  above?: Breakpoint;
+  below?: Breakpoint;
+  at?: Breakpoint;
 }
 
 export interface HideProps {
-  above?: Breakpoint;  // Hide on larger screens
-  below?: Breakpoint;  // Hide on smaller screens
-  at?: Breakpoint;     // Hide only at this breakpoint
+  above?: Breakpoint;
+  below?: Breakpoint;
+  at?: Breakpoint;
 }
 
 export interface BreakpointState {
@@ -41,9 +37,9 @@ export interface BreakpointState {
   isLg: boolean;
   isXl: boolean;
   is2Xl: boolean;
-  isMobile: boolean;    // xs, sm
-  isTablet: boolean;    // md, lg
-  isDesktop: boolean;   // xl, 2xl
+  isMobile: boolean;
+  isTablet: boolean;
+  isDesktop: boolean;
 }
 
 export interface UseBreakpointReturn extends BreakpointState {

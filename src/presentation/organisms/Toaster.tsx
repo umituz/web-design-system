@@ -1,9 +1,3 @@
-/**
- * Toaster Component (Organism)
- * @description Toast notification system. ToastProvider wraps the app root
- * ONCE and renders the viewport (bottom-right stack, max 4, auto-dismiss
- * 4.2 s); pages fire toasts via useToast()({ kind, title, description }).
- */
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -24,10 +18,8 @@ export interface ToastShorthandOptions {
 }
 
 interface ToastApi {
-  /** Fire a toast — after every mutating action is the fleet idiom. */
   toast: {
     (t: ToastOptions): void;
-    /** Shorthand call: toast('Saved', { tone: 'success', message: '…' }). */
     (title: string, options?: ToastShorthandOptions): void;
   };
 }
@@ -38,7 +30,6 @@ interface ToastEntry extends ToastOptions {
 
 const ToastContext = createContext<ToastApi>({ toast: () => {} });
 
-/** Consume from any page below the provider: const { toast } = useToast(); */
 export function useToast(): ToastApi {
   return useContext(ToastContext);
 }

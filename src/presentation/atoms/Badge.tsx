@@ -1,7 +1,3 @@
-/**
- * Badge Component (Atom)
- * @description Small status or label indicator
- */
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -13,7 +9,6 @@ export type BadgeVariant = ColorVariant | 'info' | 'danger' | 'neutral' | 'accen
 export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: BadgeVariant;
   tone?: BadgeVariant;
-  /** Icon rendered before the label; svgs are sized to the badge text. */
   icon?: ReactNode;
   size?: MediumSizes;
   small?: boolean;

@@ -1,7 +1,3 @@
-/**
- * Sparkline Component (Atom)
- * @description Minimal inline line chart for compact trends
- */
 
 import { forwardRef, type SVGAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

@@ -1,20 +1,11 @@
-/**
- * MapPreview Component (Organism)
- * @description Static map stand-in drawn with a contour motif — a neutral
- *   placeholder for locations until a real GIS integration exists. Colors
- *   come from the semantic tokens, so it adapts to every host theme.
- */
 
 import { MapPin } from 'lucide-react';
 
 export interface MapPreviewProps {
-  /** Location caption, e.g. "Torba, Bodrum". */
   label: string;
   coordinates?: { lat: number; lng: number };
   height?: number;
-  /** Secondary caption line, e.g. an integration note. */
   hint?: string;
-  /** Degrees formatting for the coordinate readout; defaults to 4 decimals. */
   formatCoordinate?: (value: number) => string;
 }
 

@@ -1,8 +1,3 @@
-/**
- * StatPill Component (Molecule)
- * @description Compact inline stat — bold value over a muted label, for
- *   dense rows and summary strips where a stat card is too heavy.
- */
 
 import { forwardRef } from 'react';
 import type { ReactNode } from 'react';

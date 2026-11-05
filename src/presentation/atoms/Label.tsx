@@ -1,7 +1,3 @@
-/**
- * Label Component (Atom)
- * @description Form label (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import * as LabelPrimitive from '@radix-ui/react-label';

@@ -1,7 +1,3 @@
-/**
- * Input Component (Atom)
- * @description Text input field with optional label and helper text
- */
 
 import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';

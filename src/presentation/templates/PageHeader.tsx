@@ -1,7 +1,3 @@
-/**
- * PageHeader Template Component
- * @description Centralized page header with consistent heading styling
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { type ReactNode } from 'react';

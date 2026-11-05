@@ -1,7 +1,3 @@
-/**
- * Section Template (Template)
- * @description Content section with header
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

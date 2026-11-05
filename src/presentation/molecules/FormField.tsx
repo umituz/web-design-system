@@ -1,7 +1,3 @@
-/**
- * FormField Component (Molecule)
- * @description Label + Input combination (Responsive)
- */
 
 import { forwardRef, useId } from 'react';
 import { cn, getSpaceY } from '../../infrastructure/utils';
@@ -16,7 +12,7 @@ export interface FormFieldProps extends BaseProps {
   required?: boolean;
   id?: string;
   inputProps?: React.ComponentProps<typeof Input>;
-  fullWidth?: boolean; // Enable responsive full width
+  fullWidth?: boolean;
 }
 
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(

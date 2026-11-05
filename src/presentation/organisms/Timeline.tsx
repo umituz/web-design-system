@@ -1,7 +1,3 @@
-/**
- * Timeline Component (Organism)
- * @description Vertical activity timeline: meta line, title, optional body, tone dot
- */
 
 import { forwardRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
@@ -11,21 +7,17 @@ import type { BaseProps } from '../../domain/types';
 export type TimelineTone = 'primary' | 'success' | 'warning' | 'destructive' | 'info' | 'neutral' | 'violet';
 
 export interface TimelineItem {
-  /** ISO timestamp rendered as the meta line unless `meta` overrides it. */
   at: string;
   title: ReactNode;
   body?: ReactNode;
   tone?: TimelineTone;
   meta?: ReactNode;
-  /** Replaces the tone dot with an icon, tinted by `tone` (or muted when omitted). */
   icon?: ReactNode;
-  /** Replaces the tone dot with an avatar (e.g. the acting user); takes precedence over `icon`. */
   avatar?: ReactNode;
 }
 
 export interface TimelineProps extends HTMLAttributes<HTMLOListElement>, BaseProps {
   items: TimelineItem[];
-  /** Render newest first (default) instead of the given order. */
   newestFirst?: boolean;
 }
 

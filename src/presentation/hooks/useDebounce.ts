@@ -1,7 +1,3 @@
-/**
- * useDebounce Hook
- * @description Debounce a value with optimized performance
- */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TIMING } from '../../infrastructure/constants/timing.constants';
@@ -30,10 +26,6 @@ export function useDebounce<T>(value: T, delay: number = TIMING.DEBOUNCE_DEFAULT
   return debouncedValue;
 }
 
-/**
- * useThrottle Hook
- * @description Throttle a function to limit execution rate
- */
 export function useThrottle<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number = TIMING.THROTTLE_DEFAULT_MS

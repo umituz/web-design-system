@@ -1,7 +1,3 @@
-/**
- * InputGroup Component (Molecule)
- * @description Input with prefix/suffix elements
- */
 
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

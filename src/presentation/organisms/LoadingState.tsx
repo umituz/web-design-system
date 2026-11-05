@@ -1,7 +1,3 @@
-/**
- * LoadingState Component (Organism)
- * @description Component for displaying loading states (Responsive)
- */
 
 import { forwardRef } from 'react';
 import { cn, getSpacing, getGap } from '../../infrastructure/utils';

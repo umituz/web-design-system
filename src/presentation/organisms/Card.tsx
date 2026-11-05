@@ -1,7 +1,3 @@
-/**
- * Card Component (Organism)
- * @description Content container with header, body, footer
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import React from 'react';
@@ -11,9 +7,7 @@ import type { BaseProps } from '../../domain/types';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'outlined' | 'elevated';
-  /** Render as the single child element (e.g. a router Link) instead of a div. */
   asChild?: boolean;
-  /** Interactive card: pointer cursor, hover border and a visible focus ring. */
   interactive?: boolean;
 }
 

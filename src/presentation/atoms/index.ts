@@ -1,8 +1,3 @@
-/**
- * Atoms Export
- * @description Atomic components - smallest UI elements
- * Subpath: @umituz/web-design-system/atoms
- */
 
 export { Button } from './Button';
 export type { ButtonProps } from './Button';

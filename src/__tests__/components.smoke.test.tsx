@@ -1,8 +1,3 @@
-/**
- * Component smoke tests — render the core surface without a host app.
- * Styling is asserted by class name (the compiled CSS is covered by the
- * styles contract test).
- */
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -155,7 +150,6 @@ describe('organisms', () => {
     const nav = screen.getByRole('navigation', { name: 'Breadcrumb' });
     expect(nav.textContent).toContain('Home');
     expect(nav.textContent).toContain('Word list');
-    // custom content anchor + the href-based Link, plain label renders no anchor
     const anchors = nav.querySelectorAll('a');
     expect(anchors.length).toBe(2);
     expect(anchors[0]?.getAttribute('href')).toBe('/home');
@@ -1251,9 +1245,9 @@ describe('CommandPalette (4.19)', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'less' } });
     expect(screen.getByRole('option', { name: /courses/i })).toBeTruthy();
     expect(screen.queryByRole('option', { name: /home/i })).toBeNull();
-    expect(screen.getByText('Go to')).toBeTruthy(); // Courses survived via keywords
+    expect(screen.getByText('Go to')).toBeTruthy();
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'delete' } });
-    expect(screen.queryByText('Go to')).toBeNull(); // only the Actions group matched
+    expect(screen.queryByText('Go to')).toBeNull();
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'zzz' } });
     expect(screen.getByText('No results.')).toBeTruthy();
   });
@@ -1261,7 +1255,7 @@ describe('CommandPalette (4.19)', () => {
   it('Enter runs the highlighted option and closes; arrows move the selection', () => {
     renderPalette();
     const input = screen.getByRole('combobox');
-    fireEvent.keyDown(input, { key: 'ArrowDown' }); // Home → Courses
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(coursesSelect).toHaveBeenCalled();
     expect(open).toHaveBeenCalledWith(false);
@@ -1280,7 +1274,6 @@ describe('ErrorBoundary (4.20)', () => {
     return <p>alive</p>;
   }
 
-  // React error-boundary recovery needs a fresh render boundary per test.
   afterEach(cleanup);
 
   it('renders children while nothing throws', () => {
@@ -1388,7 +1381,6 @@ describe('HeatmapStrip (4.20)', () => {
 
   it('honours custom thresholds', () => {
     render(<HeatmapStrip cells={[{ percent: 55 }]} goodAt={90} lowAt={50} />);
-    // 55 >= lowAt(50) but < goodAt(90) → primary tone
     expect((document.querySelector('[role="img"] span') as HTMLElement).style.backgroundColor).toContain('var(--color-primary)');
   });
 });

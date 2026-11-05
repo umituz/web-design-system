@@ -1,7 +1,3 @@
-/**
- * Text Component (Atom)
- * @description Styled text element with polymorphic rendering
- */
 
 import { forwardRef, memo, type ElementType, type ComponentPropsWithoutRef } from 'react';
 import { cn } from '../../infrastructure/utils';

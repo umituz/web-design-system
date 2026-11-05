@@ -1,7 +1,3 @@
-/**
- * KeyValueList Component (Organism)
- * @description Definition list of label → value rows (drawers, detail panels).
- */
 
 import { forwardRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';

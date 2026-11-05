@@ -1,7 +1,3 @@
-/**
- * Table Component (Organism)
- * @description Data table component
- */
 
 import { forwardRef, type HTMLAttributes, type TdHTMLAttributes, type ThHTMLAttributes } from 'react';
 import React from 'react';

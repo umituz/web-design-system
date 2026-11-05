@@ -1,20 +1,11 @@
-/**
- * PhotoGallery Component (Organism)
- * @description Placeholder photo gallery — renders tinted tiles with a
- *   caption bar for photos that have no storage backend yet. When a host
- *   wires real image URLs it can render them inside the same tile frame.
- */
 
 import { Image as ImageIcon, ImageOff } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';
 
 export interface PhotoTile {
   id: string;
-  /** Primary caption, e.g. the photo title. */
   label?: string;
-  /** Secondary caption line, e.g. a kind tag or a date. */
   meta?: string;
-  /** Optional image URL — rendered in place of the placeholder mark. */
   src?: string;
 }
 

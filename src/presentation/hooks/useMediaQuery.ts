@@ -1,7 +1,3 @@
-/**
- * useMediaQuery & useBreakpoint Hooks
- * @description Enhanced responsive breakpoint detection with helper functions
- */
 
 import { useEffect, useState, useCallback, useRef, useMemo, useSyncExternalStore } from 'react';
 import type {
@@ -16,16 +12,6 @@ import {
 } from '../../infrastructure/constants/breakpoint.constants';
 import { TIMING } from '../../infrastructure/constants/timing.constants';
 
-/**
- * Simple media query hook for a single breakpoint
- * @param breakpoint - The breakpoint to check
- * @returns Whether the media query matches
- *
- * @example
- * ```tsx
- * const isDesktop = useMediaQuery('lg') // true on lg screens and above
- * ```
- */
 export function useMediaQuery(breakpoint: Breakpoint): boolean {
   const query = useMemo(() => createMediaQuery(breakpoint), [breakpoint]);
 
@@ -49,24 +35,7 @@ export function useMediaQuery(breakpoint: Breakpoint): boolean {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-/**
- * Enhanced breakpoint hook with helper functions
- * @returns Object containing current breakpoint and helper functions
- *
- * @example
- * ```tsx
- * const { currentBreakpoint, isMobile, isDesktop } = useBreakpoint()
- *
- * return (
- *   <div>
- *     {isMobile && <MobileNav />}
- *     {isDesktop && <DesktopNav />}
- *   </div>
- * )
- * ```
- */
 export function useBreakpoint(): UseBreakpointReturn {
-  // FIX: Sort breakpoints once and memoize
   const sortedBreakpoints = useMemo(() => {
     return Object.entries(BREAKPOINTS).sort(
       ([, a], [, b]) => b.min - a.min
@@ -74,7 +43,6 @@ export function useBreakpoint(): UseBreakpointReturn {
   }, []);
 
   const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>(() => {
-    // FIX: SSR-safe initialization
     if (typeof window === 'undefined') return 'lg';
 
     const width = window.innerWidth;
@@ -84,7 +52,6 @@ export function useBreakpoint(): UseBreakpointReturn {
     return 'xs';
   });
 
-  // FIX: Use useRef for resize timer to prevent timer issues
   const resizeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
@@ -99,10 +66,8 @@ export function useBreakpoint(): UseBreakpointReturn {
       }
     };
 
-    // Initial check
     updateBreakpoint();
 
-    // Debounced resize listener
     const handleResize = () => {
       if (resizeTimerRef.current) {
         clearTimeout(resizeTimerRef.current);
@@ -120,7 +85,6 @@ export function useBreakpoint(): UseBreakpointReturn {
     };
   }, [sortedBreakpoints]);
 
-  // Helper functions
   const matches = useCallback(
     (breakpoint: Breakpoint | Breakpoint[]): boolean => {
       if (Array.isArray(breakpoint)) {
@@ -145,7 +109,6 @@ export function useBreakpoint(): UseBreakpointReturn {
     [currentBreakpoint]
   );
 
-  // Computed values
   const isXs = currentBreakpoint === 'xs';
   const isSm = currentBreakpoint === 'sm';
   const isMd = currentBreakpoint === 'md';

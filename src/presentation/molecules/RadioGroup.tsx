@@ -1,7 +1,3 @@
-/**
- * RadioGroup Component (Molecule)
- * @description Group of radio buttons
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

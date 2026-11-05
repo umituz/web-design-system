@@ -1,7 +1,3 @@
-/**
- * ListItem Component (Molecule)
- * @description Reusable list item with icon, content, and actions
- */
 
 import { forwardRef, type ReactNode, type MouseEvent } from 'react';
 import { cn } from '../../infrastructure/utils';

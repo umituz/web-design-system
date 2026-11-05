@@ -1,8 +1,3 @@
-/**
- * Lightbox Component (Organism)
- * @description Media overlay on the Dialog primitives — click to zoom,
- *   caption below, close button in the corner.
- */
 
 import { useState } from 'react';
 import type { ReactNode } from 'react';
@@ -12,10 +7,8 @@ import { Dialog, DialogContent, DialogTitle } from './Dialog';
 export interface LightboxProps {
   open: boolean;
   onClose: () => void;
-  /** Accessible name for the media being shown. */
   alt: string;
   caption?: ReactNode;
-  /** Toggle zoom on media click; default true. */
   zoomable?: boolean;
   children?: ReactNode;
   className?: string;

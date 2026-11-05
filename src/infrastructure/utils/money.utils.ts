@@ -1,9 +1,4 @@
-/**
- * Money Utils
- * @description Minor-unit money math and locale-aware formatting (ISO 4217)
- */
 
-/** Currencies that don't use 2 decimal places. Everything else defaults to 2. */
 const FRACTION_DIGITS: Record<string, number> = {
   BHD: 3,
   IQD: 3,
@@ -58,7 +53,6 @@ export function toMinor(amount: number, currency: string): number {
   return Math.round(amount * 10 ** currencyFractionDigits(currency));
 }
 
-/** Parses user input like '12.50' into minor units for the currency. Null when invalid. */
 export function parseAmountToMinor(input: string, currency: string): number | null {
   const digits = currencyFractionDigits(currency);
   const trimmed = input.trim().replace(',', '.');
@@ -69,7 +63,6 @@ export function parseAmountToMinor(input: string, currency: string): number | nu
   return Number.isSafeInteger(minor) ? minor : null;
 }
 
-/** Percentage of an amount, rounded half-up to whole minor units. */
 export function pctOfMinor(amountMinor: number, pct: number): number {
   return Math.round((amountMinor * pct) / 100);
 }

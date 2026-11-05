@@ -1,7 +1,3 @@
-/**
- * KpiCard Component (Organism)
- * @description Compact key-metric card: label, value, delta badge, hint and sparkline
- */
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
@@ -34,11 +30,9 @@ export interface KpiCardProps extends HTMLAttributes<HTMLDivElement>, BaseProps 
   hint?: ReactNode;
   icon?: ReactNode;
   iconTone?: KpiIconTone;
-  /** Paints the metric value itself, e.g. red for an over-budget figure. */
   valueTone?: KpiIconTone;
   spark?: readonly number[];
   sparkTone?: KpiIconTone;
-  /** Danger emphasis for metrics that need attention, e.g. open incidents. */
   alert?: boolean;
   onClick?: () => void;
 }

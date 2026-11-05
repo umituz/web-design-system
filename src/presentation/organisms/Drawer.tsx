@@ -1,8 +1,3 @@
-/**
- * Drawer Component (Organism)
- * @description Slide-over panel built on the Sheet compound with a
- * Modal-like prop surface (title, footer, side presets, wide variant)
- */
 
 import type { ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -21,7 +16,6 @@ export interface DrawerProps {
   open: boolean;
   onClose: () => void;
   title?: ReactNode;
-  /** Small overline above the title, e.g. an entity code. */
   eyebrow?: ReactNode;
   subtitle?: ReactNode;
   description?: ReactNode;

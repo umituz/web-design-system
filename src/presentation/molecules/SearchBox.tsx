@@ -1,7 +1,3 @@
-/**
- * SearchBox Component (Molecule)
- * @description Input with search icon
- */
 
 import { forwardRef } from 'react';
 import { X } from 'lucide-react';

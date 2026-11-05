@@ -1,11 +1,3 @@
-/**
- * Styles contract — the precompiled stylesheet is a published artifact.
- *
- * These tests run AFTER `npm run build` (the npm `test` script builds
- * first), so `dist/styles.css` reflects the current source. They fail the
- * release if the compile step breaks, a theme variable goes missing, or a
- * semantic class stops being generated.
- */
 
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -34,15 +26,11 @@ describe('dist/styles.css contract', () => {
   });
 
   it('compiles component classes used by the source', () => {
-    // Button default variant hover state (compiled via color-mix)
     expect(css).toMatch(/hover\\:bg-primary\\\/90:hover\{background-color:color-mix/);
-    // Button sizes
     expect(css).toMatch(/\.h-10\{/);
     expect(css).toMatch(/\.h-9\{/);
-    // Radius scale
     expect(css).toMatch(/\.rounded-md\{border-radius:var\(--radius-md\)\}/);
     expect(css).toMatch(/\.rounded-lg\{border-radius:var\(--radius-lg\)\}/);
-    // Toaster viewport + kind accents
     expect(css).toMatch(/\.border-l-success\{[^}]*var\(--color-success\)/);
     expect(css).toMatch(/\.text-warning\{[^}]*var\(--color-warning\)/);
     expect(css).toMatch(/\.bg-popover\{[^}]*var\(--color-popover\)/);
@@ -102,7 +90,6 @@ describe('bridge.css contract (published as-is)', () => {
   });
 
   it('never touches radius or mono font (name-collision doctrine)', () => {
-    // Strip doc comments first — the header documents the doctrine by name.
     const declarations = bridge.replace(/\/\*[\s\S]*?\*\//g, '');
     expect(declarations).not.toContain('--radius-');
     expect(declarations).not.toContain('--font-mono');

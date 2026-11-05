@@ -1,10 +1,4 @@
-/**
- * Calculation Utils
- * @description Small numeric helpers used by presentation components
- * (progress percentage, pagination bounds, trend formatting, clamping)
- */
 
-// --- Clamping ---
 
 export const clampToRange = (value: number, min: number, max: number): number => {
   if (Number.isNaN(value)) return min;
@@ -20,7 +14,6 @@ export const clampToNonNegative = (value: number): number =>
 export const clampToPositive = (value: number, fallback: number = 1): number =>
   value <= 0 || Number.isNaN(value) ? fallback : value;
 
-// --- Percentage ---
 
 const PERCENT_MIN = 0;
 const PERCENT_MAX = 100;
@@ -30,7 +23,6 @@ export const percentOfMax = (value: number, max: number): number => {
   return clampToRange((value / max) * PERCENT_MAX, PERCENT_MIN, PERCENT_MAX);
 };
 
-// --- Trend formatting ---
 
 const PERCENT_FRACTION_DIGITS = 1;
 const SIGN_THRESHOLD = 0;
@@ -43,7 +35,6 @@ export const formatTrendMagnitude = (value: number, fractionDigits: number = PER
   return `${sign}${Math.abs(value).toFixed(fractionDigits)}%`;
 };
 
-// --- Pagination bounds ---
 
 export interface PageBounds {
   totalPages: number;

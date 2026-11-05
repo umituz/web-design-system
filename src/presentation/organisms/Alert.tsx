@@ -1,7 +1,3 @@
-/**
- * Alert Component (Organism)
- * @description Feedback message (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import { cn } from '../../infrastructure/utils';

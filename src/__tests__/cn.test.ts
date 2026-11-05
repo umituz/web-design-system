@@ -1,6 +1,3 @@
-/**
- * cn utility — class merging contract (clsx + tailwind-merge).
- */
 
 import { describe, expect, it } from 'vitest';
 import { cn } from '../infrastructure/utils';

@@ -1,8 +1,3 @@
-/**
- * Templates Export
- * @description Template components - page structures
- * Subpath: @umituz/web-design-system/templates
- */
 
 export { Form, FormActions } from './Form';
 export type { FormProps } from './Form';

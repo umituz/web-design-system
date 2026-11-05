@@ -51,17 +51,14 @@ export interface SortState {
 export interface Column<T> {
   id: string;
   header: ReactNode;
-  /** Data source; optional when the column renders through `cell` only. */
   accessor?: keyof T | ((row: T) => ReactNode);
   cell?: (row: T) => ReactNode;
   sortValue?: (row: T) => string | number;
   sortable?: boolean;
   align?: ColumnAlign;
   hideBelow?: ColumnHideBelow;
-  /** Pixels when numeric. */
   width?: string | number;
   className?: string;
-  /** Hidden until the reader enables it from the built-in columns menu. */
   optional?: boolean;
 }
 
@@ -71,12 +68,9 @@ export interface TablePaginationProps extends BaseProps {
   onPage: (page: number) => void;
   label?: ReactNode;
   hideWhenSingle?: boolean;
-  /** Page-size choices offered in the rows-per-page select. */
   pageSizeOptions?: readonly number[];
-  /** Currently selected page size; required with `pageSizeOptions`. */
   pageSize?: number;
   onPageSize?: (size: number) => void;
-  /** Accessible label for the rows-per-page select (default "Rows per page"). */
   pageSizeLabel?: ReactNode;
 }
 
@@ -103,7 +97,6 @@ export interface DataTableProps<T> extends BaseProps {
   stackable?: boolean;
   paginated?: boolean;
   pageSize?: number;
-  /** Page-size choices offered in the footer rows-per-page select. */
   pageSizeOptions?: readonly number[];
   onPageSizeChange?: (size: number) => void;
   emptyState?: {
@@ -112,7 +105,6 @@ export interface DataTableProps<T> extends BaseProps {
   };
   onRowClick?: (row: T) => void;
   rowLabel?: (row: T) => string;
-  /** Row-level class, e.g. a tone accent for overdue rows. */
   rowClass?: (row: T) => string | undefined;
 }
 

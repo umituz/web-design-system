@@ -1,7 +1,3 @@
-/**
- * Dialog Component (Organism)
- * @description Modal dialog (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';

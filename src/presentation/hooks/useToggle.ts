@@ -1,7 +1,3 @@
-/**
- * useToggle Hook
- * @description Toggle boolean state with explicit setValue
- */
 
 import { useCallback, useState, useMemo } from 'react';
 

@@ -1,28 +1,18 @@
-/**
- * HeatmapStrip Component (Atom)
- * @description Compact threshold-toned strip of cells — percent-driven color
- * and opacity ramps (skill coverage, streak calendars, activity strips).
- */
 
 import { forwardRef } from 'react';
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface HeatmapCell {
-  /** 0–100, or null for "no data". */
   percent: number | null;
-  /** Tooltip text for the cell. */
   label?: string;
 }
 
 export interface HeatmapStripProps extends BaseProps {
   cells: readonly HeatmapCell[];
-  /** >= goodAt renders success; >= lowAt renders primary; below renders destructive. */
   goodAt?: number;
   lowAt?: number;
-  /** Cell height in px. */
   height?: number;
-  /** Accessible name for the whole strip. */
   label?: string;
 }
 

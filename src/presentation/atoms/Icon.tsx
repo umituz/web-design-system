@@ -1,7 +1,3 @@
-/**
- * Icon Component (Atom)
- * @description Wrapper for SVG icons
- */
 
 import { forwardRef, type SVGAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

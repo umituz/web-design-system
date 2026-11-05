@@ -1,7 +1,3 @@
-/**
- * ProjectSkeleton Template Component
- * @description Loading skeleton for project cards
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

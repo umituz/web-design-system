@@ -1,7 +1,3 @@
-/**
- * Switch Component (Atom) - Shadcn/ui format
- * @description Toggle switch component using class-variance-authority
- */
 
 import * as React from 'react';
 import * as SwitchPrimitives from '@radix-ui/react-switch';

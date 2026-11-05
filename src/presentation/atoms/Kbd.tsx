@@ -1,7 +1,3 @@
-/**
- * Kbd Component (Atom)
- * @description Keyboard key cap, e.g. for shortcut hints
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

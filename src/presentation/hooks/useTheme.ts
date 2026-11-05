@@ -1,7 +1,3 @@
-/**
- * useTheme Hook
- * @description Theme toggle functionality with SSR support and system preference detection
- */
 
 import { useEffect, useState, useCallback } from 'react';
 
@@ -25,9 +21,16 @@ const getSystemTheme = (): 'light' | 'dark' => {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
+const writeThemeStorage = (theme: Theme): void => {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    return;
+  }
+};
+
 export function useTheme(): UseThemeReturn {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // FIX: SSR-safe initialization
     if (typeof window === 'undefined') return 'system';
 
     try {
@@ -47,7 +50,6 @@ export function useTheme(): UseThemeReturn {
     return theme;
   });
 
-  // Listen for system theme changes
   useEffect(() => {
     if (theme !== 'system') return;
 
@@ -66,15 +68,9 @@ export function useTheme(): UseThemeReturn {
 
     root.classList.remove('light', 'dark');
     root.classList.add(themeToApply);
-
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch {
-      // Ignore storage errors
-    }
+    writeThemeStorage(theme);
   }, [theme]);
 
-  // FIX: Memoize callbacks to prevent unnecessary re-renders
   const toggleTheme = useCallback(() => {
     setThemeState((prev) => {
       if (prev === 'light') return 'dark';

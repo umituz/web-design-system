@@ -1,7 +1,3 @@
-/**
- * Select Component (Molecule)
- * @description Dropdown select (Shadcn/Radix UI compatible)
- */
 
 import * as React from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';

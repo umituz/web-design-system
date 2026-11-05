@@ -1,7 +1,3 @@
-/**
- * Divider Component (Atom)
- * @description Visual separator line
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

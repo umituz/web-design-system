@@ -1,7 +1,3 @@
-/**
- * Spinner Component (Atom)
- * @description Loading indicator
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

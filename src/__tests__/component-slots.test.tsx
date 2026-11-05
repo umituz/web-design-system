@@ -1,7 +1,3 @@
-/**
- * Component slot tests — Badge icon, Avatar hue, Timeline avatar and
- * ConfirmDialog success tone additions.
- */
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';

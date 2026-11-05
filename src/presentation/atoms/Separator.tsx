@@ -1,7 +1,3 @@
-/**
- * Separator Component (Atom) - Shadcn/ui format
- * @description Visual separator/divider component
- */
 
 import * as React from 'react';
 import * as SeparatorPrimitive from '@radix-ui/react-separator';

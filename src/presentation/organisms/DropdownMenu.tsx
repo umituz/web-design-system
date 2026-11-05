@@ -1,7 +1,3 @@
-/**
- * Dropdown Menu Component (Organism) - Shadcn/ui format
- * @description Dropdown menu component using Radix UI
- */
 
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';

@@ -1,13 +1,3 @@
-/**
- * AspectRatio Component
- * @description Aspect ratio container component
- * @example
- * import { AspectRatio } from '@umituz/web-design-system/atoms';
- *
- * <AspectRatio ratio={16 / 9}>
- *   <img src="..." alt="..." className="object-cover w-full h-full" />
- * </AspectRatio>
- */
 
 import * as React from "react";
 

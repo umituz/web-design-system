@@ -1,7 +1,3 @@
-/**
- * Global Type Declarations
- * @description Global type definitions for the design system
- */
 
 declare global {
   interface ImportMetaEnv {

@@ -1,7 +1,3 @@
-/**
- * Collapsible Component (Organism)
- * @description Collapsible content (Shadcn/ui compatible)
- */
 
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
 

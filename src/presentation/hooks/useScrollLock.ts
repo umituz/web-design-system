@@ -1,11 +1,6 @@
-/**
- * useScrollLock Hook
- * @description Lock/unlock body scroll while preserving scrollbar gutter
- */
 
 import { useEffect } from 'react';
 
-/** Width of the vertical scrollbar, so locking scroll doesn't shift layout. */
 const measureScrollbarWidth = (): number => {
   if (typeof window === 'undefined' || typeof document === 'undefined') return 0;
   return Math.max(0, window.innerWidth - document.documentElement.clientWidth);

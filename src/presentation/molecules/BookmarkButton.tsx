@@ -1,8 +1,3 @@
-/**
- * BookmarkButton Component (Molecule)
- * @description Accessible toggleable button for saving, bookmarking, or favoriting items.
- * Supports pill (icon + label) and icon-only variants, multiple sizes, semantic tones, and custom icons.
- */
 
 import React, { forwardRef } from 'react';
 import { Star } from 'lucide-react';
@@ -15,25 +10,15 @@ export type BookmarkTone = 'warning' | 'primary' | 'success' | 'default';
 export interface BookmarkButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'onChange' | 'onToggle'>,
     BaseProps {
-  /** Whether the item is currently saved / bookmarked / active. */
   active?: boolean;
-  /** Callback fired when clicked or toggled. Passes the inverted active state. */
   onToggle?: (nextActive: boolean) => void;
-  /** Display variant: 'pill' shows icon + label, 'icon' renders a square/round icon-only button. */
   variant?: 'pill' | 'icon';
-  /** Size variant */
   size?: 'xs' | 'sm' | 'md' | 'lg';
-  /** Inactive label (default: "Save"). Used as text in pill mode and aria-label in icon mode. */
   label?: string;
-  /** Active label (default: "Saved"). */
   activeLabel?: string;
-  /** Custom icon when inactive. Defaults to a Star outline. */
   icon?: React.ReactNode;
-  /** Custom icon when active. Defaults to a filled Star. */
   activeIcon?: React.ReactNode;
-  /** Color theme tone when active (default: 'warning' for warm bookmark gold). */
   tone?: BookmarkTone;
-  /** Loading indicator */
   loading?: boolean;
 }
 

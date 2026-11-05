@@ -1,7 +1,3 @@
-/**
- * ScrollArea Component (Molecule)
- * @description Custom scrollable area (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';

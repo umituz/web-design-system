@@ -1,8 +1,3 @@
-/**
- * PlanPicker Component (Organism)
- * @description Pricing plan card group with an optional billing cycle switch;
- * money stays caller-computed — price and features are plain nodes
- */
 
 import type { KeyboardEvent, ReactNode } from 'react';
 import { Check } from 'lucide-react';

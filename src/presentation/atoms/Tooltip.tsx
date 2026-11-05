@@ -1,7 +1,3 @@
-/**
- * Tooltip Component (Atom)
- * @description Popup with additional information
- */
 
 import { forwardRef, type HTMLAttributes, type ReactNode, useState, useRef, useEffect } from 'react';
 import { cn } from '../../infrastructure/utils';

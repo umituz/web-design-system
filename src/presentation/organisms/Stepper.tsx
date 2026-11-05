@@ -1,8 +1,3 @@
-/**
- * Stepper Component (Organism)
- * @description Horizontal or vertical step indicator with derived status,
- * optional click navigation and per-step override/lock control
- */
 
 import type { ReactNode } from 'react';
 import { Check } from 'lucide-react';

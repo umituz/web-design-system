@@ -1,7 +1,3 @@
-/**
- * AvatarStack Component (Organism)
- * @description Overlapping avatar row built on the Avatar molecule with an overflow count badge
- */
 
 import { forwardRef } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -16,7 +12,6 @@ export interface AvatarPerson {
 
 export interface AvatarStackProps extends BaseProps {
   people: AvatarPerson[];
-  /** Avatars shown before the +N badge (default 4). */
   max?: number;
   size?: ExtendedSizes;
 }

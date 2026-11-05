@@ -1,7 +1,3 @@
-/**
- * useClickOutside Hook
- * @description Detect clicks outside an element
- */
 
 import { useEffect, useRef } from 'react';
 
@@ -10,8 +6,6 @@ export function useClickOutside<T extends HTMLElement>(
   enabled: boolean = true
 ) {
   const ref = useRef<T>(null);
-  // Use a ref to keep the latest callback without retriggering the effect
-  // on every render — callers commonly pass inline functions.
   const callbackRef = useRef(callback);
   useEffect(() => {
     callbackRef.current = callback;

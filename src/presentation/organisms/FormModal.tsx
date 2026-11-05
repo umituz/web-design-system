@@ -65,8 +65,6 @@ export interface FormModalMessages {
   invalidNumber: string;
 }
 
-/** Resolves a field's options — static arrays pass through, functions
- *  receive the current values so a select can depend on earlier fields. */
 function fieldOptions(f: FormModalField, values: FormModalValues): FormModalOption[] {
   return typeof f.options === 'function' ? f.options(values) : (f.options ?? []);
 }
@@ -118,8 +116,6 @@ export function FormModal(
   const set = (name: string, val: string | number | boolean) => {
     const next: FormModalValues = { ...values, [name]: val };
     const cleared = [name];
-    // A dependent select must never hold a value its resolved options no
-    // longer contain — snap it to the first option (or '') and clear its error.
     for (const s of steps) {
       for (const f of s.fields) {
         if (f.type !== 'select' || typeof f.options !== 'function') continue;
@@ -215,7 +211,6 @@ export function FormModal(
                     {f.label}
                     {f.required && (
                       <span className="ml-0.5 text-destructive" aria-hidden="true">
-                        *
                       </span>
                     )}
                   </label>

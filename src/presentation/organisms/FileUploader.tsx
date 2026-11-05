@@ -1,8 +1,3 @@
-/**
- * FileUploader Component (Organism)
- * @description Keyboard-accessible drag-and-drop file picker with a queued
- *   file preview list. Visual only — storage wiring belongs to the host.
- */
 
 import { useRef, useState, type DragEvent } from 'react';
 import { UploadCloud } from 'lucide-react';
@@ -10,15 +5,11 @@ import { Button } from '../atoms/Button';
 import { cn } from '../../infrastructure/utils';
 
 export interface FileUploaderProps {
-  /** Drop-zone headline. */
   label?: string;
-  /** Secondary line under the headline. */
   hint?: string;
   accept?: string;
   multiple?: boolean;
-  /** Called with the picked/dropped files. */
   onFiles?: (files: File[]) => void;
-  /** How many queued names to list before stopping (visual cap only). */
   maxPreview?: number;
 }
 

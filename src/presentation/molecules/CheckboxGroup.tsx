@@ -1,7 +1,3 @@
-/**
- * CheckboxGroup Component (Molecule)
- * @description Group of checkboxes
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

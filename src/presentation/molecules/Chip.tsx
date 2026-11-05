@@ -1,7 +1,3 @@
-/**
- * Chip Component (Molecule)
- * @description Selectable/removable tag
- */
 
 import { forwardRef } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -15,7 +11,6 @@ export interface ChipProps extends BaseProps {
   onRemove?: () => void;
   onClick?: () => void;
   removable?: boolean;
-  /** Toggle state for filter chips — renders as a pressed button when set. */
   selected?: boolean;
 }
 

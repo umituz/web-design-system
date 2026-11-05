@@ -1,8 +1,3 @@
-/**
- * DateRangePicker Component (Organism)
- * @description Compact preset-driven date range picker with custom date
- *   inputs, built on the DropdownMenu + Input atoms.
- */
 
 import { useState } from 'react';
 import { CalendarRange } from 'lucide-react';
@@ -20,7 +15,6 @@ import {
 export interface DateRange {
   from: string;
   to: string;
-  /** preset id when the range was chosen from the preset list */
   preset?: RangePreset;
 }
 
@@ -56,7 +50,6 @@ function shiftMonths(iso: string, months: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-/** Resolve a preset id into a concrete range around `today` (ISO date). */
 export function presetRange(preset: RangePreset, today: string = isoToday()): DateRange {
   switch (preset) {
     case '7d':
@@ -79,9 +72,7 @@ export function presetRange(preset: RangePreset, today: string = isoToday()): Da
 export interface DateRangePickerProps {
   value: DateRange;
   onChange: (range: DateRange) => void;
-  /** Preset list shown above the custom inputs; defaults to DEFAULT_RANGE_PRESETS. */
   presets?: readonly RangePresetOption[];
-  /** Day formatter for the trigger label; defaults to the raw ISO date. */
   formatDay?: (iso: string) => string;
   'aria-label'?: string;
 }

@@ -1,7 +1,3 @@
-/**
- * Form Template (Template)
- * @description Complete form structure
- */
 
 import { forwardRef, type FormHTMLAttributes, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

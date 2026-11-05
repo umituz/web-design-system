@@ -1,7 +1,3 @@
-/**
- * Modal Component (Organism)
- * @description Convenience modal with title, description, size and footer presets
- */
 
 import type { ReactNode } from 'react';
 import { AlertTriangle } from 'lucide-react';

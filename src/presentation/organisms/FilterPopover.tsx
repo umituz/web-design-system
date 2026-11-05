@@ -1,8 +1,3 @@
-/**
- * FilterPopover Component (Organism)
- * @description List-toolbar filter trigger with an active-filter count badge;
- * hosts arbitrary filter controls inside a Popover
- */
 
 import { useState, type ReactNode } from 'react';
 import { Filter } from 'lucide-react';
@@ -11,11 +6,8 @@ import { Button } from '../atoms/Button';
 import { Popover, PopoverContent, PopoverTrigger } from './Popover';
 
 export interface FilterPopoverProps {
-  /** Trigger caption; defaults to "Filters". */
   label?: string;
-  /** Active filter count; rendered as a badge when greater than zero. */
   count?: number;
-  /** Popover alignment relative to the trigger; defaults to "start". */
   align?: 'start' | 'center' | 'end';
   children: ReactNode;
   className?: string;

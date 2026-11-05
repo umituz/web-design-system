@@ -1,7 +1,3 @@
-/**
- * IconButton Component (Atom)
- * @description Round button optimized for icon-only usage with consistent sizing
- */
 
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';

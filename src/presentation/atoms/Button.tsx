@@ -46,7 +46,6 @@ export interface ButtonProps
   icon?: React.ReactNode;
   iconRight?: React.ReactNode;
   loading?: boolean;
-  /** Renders the button as a client-side navigation link (`react-router`). */
   to?: string;
 }
 
@@ -60,7 +59,6 @@ const Button = React.memo(React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(block && 'w-full', buttonVariants({ variant, size, className }))}
           ref={ref as React.Ref<HTMLAnchorElement>}
           aria-disabled={disabled || loading || undefined}
-          // Button-typed DOM props (onClick, aria-*, …) flow straight onto the anchor.
           {...(props as unknown as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
         >
           {loading ? <Spinner size="sm" /> : icon}

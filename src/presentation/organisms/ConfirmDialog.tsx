@@ -1,8 +1,3 @@
-/**
- * ConfirmDialog Component (Organism)
- * @description Destructive/primary confirmation built on Modal: title, body and
- * Cancel + confirm actions; unmounts itself after confirming
- */
 
 import type { ReactNode } from 'react';
 import { Button } from '../atoms/Button';
@@ -13,11 +8,8 @@ export interface ConfirmDialogProps {
   body?: ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
-  /** Visual weight of the confirm action; defaults to danger. */
   tone?: 'danger' | 'primary' | 'success';
-  /** Renders nothing when false; defaults to true (conditional mounting also works). */
   open?: boolean;
-  /** While true the confirm action is locked and shows its loading state; the caller owns dismissal. */
   busy?: boolean;
   onConfirm: () => void;
   onClose: () => void;

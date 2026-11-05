@@ -1,9 +1,3 @@
-/**
- * StatusBadge Component (Organism)
- * @description Vocab-driven status badge — resolves a raw value against a
- *   status map (label + tone), falling back to a neutral badge with the
- *   raw value as its label.
- */
 
 import type { ReactNode } from 'react';
 import { Badge } from '../atoms/Badge';
@@ -17,11 +11,6 @@ export interface StatusEntry {
 
 export type StatusVocab = Record<string, StatusEntry>;
 
-/**
- * Status vocab fabric — build a vocab from a domain label map (raw value →
- * display label) plus an optional tone table (raw value → badge tone).
- * Entries without a tone render neutral.
- */
 export function statusVocab(
   labels: Record<string, string>,
   tones: Record<string, BadgeVariant> = {},
@@ -36,7 +25,6 @@ export function statusVocab(
 export interface StatusBadgeProps {
   vocab: StatusVocab;
   value: string;
-  /** Render text in place of the vocab entry's label (tone still comes from the vocab). */
   label?: ReactNode;
   dot?: boolean;
   mono?: boolean;

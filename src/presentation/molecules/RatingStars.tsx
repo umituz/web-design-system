@@ -1,18 +1,10 @@
-/**
- * RatingStars Component (Molecule)
- * @description 0–5 rating with visual half-star precision, numeric value and
- *   optional review count
- */
 
 import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface RatingStarsProps extends BaseProps {
-  /** 0–5 rating; halves render as partial star fills. */
   value: number;
-  /** Optional review count rendered in parentheses. */
   count?: number;
-  /** Locale-formatted count override (e.g. 1,204). */
   formatCount?: (count: number) => string;
   size?: 'sm' | 'md';
 }

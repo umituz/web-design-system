@@ -1,7 +1,3 @@
-/**
- * Breadcrumb Component (Organism)
- * @description Navigation breadcrumb trail
- */
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -13,9 +9,6 @@ export interface BreadcrumbItem {
   label: string;
   href?: string;
   icon?: ReactNode;
-  /** Renders this node instead of the default anchor — for hosts that need
-   *  SPA router links (react-router `Link`, Next `Link`, …). When set, label
-   *  and href are ignored for rendering. */
   content?: ReactNode;
 }
 

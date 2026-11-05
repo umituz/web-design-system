@@ -1,7 +1,3 @@
-/**
- * Sheet Component (Organism)
- * @description Slide-over sheet dialog (Shadcn/ui compatible)
- */
 
 import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';

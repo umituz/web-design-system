@@ -1,7 +1,3 @@
-/**
- * List Template (Template)
- * @description Structured list container
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

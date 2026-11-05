@@ -1,7 +1,3 @@
-/**
- * Textarea Component (Molecule)
- * @description Multi-line text input with optional label and helper text
- */
 
 import { forwardRef, useId, type ReactNode, type TextareaHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

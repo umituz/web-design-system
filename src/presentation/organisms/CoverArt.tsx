@@ -1,9 +1,3 @@
-/**
- * CoverArt Component (Organism)
- * @description Deterministic generated artwork for entities without
- *   photography — the seed always resolves to the same gradient, replaced by
- *   real imagery once a media service exists
- */
 
 import type { ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -11,13 +5,10 @@ import { hashSeed } from '../../infrastructure/utils/hash.util';
 import type { BaseProps } from '../../domain/types';
 
 export interface CoverArtProps extends BaseProps {
-  /** Any stable entity id/name — the same seed always renders the same gradient. */
   seed: string;
   ratio?: '16/9' | '3/2' | '4/3' | '1/1' | '21/9';
   rounded?: 'none' | 'md' | 'lg' | 'top';
-  /** Brand palette override ([from, to]); wins over the seeded gradient. */
   colors?: readonly [string, string];
-  /** Accessible description; omit for purely decorative usage. */
   alt?: string;
   children?: ReactNode;
 }

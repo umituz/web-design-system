@@ -1,7 +1,3 @@
-/**
- * useClipboard Hook
- * @description Clipboard operations with proper cleanup
- */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { TIMING } from '../../infrastructure/constants/timing.constants';

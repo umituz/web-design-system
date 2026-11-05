@@ -1,7 +1,3 @@
-/**
- * Slider Component (Atom)
- * @description Range slider input
- */
 
 import { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

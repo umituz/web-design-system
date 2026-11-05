@@ -1,7 +1,3 @@
-/**
- * Checklist Component (Organism)
- * @description Toggleable checklist with completion progress and done-by metadata
- */
 
 import { forwardRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';

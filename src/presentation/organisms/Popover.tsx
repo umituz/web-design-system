@@ -1,7 +1,3 @@
-/**
- * Popover Component (Organism)
- * @description Popover dialog (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';

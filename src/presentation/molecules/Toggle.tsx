@@ -1,7 +1,3 @@
-/**
- * Toggle Component (Molecule)
- * @description Switch/toggle button
- */
 
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

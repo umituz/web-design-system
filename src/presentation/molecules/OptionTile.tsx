@@ -1,9 +1,3 @@
-/**
- * OptionTile Component (Molecule)
- * @description Graded answer tile for exercises — a native input (radio or
- * checkbox) wrapped in its label, with an optional A/B/C/D key badge and
- * reveal states (correct / wrong / missed) for post-submission feedback.
- */
 
 import { forwardRef } from 'react';
 import { Check, X } from 'lucide-react';
@@ -14,15 +8,11 @@ export type OptionTileState = 'correct' | 'wrong' | 'missed';
 
 export interface OptionTileProps extends BaseProps {
   label: React.ReactNode;
-  /** Key badge rendered before the label (A, B, C…). */
   keyBadge?: string;
-  /** Native input type — radio (single) or checkbox (multi-select). */
   type?: 'radio' | 'checkbox';
   checked?: boolean;
-  /** Reveal semantics — overrides selection styling after grading. */
   state?: OptionTileState;
   disabled?: boolean;
-  /** Group name for radio inputs. */
   name?: string;
   onChange: (checked: boolean) => void;
 }

@@ -1,7 +1,3 @@
-/**
- * ActiveFilterTags Component (Molecule)
- * @description Display active filters with remove buttons
- */
 
 import { X } from 'lucide-react';
 import { cn } from '../../infrastructure/utils';

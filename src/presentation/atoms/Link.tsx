@@ -1,7 +1,3 @@
-/**
- * Link Component (Atom)
- * @description Styled anchor/link element
- */
 
 import { forwardRef, type AnchorHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

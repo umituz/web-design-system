@@ -1,8 +1,3 @@
-/**
- * Organisms Export
- * @description Organism components - complex UI combinations
- * Subpath: @umituz/web-design-system/organisms
- */
 
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card';
 export type { CardProps, CardHeaderProps } from './Card';

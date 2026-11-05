@@ -1,7 +1,3 @@
-/**
- * Tabs Component (Organism)
- * @description Tabbed interface
- */
 
 import { useRef, useState, useCallback, type KeyboardEvent, type ReactNode, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -23,7 +19,6 @@ export interface TabsProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'pills' | 'underline';
   ariaLabel?: string;
   panelId?: string;
-  /** Render only the tab list (e.g. URL-driven tabs whose content lives elsewhere). */
   showPanel?: boolean;
 }
 
@@ -95,7 +90,6 @@ export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'defa
 
   return (
     <div className={cn('w-full', className)} {...props}>
-      {/* Tab List */}
       <div
         ref={listRef}
         role="tablist"
@@ -138,7 +132,6 @@ export function Tabs({ tabs, defaultValue, value, onValueChange, variant = 'defa
         })}
       </div>
 
-      {/* Tab Content */}
       {showPanel && (
         <div
           role="tabpanel"

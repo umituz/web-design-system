@@ -1,7 +1,3 @@
-/**
- * MetricCard Component (Organism)
- * @description Card component for displaying metrics and statistics with trend indicators (Responsive)
- */
 
 import { forwardRef } from 'react';
 import { cn, getSpacing, getIconSize, getTextSize, getGap } from '../../infrastructure/utils';
@@ -21,7 +17,7 @@ export interface MetricCardProps extends BaseProps {
   variant?: ColorVariant;
   trendValueFormatter?: (value: number) => string;
   onClick?: () => void;
-  responsiveLayout?: boolean; // Enable responsive layout changes
+  responsiveLayout?: boolean;
 }
 
 const trendColors: Record<ColorVariant, { positive: string; negative: string; bg: string }> = {

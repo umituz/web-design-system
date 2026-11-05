@@ -1,7 +1,3 @@
-/**
- * useLocalStorage Hook
- * @description LocalStorage state management with safe error surfacing
- */
 
 import { useCallback, useEffect, useState, useRef } from 'react';
 

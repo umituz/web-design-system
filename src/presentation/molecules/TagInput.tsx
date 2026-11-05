@@ -1,9 +1,3 @@
-/**
- * TagInput Component (Molecule)
- * @description Controlled free-form tag entry rendered as removable chips.
- * Type and press Enter (or comma) to commit, Backspace on an empty draft removes the last tag,
- * duplicates are ignored, and blur commits by default.
- */
 
 import { forwardRef, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
@@ -16,7 +10,6 @@ export interface TagInputProps
     BaseProps {
   tags: string[];
   onTagsChange: (tags: string[]) => void;
-  /** Commit the draft on blur (default true). */
   commitOnBlur?: boolean;
 }
 

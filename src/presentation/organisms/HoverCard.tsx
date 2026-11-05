@@ -1,7 +1,3 @@
-/**
- * HoverCard Component (Organism)
- * @description Hover-triggered card (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import * as HoverCardPrimitive from '@radix-ui/react-hover-card';

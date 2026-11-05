@@ -1,7 +1,3 @@
-/**
- * Toggle Group Component (Organism) - Shadcn/ui format
- * @description Group of toggle buttons with single or multiple selection
- */
 
 import * as React from 'react';
 import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';

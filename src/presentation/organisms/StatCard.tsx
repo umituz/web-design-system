@@ -1,7 +1,3 @@
-/**
- * StatCard Component (Organism)
- * @description Enhanced metric card with progress bar and target tracking (Responsive)
- */
 
 import { forwardRef, type ComponentType } from 'react';
 import { cn, getSpacing, getIconSize, getContainerSize, getTextSize, getSpaceY, getGap } from '../../infrastructure/utils';
@@ -20,7 +16,6 @@ export interface StatCardProps extends BaseProps {
     value: number;
     label?: string;
   };
-  /** Secondary context line rendered under the title. */
   meta?: string;
   target?: {
     value: string;

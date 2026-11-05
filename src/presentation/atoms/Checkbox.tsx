@@ -1,7 +1,3 @@
-/**
- * Checkbox Component (Atom)
- * @description Checkbox input element with optional label
- */
 
 import {
   forwardRef,

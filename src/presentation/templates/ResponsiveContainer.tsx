@@ -1,7 +1,3 @@
-/**
- * ResponsiveContainer Template Component
- * @description Responsive wrapper with mobile/desktop optimizations
- */
 
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -14,58 +10,22 @@ export interface ResponsiveContainerProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
     BaseProps {
   children?: ReactNode;
-  /**
-   * Maximum width on mobile devices
-   * @default 'full'
-   */
   mobileMaxWidth?: ResponsiveSize;
 
-  /**
-   * Maximum width on tablet devices
-   * @default 'lg'
-   */
   tabletMaxWidth?: ResponsiveSize;
 
-  /**
-   * Maximum width on desktop devices
-   * @default 'xl'
-   */
   desktopMaxWidth?: ResponsiveSize;
 
-  /**
-   * Padding on mobile devices
-   * @default true
-   */
   mobilePadding?: boolean;
 
-  /**
-   * Padding on tablet devices
-   * @default true
-   */
   tabletPadding?: boolean;
 
-  /**
-   * Padding on desktop devices
-   * @default true
-   */
   desktopPadding?: boolean;
 
-  /**
-   * Center content horizontally
-   * @default true
-   */
   centered?: boolean;
 
-  /**
-   * Background gradient
-   * @default false
-   */
   gradient?: boolean;
 
-  /**
-   * Minimum height
-   * @default 'auto'
-   */
   minHeight?: 'auto' | 'screen' | 'full';
 }
 
@@ -100,7 +60,6 @@ export const ResponsiveContainer = forwardRef<
   ) => {
     const { currentBreakpoint: breakpoint } = useBreakpoint();
 
-    // Determine current max width based on breakpoint
     const getCurrentMaxWidth = (): string => {
       if (!breakpoint) return maxWidthClasses[mobileMaxWidth];
 
@@ -113,7 +72,6 @@ export const ResponsiveContainer = forwardRef<
       return maxWidthClasses[desktopMaxWidth];
     };
 
-    // Determine current padding based on breakpoint
     const getCurrentPadding = (): string => {
       if (!breakpoint) return mobilePadding ? 'px-4' : '';
 
@@ -126,7 +84,6 @@ export const ResponsiveContainer = forwardRef<
       return desktopPadding ? 'px-8' : '';
     };
 
-    // Determine current py padding based on breakpoint
     const getCurrentPyPadding = (): string => {
       if (!breakpoint) return 'py-8';
 

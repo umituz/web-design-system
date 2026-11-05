@@ -1,7 +1,3 @@
-/**
- * PageLayout Template Component
- * @description Centralized page layout with consistent padding, max-width, and theme integration
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

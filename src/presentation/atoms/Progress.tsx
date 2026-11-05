@@ -1,8 +1,3 @@
-/**
- * Progress Component (Atom)
- * @description Progress indicator bar with optional percent readout and
- *   threshold-driven auto tone (>=95 success, >=70 primary, below muted)
- */
 
 import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';
@@ -15,7 +10,6 @@ export interface ProgressProps extends HTMLAttributes<HTMLDivElement>, BaseProps
   size?: 'sm' | 'md' | 'lg';
   tone?: 'primary' | 'success' | 'warning' | 'destructive' | 'info' | 'auto';
   label?: string;
-  /** Render the rounded percentage next to the bar. */
   showValue?: boolean;
 }
 

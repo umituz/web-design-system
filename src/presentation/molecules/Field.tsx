@@ -13,18 +13,11 @@ export interface FieldProps {
   error?: ReactNode;
   required?: boolean;
   htmlFor?: string;
-  /** Keep the label in the accessibility tree while hiding it visually. */
   hideLabel?: boolean;
   className?: string;
   children: ReactNode;
 }
 
-/**
- * Label + hint/error wrapper for a single form control. When the child is a
- * valid element, the control id (existing id wins, then htmlFor, then a
- * generated one) and the aria wiring for hint/error are injected into it so
- * the label association is automatic.
- */
 export function Field({ label, hint, error, required, htmlFor, hideLabel = false, className, children }: FieldProps) {
   const autoId = useId();
   const childId = isValidElement(children) ? (children as ReactElement<FieldControlProps>).props.id : undefined;

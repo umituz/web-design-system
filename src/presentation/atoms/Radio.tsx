@@ -1,7 +1,3 @@
-/**
- * Radio Component (Atom)
- * @description Radio input element
- */
 
 import { forwardRef, type InputHTMLAttributes } from 'react';
 import { cn } from '../../infrastructure/utils';

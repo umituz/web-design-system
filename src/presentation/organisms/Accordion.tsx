@@ -1,7 +1,3 @@
-/**
- * Accordion Component (Organism)
- * @description Collapsible content sections (Shadcn/ui compatible)
- */
 
 import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';

@@ -1,8 +1,3 @@
-/**
- * ErrorBoundary Component (Organism)
- * @description Route/tree-level crash catcher — catches render errors and
- * shows an honest recovery screen instead of a blank page.
- */
 
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { AlertTriangle } from 'lucide-react';
@@ -10,19 +5,12 @@ import { Button } from '../atoms/Button';
 
 export interface ErrorBoundaryProps {
   children: ReactNode;
-  /** Small kicker line above the title (e.g. "Something broke"). */
   kicker?: string;
-  /** Heading on the crash screen. */
   title?: string;
-  /** Secondary line — defaults to the caught error's message. */
   description?: ReactNode;
-  /** Reset (retry) button label; omit to hide the button. */
   resetLabel?: string;
-  /** Extra action rendered next to reset (e.g. a link back home). */
   action?: ReactNode;
-  /** Fully custom crash screen — receives the error and the reset handler. */
   fallback?: (error: Error, reset: () => void) => ReactNode;
-  /** Side-channel for logging services (defaults to console.error). */
   onError?: (error: Error, info: ErrorInfo) => void;
 }
 

@@ -1,7 +1,3 @@
-/**
- * CodeBlock Component (Molecule)
- * @description Syntax-highlighted code block with copy button and expand/collapse
- */
 
 import { useState, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -15,7 +11,6 @@ export interface CodeBlockProps extends BaseProps {
   language?: string;
   filename?: string;
   showLineNumbers?: boolean;
-  /** Lines threshold to enable collapse/expand. */
   collapseThreshold?: number;
 }
 

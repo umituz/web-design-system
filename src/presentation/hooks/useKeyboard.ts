@@ -1,7 +1,3 @@
-/**
- * useKeyboard Hook
- * @description Keyboard event handling
- */
 
 import { useEffect, useCallback } from 'react';
 
@@ -16,7 +12,6 @@ export interface KeyboardOptions {
   enabled?: boolean;
 }
 
-// Helper function to check if modifiers match
 const checkModifiers = (event: KeyboardEvent, modifiers: KeyboardModifier[]): boolean => {
   return modifiers.every((mod) => {
     switch (mod) {
@@ -41,7 +36,6 @@ export function useKeyboard({
   onKeyUp,
   enabled = true,
 }: KeyboardOptions) {
-  // FIX: Create handlers once and reuse to prevent duplicate logic
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     const keyMatches = event.key.toLowerCase() === key.toLowerCase();
     const modifiersMatch = checkModifiers(event, modifiers);
