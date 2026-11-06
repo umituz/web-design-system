@@ -4,9 +4,8 @@ node_modules/
 # kilit — npm install yeniden üretir, ASLA gite gitmez
 package-lock.json
 
-# build çıktıları — dist/styles.css yayımlanır, takipte kalır
-dist/*
-!dist/styles.css
+# build çıktıları
+dist/
 dist-ssr/
 dist-smoke/
 build/
