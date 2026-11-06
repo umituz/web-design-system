@@ -11,7 +11,10 @@ export { PageLayout } from './PageLayout';
 export type { PageLayoutProps, MaxWidth } from './PageLayout';
 
 export { PageHeader } from './PageHeader';
-export type { PageHeaderProps, TextAlign, HeaderSize } from './PageHeader';
+export type { PageHeaderProps, PageHeaderCrumb, TextAlign, HeaderSize } from './PageHeader';
+
+export { SectionHeader } from './SectionHeader';
+export type { SectionHeaderProps } from './SectionHeader';
 
 export { ProjectSkeleton } from './ProjectSkeleton';
 export type { ProjectSkeletonProps } from './ProjectSkeleton';

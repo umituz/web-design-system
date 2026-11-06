@@ -87,3 +87,6 @@ export type { ConfirmButtonProps } from './ConfirmButton';
 
 export { Toolbar } from './Toolbar';
 export type { ToolbarProps } from './Toolbar';
+
+export { TabNav } from './TabNav';
+export type { TabNavProps, TabNavItem } from './TabNav';

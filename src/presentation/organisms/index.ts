@@ -185,3 +185,9 @@ export type { StatsGridProps, StatItem } from './StatsGrid';
 
 export { DescriptionList } from './DescriptionList';
 export type { DescriptionListProps, DescriptionItem } from './DescriptionList';
+
+export { AuditLogList } from './AuditLogList';
+export type { AuditLogListProps, AuditEntry } from './AuditLogList';
+
+// Visual Data Visualization & Charts
+export * from './charts';

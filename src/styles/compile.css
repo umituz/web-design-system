@@ -2,6 +2,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./theme.css";
+@import "./charts.css";
 @source "../src";
 
 @media (max-width: 767.98px) {
