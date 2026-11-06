@@ -43,7 +43,7 @@ export function Drawer({
 }: DrawerProps) {
   const wideSize = wide && (side === 'left' || side === 'right') ? 'sm:max-w-2xl' : undefined;
   return (
-    <Sheet open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
+    <Sheet open={open} onOpenChange={(next: boolean) => { if (!next) onClose(); }}>
       <SheetContent
         side={side}
         className={cn('flex flex-col overflow-hidden', wideSize, className)}

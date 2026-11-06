@@ -51,7 +51,7 @@ export function Modal({
   contentProps,
 }: ModalProps) {
   return (
-    <Dialog open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
+    <Dialog open={open} onOpenChange={(next: boolean) => { if (!next) onClose(); }}>
       <DialogContent
         className={cn(
           sizeWidths[size],

@@ -449,7 +449,7 @@ export function DataTable<T>({
                     key={column.id}
                     checked={!effectiveHiddenColumnIds.includes(column.id)}
                     disabled={!column.optional}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={(checked: boolean) =>
                       setHiddenColumnIds((prev) =>
                         checked
                           ? prev.filter((id) => id !== column.id)
@@ -458,7 +458,7 @@ export function DataTable<T>({
                             : [...prev, column.id],
                       )
                     }
-                    onSelect={(event) => event.preventDefault()}
+                    onSelect={(event: Event) => event.preventDefault()}
                   >
                     {typeof column.header === 'string' ? column.header : column.id}
                   </DropdownMenuCheckboxItem>

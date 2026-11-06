@@ -19,7 +19,7 @@ export function Lightbox({ open, onClose, alt, caption, zoomable = true, childre
   return (
     <Dialog
       open={open}
-      onOpenChange={(next) => {
+      onOpenChange={(next: boolean) => {
         if (!next) {
           onClose();
           setZoom(false);
