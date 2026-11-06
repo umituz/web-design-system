@@ -1,6 +1,6 @@
 {
   "name": "@umituz/web-design-system",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "private": false,
   "type": "module",
   "description": "Web Design System - Tailwind v4 authored, precompiled CSS shipped. Atomic Design components (Atoms, Molecules, Organisms, Templates) for React applications.",
@@ -15,6 +15,7 @@
     "./atoms": "./src/presentation/atoms/index.ts",
     "./bridge.css": "./src/styles/bridge.css",
     "./charts": "./src/presentation/organisms/charts/index.ts",
+    "./charts.css": "./src/styles/charts.css",
     "./constants": "./src/infrastructure/constants/index.ts",
     "./hooks": "./src/presentation/hooks/index.ts",
     "./molecules": "./src/presentation/molecules/index.ts",
