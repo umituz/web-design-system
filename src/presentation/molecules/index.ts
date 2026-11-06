@@ -90,3 +90,6 @@ export type { ToolbarProps } from './Toolbar';
 
 export { TabNav } from './TabNav';
 export type { TabNavProps, TabNavItem } from './TabNav';
+
+export { FilterSelect } from './FilterSelect';
+export type { FilterSelectProps, FilterSelectOption } from './FilterSelect';

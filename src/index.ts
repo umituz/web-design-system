@@ -142,3 +142,6 @@ export { TagInput } from './presentation/molecules/TagInput';
 export type { TagInputProps } from './presentation/molecules/TagInput';
 export { MarkdownText } from './presentation/molecules/MarkdownText';
 export type { MarkdownTextProps } from './presentation/molecules/MarkdownText';
+export { FilterSelect } from './presentation/molecules/FilterSelect';
+export type { FilterSelectProps, FilterSelectOption } from './presentation/molecules/FilterSelect';
+

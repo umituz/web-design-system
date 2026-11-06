@@ -189,5 +189,20 @@ export type { DescriptionListProps, DescriptionItem } from './DescriptionList';
 export { AuditLogList } from './AuditLogList';
 export type { AuditLogListProps, AuditEntry } from './AuditLogList';
 
+export { FilterBar } from './FilterBar';
+export type { FilterBarProps, FilterBarSearch } from './FilterBar';
+
+export { FilterPanel, FilterSection, CheckFilterList, SingleSelectFilterList } from './FilterPanel';
+export type {
+  FilterPanelProps,
+  FilterSectionProps,
+  FilterListOption,
+  CheckFilterListProps,
+  SingleSelectFilterListProps,
+} from './FilterPanel';
+
+export { NextSteps } from './NextSteps';
+export type { NextStepsProps, NextStepLink } from './NextSteps';
+
 // Visual Data Visualization & Charts
 export * from './charts';
