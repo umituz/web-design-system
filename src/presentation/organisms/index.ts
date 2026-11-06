@@ -1,4 +1,3 @@
-
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card';
 export type { CardProps, CardHeaderProps } from './Card';
 
@@ -13,7 +12,7 @@ export {
   TableRow,
   TableHead,
   TableCell,
-  TableCaption
+  TableCaption,
 } from './Table';
 export type { TableProps } from './Table';
 
@@ -36,10 +35,10 @@ export {
 } from './Dialog';
 
 export { CommandPalette } from './CommandPalette';
+export type { CommandPaletteProps, CommandGroup, CommandItem } from './CommandPalette';
 
 export { ErrorBoundary } from './ErrorBoundary';
 export type { ErrorBoundaryProps } from './ErrorBoundary';
-export type { CommandPaletteProps, CommandGroup, CommandItem } from './CommandPalette';
 
 export { Breadcrumbs } from './Breadcrumb';
 export type { BreadcrumbsProps, BreadcrumbItem } from './Breadcrumb';
@@ -112,7 +111,7 @@ export {
 export { ToggleGroup, ToggleGroupItem } from './ToggleGroup';
 
 export { ToastProvider, useToast } from './Toaster';
-export type { ToastKind, ToastOptions } from './Toaster';
+export type { ToastKind, ToastOptions, ToastShorthandOptions } from './Toaster';
 
 export { KeyValueList } from './KeyValueList';
 export type { KeyValueListProps, KeyValueItem } from './KeyValueList';
@@ -149,8 +148,6 @@ export type { PhotoGalleryProps, PhotoTile } from './PhotoGallery';
 export { Lightbox } from './Lightbox';
 export type { LightboxProps } from './Lightbox';
 
-export type { ToastShorthandOptions } from './Toaster';
-
 export { Timeline } from './Timeline';
 export type { TimelineProps, TimelineItem, TimelineTone } from './Timeline';
 
@@ -181,3 +178,10 @@ export type { PlanPickerProps, PlanPickerPlan, PlanPickerCycle } from './PlanPic
 
 export { CoverArt } from './CoverArt';
 export type { CoverArtProps } from './CoverArt';
+
+// New Productivity Organisms
+export { StatsGrid } from './StatsGrid';
+export type { StatsGridProps, StatItem } from './StatsGrid';
+
+export { DescriptionList } from './DescriptionList';
+export type { DescriptionListProps, DescriptionItem } from './DescriptionList';

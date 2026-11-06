@@ -1,5 +1,4 @@
-
-export { Button } from './Button';
+export { Button, buttonVariants } from './Button';
 export type { ButtonProps } from './Button';
 
 export { Badge } from './Badge';
@@ -60,7 +59,6 @@ export { Toggle, toggleVariants } from './Toggle';
 
 export { Show } from './Show';
 export type { ShowComponentProps } from './Show';
-
 export { Hide } from './Hide';
 export type { HideComponentProps } from './Hide';
 
@@ -68,9 +66,9 @@ export { IconButton } from './IconButton';
 export type { IconButtonProps } from './IconButton';
 
 export { Sparkline } from './Sparkline';
+export type { SparklineProps } from './Sparkline';
 export { HeatmapStrip } from './HeatmapStrip';
 export type { HeatmapStripProps, HeatmapCell } from './HeatmapStrip';
-export type { SparklineProps } from './Sparkline';
 
 export { NativeSelect } from './NativeSelect';
 export type { NativeSelectProps, NativeSelectOption } from './NativeSelect';
@@ -86,3 +84,10 @@ export type { KbdProps } from './Kbd';
 
 export { Money } from './Money';
 export type { MoneyProps } from './Money';
+
+// New Productivity Atoms
+export { CopyButton } from './CopyButton';
+export type { CopyButtonProps } from './CopyButton';
+
+export { StatusDot } from './StatusDot';
+export type { StatusDotProps, StatusType } from './StatusDot';

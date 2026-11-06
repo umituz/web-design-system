@@ -1,4 +1,3 @@
-
 export { Form, FormActions } from './Form';
 export type { FormProps } from './Form';
 
@@ -19,3 +18,10 @@ export type { ProjectSkeletonProps } from './ProjectSkeleton';
 
 export { ResponsiveContainer } from './ResponsiveContainer';
 export type { ResponsiveContainerProps, ResponsiveSize } from './ResponsiveContainer';
+
+// New Productivity Templates
+export { SettingsLayout } from './SettingsLayout';
+export type { SettingsLayoutProps, SettingsNavItem } from './SettingsLayout';
+
+export { CrudPageTemplate } from './CrudPageTemplate';
+export type { CrudPageTemplateProps } from './CrudPageTemplate';

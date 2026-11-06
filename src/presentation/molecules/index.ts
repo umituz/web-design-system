@@ -1,4 +1,3 @@
-
 export { FormField } from './FormField';
 export type { FormFieldProps } from './FormField';
 
@@ -17,7 +16,18 @@ export type { ChipProps } from './Chip';
 export { Toggle } from './Toggle';
 export type { ToggleProps } from './Toggle';
 
-export { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton } from './Select';
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from './Select';
 
 export { Textarea } from './Textarea';
 export type { TextareaProps } from './Textarea';
@@ -64,3 +74,16 @@ export type { TagInputProps } from './TagInput';
 
 export { MarkdownText } from './MarkdownText';
 export type { MarkdownTextProps } from './MarkdownText';
+
+// New Productivity Molecules
+export { PasswordInput } from './PasswordInput';
+export type { PasswordInputProps } from './PasswordInput';
+
+export { SearchInput } from './SearchInput';
+export type { SearchInputProps } from './SearchInput';
+
+export { ConfirmButton } from './ConfirmButton';
+export type { ConfirmButtonProps } from './ConfirmButton';
+
+export { Toolbar } from './Toolbar';
+export type { ToolbarProps } from './Toolbar';
