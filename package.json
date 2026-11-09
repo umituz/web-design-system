@@ -20,6 +20,7 @@
     "./hooks": "./src/presentation/hooks/index.ts",
     "./molecules": "./src/presentation/molecules/index.ts",
     "./organisms": "./src/presentation/organisms/index.ts",
+    "./page-kit": "./src/presentation/page-kit/index.ts",
     "./package.json": "./package.json",
     "./source.css": "./src/styles/source.css",
     "./styles.css": "./dist/styles.css",
