@@ -20,11 +20,19 @@ export interface LineChartPoint {
   label: string;
 }
 
+export interface LineChartXSpan {
+  from: number;
+  to: number;
+  label?: string;
+  tone?: string;
+}
+
 export interface LineChartProps {
   points?: readonly LineChartPoint[];
   labels?: readonly string[];
   series: LineSeries[];
   band?: { from: number; to: number };
+  xSpans?: readonly LineChartXSpan[];
   height?: number;
   formatLeft?: (v: number) => string;
   formatRight?: (v: number) => string;
@@ -38,6 +46,7 @@ export function LineChart({
   labels,
   series,
   band,
+  xSpans,
   height = 220,
   formatLeft,
   formatRight,
@@ -111,6 +120,28 @@ export function LineChart({
             className="udb-linechart__band"
           />
         )}
+        {xSpans?.map((span, i) => (
+          <g key={i}>
+            <rect
+              x={xAt(span.from)}
+              y={padTop}
+              width={Math.max(0, xAt(span.to) - xAt(span.from))}
+              height={innerH}
+              className="udb-linechart__xspan"
+              {...(span.tone !== undefined ? { style: { fill: span.tone } } : {})}
+            />
+            {span.label !== undefined && (
+              <text
+                x={(xAt(span.from) + xAt(span.to)) / 2}
+                y={padTop + 12}
+                textAnchor="middle"
+                className="udb-linechart__axis"
+              >
+                {span.label}
+              </text>
+            )}
+          </g>
+        ))}
         {series.some((s) => s.axis === 'right') && (
           <g>
             {leftTicks.map((v, i) => (

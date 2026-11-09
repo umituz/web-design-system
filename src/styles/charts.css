@@ -365,6 +365,10 @@
   fill: var(--color-primary);
   opacity: 0.08;
 }
+.udb-linechart__xspan {
+  fill: var(--color-primary);
+  opacity: 0.06;
+}
 .udb-linechart__crosshair {
   stroke: var(--udb-border-strong);
   stroke-width: 1;

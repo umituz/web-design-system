@@ -63,6 +63,24 @@ describe("LineChart", () => {
     expect(tip!.textContent).toContain("A");
   });
 
+  it("renders xSpans as labeled washes over the plot", () => {
+    const { container } = render(
+      <LineChart
+        labels={labels}
+        xSpans={[
+          { from: 0, to: 1, label: "Hook" },
+          { from: 1, to: 3, tone: "#8b7cff" },
+        ]}
+        series={[{ label: "A", values: [1, 2, 3, 4] }]}
+      />,
+    );
+    const spans = container.querySelectorAll(".udb-linechart__xspan");
+    expect(spans).toHaveLength(2);
+    expect(spans[0]!.textContent).toContain("Hook");
+    expect((spans[1] as HTMLElement).style.fill).toBe("#8b7cff");
+    expect((spans[0] as HTMLElement).getAttribute("width")).not.toBe("0");
+  });
+
   it("renders the built-in legend from the series", () => {
     const { container } = render(
       <LineChart
