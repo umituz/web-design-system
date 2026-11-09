@@ -1,1 +1,10 @@
-export const formatCount = (value: number, locale: string): string => new Intl.NumberFormat(locale).format(value);
+export interface CountFormatOptions {
+  minimumFractionDigits?: number;
+  maximumFractionDigits?: number;
+}
+
+export const formatCount = (
+  value: number,
+  locale: string,
+  options: CountFormatOptions = {},
+): string => new Intl.NumberFormat(locale, options).format(value);

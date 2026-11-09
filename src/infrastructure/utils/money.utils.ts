@@ -120,7 +120,10 @@ export interface FormatCurrencyOptions {
   smartFractions?: boolean;
   minimumFractionDigits?: number;
   maximumFractionDigits?: number;
-  currencyDisplay?: Intl.NumberFormatOptions['currencyDisplay'];
+  currencyDisplay?: Intl.NumberFormatOptions['currencyDisplay'] | 'none';
+  symbolPosition?: 'auto' | 'prefix' | 'suffix';
+  signPosition?: 'auto' | 'afterSymbol';
+  compactSuffixCase?: 'auto' | 'si';
 }
 
 interface FractionRange {
@@ -155,6 +158,63 @@ function resolveFractionRange(amount: MoneyValue, currency: string, options: For
 
 const currencyFormatterCache = new Map<string, Intl.NumberFormat>();
 
+const SIGN_PART_TYPES = new Set(['minusSign', 'plusSign']);
+
+function composeCurrencyParts(parts: Intl.NumberFormatPart[], options: FormatCurrencyOptions): string {
+  const mapped =
+    options.compactSuffixCase === 'si'
+      ? parts.map((part) =>
+          part.type === 'compact'
+            ? { ...part, value: part.value.toLowerCase() === 'k' ? 'k' : part.value.toUpperCase() }
+            : part,
+        )
+      : parts;
+  const dropSymbol = options.currencyDisplay === 'none';
+  const position = options.symbolPosition ?? 'auto';
+  const reposition = dropSymbol || position === 'prefix' || position === 'suffix';
+  if (!reposition && options.signPosition !== 'afterSymbol') {
+    return mapped.map((part) => part.value).join('');
+  }
+  if (!reposition) {
+    const signs = mapped.filter((part) => SIGN_PART_TYPES.has(part.type)).map((part) => part.value).join('');
+    const chunks: string[] = [];
+    let signsEmitted = false;
+    for (const part of mapped) {
+      if (SIGN_PART_TYPES.has(part.type)) continue;
+      chunks.push(part.value);
+      if (!signsEmitted && part.type === 'currency') {
+        chunks.push(signs);
+        signsEmitted = true;
+      }
+    }
+    if (!signsEmitted) chunks.push(signs);
+    return chunks.join('');
+  }
+  const currencyIndexes: number[] = [];
+  mapped.forEach((part, index) => {
+    if (part.type === 'currency') currencyIndexes.push(index);
+  });
+  const removed = new Set<number>(currencyIndexes);
+  for (const index of currencyIndexes) {
+    const next = mapped[index + 1];
+    const prev = mapped[index - 1];
+    if (next && next.type === 'literal' && next.value.trim() === '') removed.add(index + 1);
+    else if (prev && prev.type === 'literal' && prev.value.trim() === '') removed.add(index - 1);
+  }
+  const symbol = mapped
+    .filter((_, index) => currencyIndexes.includes(index))
+    .map((part) => part.value)
+    .join('');
+  const keep = mapped.filter((_, index) => !removed.has(index));
+  if (dropSymbol) return keep.map((part) => part.value).join('');
+  if (position === 'prefix') {
+    const signs = keep.filter((part) => SIGN_PART_TYPES.has(part.type)).map((part) => part.value).join('');
+    const body = keep.filter((part) => !SIGN_PART_TYPES.has(part.type)).map((part) => part.value).join('');
+    return options.signPosition === 'afterSymbol' ? `${symbol}${signs}${body}` : `${symbol}${body}`;
+  }
+  return `${keep.map((part) => part.value).join('')} ${symbol}`;
+}
+
 export function formatCurrency(
   amount: MoneyValue,
   currency: string,
@@ -173,7 +233,9 @@ export function formatCurrency(
       minimumFractionDigits: min,
       maximumFractionDigits: max,
       signDisplay: options.signed ? 'always' : 'auto',
-      ...(options.currencyDisplay ? { currencyDisplay: options.currencyDisplay } : {}),
+      ...(options.currencyDisplay && options.currencyDisplay !== 'none'
+        ? { currencyDisplay: options.currencyDisplay }
+        : {}),
     });
     currencyFormatterCache.set(key, formatter);
   }
@@ -181,8 +243,33 @@ export function formatCurrency(
     typeof amount === 'number'
       ? amount
       : (amount as unknown as Parameters<Intl.NumberFormat['format']>[0]);
-  const formatted = formatter.format(value);
+  const needsComposition =
+    options.currencyDisplay === 'none' ||
+    (options.symbolPosition !== undefined && options.symbolPosition !== 'auto') ||
+    options.signPosition === 'afterSymbol' ||
+    options.compactSuffixCase === 'si';
+  const formatted = needsComposition
+    ? composeCurrencyParts(formatter.formatToParts(value), options)
+    : formatter.format(value);
   return options.showCode ? `${formatted} ${upper}` : formatted;
+}
+
+export interface MinorCurrencyOptions extends FormatCurrencyOptions {
+  minorDigits?: number;
+}
+
+export function formatCurrencyMinor(
+  amountMinor: number,
+  currency: string,
+  options: MinorCurrencyOptions = {},
+): string {
+  const { minorDigits, ...rest } = options;
+  const digits = minorDigits ?? currencyFractionDigits(currency);
+  if (minorDigits !== undefined) {
+    rest.minimumFractionDigits = rest.minimumFractionDigits ?? minorDigits;
+    rest.maximumFractionDigits = rest.maximumFractionDigits ?? minorDigits;
+  }
+  return formatCurrency(amountMinor / 10 ** digits, currency, rest);
 }
 
 export function formatCurrencyCompact(

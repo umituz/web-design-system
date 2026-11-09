@@ -2,6 +2,7 @@ export interface TimeAgoOptions {
   now?: Date;
   locale?: string;
   compact?: boolean;
+  invalidDateOutput?: string;
 }
 
 const MINUTE = 60;
@@ -14,7 +15,9 @@ const YEAR = 365.25 * DAY;
 export const timeAgo = (input: Date | string | number, options: TimeAgoOptions = {}): string => {
   const { now = new Date(), locale = 'en', compact = false } = options;
   const date = input instanceof Date ? input : new Date(input);
-  const deltaSeconds = Math.round((date.getTime() - now.getTime()) / 1000);
+  const time = date.getTime();
+  if (Number.isNaN(time) && options.invalidDateOutput !== undefined) return options.invalidDateOutput;
+  const deltaSeconds = Math.round((time - now.getTime()) / 1000);
   const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: compact ? 'narrow' : 'long' });
   const abs = Math.abs(deltaSeconds);
   if (abs < 45) return formatter.format(0, 'second');

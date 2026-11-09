@@ -34,6 +34,7 @@ export { timeAgo } from './time.util';
 export type { TimeAgoOptions } from './time.util';
 
 export { formatCount } from './format.util';
+export type { CountFormatOptions } from './format.util';
 
 export { uniqueId } from './id.util';
 
@@ -49,6 +50,13 @@ export {
   sumMinor,
   formatCurrency,
   formatCurrencyCompact,
+  formatCurrencyMinor,
   CURRENCY_LOCALES,
 } from './money.utils';
-export type { LineTotals, TotalsInputLine, MoneyValue, FormatCurrencyOptions } from './money.utils';
+export type {
+  LineTotals,
+  TotalsInputLine,
+  MoneyValue,
+  FormatCurrencyOptions,
+  MinorCurrencyOptions,
+} from './money.utils';
