@@ -26,6 +26,7 @@ export interface BarChartProps {
   formatValue?: (v: number) => string;
   formatLabel?: (l: string) => string;
   goalLine?: BarChartGoalLine;
+  goalLines?: readonly BarChartGoalLine[];
 }
 
 export function BarChart({
@@ -37,43 +38,45 @@ export function BarChart({
   formatValue = (v: number) => String(v),
   formatLabel = (l: string) => l,
   goalLine,
+  goalLines,
 }: BarChartProps) {
   const [hover, setHover] = useState<number | null>(null);
   const vals = (s: BarSeries) => s.values ?? s.data ?? [];
+  const goals = goalLines ?? (goalLine !== undefined ? [goalLine] : []);
   const columnTotals = labels.map((_, i) => series.reduce((sum, s) => sum + (vals(s)[i] ?? 0), 0));
   const max =
     stacking === 'stacked'
-      ? Math.max(1, ...columnTotals, goalLine?.value ?? 0)
-      : Math.max(1, ...series.flatMap((s) => vals(s)), goalLine?.value ?? 0);
+      ? Math.max(1, ...columnTotals, ...goals.map((g) => g.value))
+      : Math.max(1, ...series.flatMap((s) => vals(s)), ...goals.map((g) => g.value));
   const toneOf = (s: BarSeries, i: number) => s.tone ?? s.color ?? seriesColor(i);
   const accentOf = (s: BarSeries, si: number, i: number) => s.accents?.[i] ?? toneOf(s, si);
-  const goalPct = goalLine !== undefined ? Math.min(100, (goalLine.value / max) * 100) : null;
   return (
     <div className="udb-barchart" style={{ height }}>
-      {goalLine !== undefined && goalPct !== null && (
+      {goals.map((goal) => (
         <div
+          key={`${goal.value}-${goal.label ?? ''}`}
           className="udb-barchart__goal"
           style={{
-            bottom: `${goalPct}%`,
-            ...(goalLine.tone !== undefined ? { borderTopColor: goalLine.tone } : {}),
+            bottom: `${Math.min(100, (goal.value / max) * 100)}%`,
+            ...(goal.tone !== undefined ? { borderTopColor: goal.tone } : {}),
           }}
-          title={goalLine.label ?? formatValue(goalLine.value)}
+          title={goal.label ?? formatValue(goal.value)}
           aria-hidden="true"
         >
-          {goalLine.label !== undefined && (
+          {goal.label !== undefined && (
             <span
               className="udb-barchart__goallabel"
               style={
-                goalLine.tone !== undefined
-                  ? { color: goalLine.tone, borderColor: goalLine.tone }
+                goal.tone !== undefined
+                  ? { color: goal.tone, borderColor: goal.tone }
                   : undefined
               }
             >
-              {goalLine.label}
+              {goal.label}
             </span>
           )}
         </div>
-      )}
+      ))}
       {labels.map((label, i) => (
         <div
           key={label}

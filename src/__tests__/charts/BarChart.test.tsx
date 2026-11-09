@@ -80,6 +80,24 @@ describe("BarChart", () => {
     expect(goal.textContent).toContain("Hedef");
   });
 
+  it("renders a band via goalLines with each line placed independently", () => {
+    const { container } = render(
+      <BarChart
+        labels={labels}
+        goalLines={[
+          { value: 1, label: "Alt", tone: "#65c99a" },
+          { value: 3, label: "Üst", tone: "#65c99a" },
+        ]}
+        series={[{ label: "A", values: [4, 4, 4] }]}
+      />,
+    );
+    const goals = container.querySelectorAll(".udb-barchart__goal");
+    expect(goals).toHaveLength(2);
+    expect((goals[0] as HTMLElement).style.bottom).toBe("25%");
+    expect((goals[1] as HTMLElement).style.bottom).toBe("75%");
+    expect(goals[1]!.textContent).toContain("Üst");
+  });
+
   it("colors series through the --udb-chart tokens by default", () => {
     const { container } = render(
       <BarChart labels={labels} series={[{ label: "A", values: [1, 2, 3] }]} />,
