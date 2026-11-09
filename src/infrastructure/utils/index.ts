@@ -28,6 +28,11 @@ export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
 
+export { initialsOf, nameHue } from './name.util';
+
+export { timeAgo } from './time.util';
+export type { TimeAgoOptions } from './time.util';
+
 export { formatCount } from './format.util';
 
 export { uniqueId } from './id.util';

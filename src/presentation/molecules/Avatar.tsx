@@ -1,6 +1,6 @@
 
 import { forwardRef, type HTMLAttributes, type ComponentPropsWithoutRef } from 'react';
-import { cn } from '../../infrastructure/utils';
+import { cn, initialsOf } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 import type { ExtendedSizes } from '../../infrastructure/constants';
 
@@ -26,15 +26,6 @@ const nameTones = [
   'bg-info/15 text-info',
   'bg-secondary text-secondary-foreground',
 ];
-
-const initialsOf = (name: string): string => {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '';
-  const first = parts[0] ?? '';
-  const last = parts[parts.length - 1] ?? '';
-  if (parts.length === 1) return first.slice(0, 2).toUpperCase();
-  return (first.charAt(0) + last.charAt(0)).toUpperCase();
-};
 
 const toneIndexOf = (name: string): number => {
   let hash = 0;
