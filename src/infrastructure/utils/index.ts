@@ -47,5 +47,8 @@ export {
   lineTotals,
   sumTotals,
   sumMinor,
+  formatCurrency,
+  formatCurrencyCompact,
+  CURRENCY_LOCALES,
 } from './money.utils';
-export type { LineTotals, TotalsInputLine } from './money.utils';
+export type { LineTotals, TotalsInputLine, MoneyValue, FormatCurrencyOptions } from './money.utils';
