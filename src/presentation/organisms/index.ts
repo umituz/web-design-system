@@ -170,6 +170,9 @@ export type {
 export { ConfirmDialog } from './ConfirmDialog';
 export type { ConfirmDialogProps } from './ConfirmDialog';
 
+export { ConfirmProvider, useConfirm } from './ConfirmProvider';
+export type { ConfirmOptions, ConfirmFn } from './ConfirmProvider';
+
 export { Stepper } from './Stepper';
 export type { StepperProps, StepperStep, StepperStepStatus } from './Stepper';
 
