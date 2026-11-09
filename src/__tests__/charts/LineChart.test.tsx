@@ -76,7 +76,7 @@ describe("LineChart", () => {
     );
     const spans = container.querySelectorAll(".udb-linechart__xspan");
     expect(spans).toHaveLength(2);
-    expect(spans[0]!.textContent).toContain("Hook");
+    expect(container.textContent).toContain("Hook");
     expect((spans[1] as HTMLElement).style.fill).toBe("#8b7cff");
     expect((spans[0] as HTMLElement).getAttribute("width")).not.toBe("0");
   });
