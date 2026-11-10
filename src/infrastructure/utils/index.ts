@@ -4,6 +4,8 @@ export {
 } from './cn.util';
 export type { ClassValue } from './cn.util';
 
+export { createStyles } from './styles.util';
+
 export {
   getSpacing,
   getIconSize,

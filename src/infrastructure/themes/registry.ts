@@ -5,6 +5,7 @@ import { midnightTheme } from './midnight.theme';
 import { editorialTheme } from './editorial.theme';
 import { forestTheme } from './forest.theme';
 import { fieldTheme } from './field.theme';
+import { crimsonTheme } from './crimson.theme';
 
 const themeRegistry = new Map<string, ThemeConfig>([
   ['default', defaultTheme],
@@ -13,6 +14,7 @@ const themeRegistry = new Map<string, ThemeConfig>([
   ['editorial', editorialTheme],
   ['forest', forestTheme],
   ['field', fieldTheme],
+  ['crimson', crimsonTheme],
 ]);
 
 export function registerTheme(theme: ThemeConfig): void {

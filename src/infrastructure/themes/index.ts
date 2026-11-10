@@ -4,6 +4,7 @@ export { midnightTheme } from './midnight.theme';
 export { editorialTheme } from './editorial.theme';
 export { forestTheme } from './forest.theme';
 export { fieldTheme } from './field.theme';
+export { crimsonTheme } from './crimson.theme';
 export { createTheme } from './create-theme';
 export type { ThemeOverrides } from './create-theme';
 export { registerTheme, getTheme, hasTheme, listThemes } from './registry';

@@ -16,6 +16,7 @@ import {
   defaultTheme,
   forestTheme,
   fieldTheme,
+  crimsonTheme,
 } from '../infrastructure/themes';
 import type { ThemeConfig } from '../domain/types';
 
@@ -34,6 +35,8 @@ describe('Theme System and Provider', () => {
     expect(getTheme('ocean').name).toBe('ocean');
     expect(getTheme('forest').name).toBe('forest');
     expect(getTheme('field').name).toBe('field');
+    expect(getTheme('crimson').name).toBe('crimson');
+    expect(crimsonTheme.mode).toBe('dark');
     expect(getTheme('default').name).toBe('default');
     expect(getTheme('non-existent').name).toBe('default');
   });
