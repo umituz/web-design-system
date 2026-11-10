@@ -53,4 +53,5 @@ export interface ThemeConfig {
   typography?: ThemeTypography;
   radii?: ThemeRadii;
   customVars?: Record<string, string>;
+  darkCustomVars?: Record<string, string>;
 }

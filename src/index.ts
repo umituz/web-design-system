@@ -151,4 +151,6 @@ export { EntityRow } from './presentation/molecules/EntityRow';
 export type { EntityRowProps } from './presentation/molecules/EntityRow';
 export { PlaceholderPanel } from './presentation/molecules/PlaceholderPanel';
 export type { PlaceholderPanelProps } from './presentation/molecules/PlaceholderPanel';
+export { ConditionPips } from './presentation/molecules/ConditionPips';
+export type { ConditionPipsProps } from './presentation/molecules/ConditionPips';
 

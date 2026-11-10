@@ -15,6 +15,7 @@ import {
   oceanTheme,
   defaultTheme,
   forestTheme,
+  fieldTheme,
 } from '../infrastructure/themes';
 import type { ThemeConfig } from '../domain/types';
 
@@ -32,6 +33,7 @@ describe('Theme System and Provider', () => {
     expect(getTheme('editorial').name).toBe('editorial');
     expect(getTheme('ocean').name).toBe('ocean');
     expect(getTheme('forest').name).toBe('forest');
+    expect(getTheme('field').name).toBe('field');
     expect(getTheme('default').name).toBe('default');
     expect(getTheme('non-existent').name).toBe('default');
   });
@@ -170,5 +172,15 @@ describe('Theme System and Provider', () => {
 
     expect(screen.getByTestId('theme-mode').textContent).toBe('dark');
     expect(document.documentElement.classList.contains('dark')).toBe(true);
+  });
+
+  it('generates field theme CSS custom variables and dark mode overrides', () => {
+    const css = themeToCssVariables(fieldTheme);
+    expect(css).toContain('--paper: #f4f3ee;');
+    expect(css).toContain('--primary-500: #357344;');
+    expect(css).toContain('--font-display: \'Fraunces\', Georgia, serif;');
+    expect(css).toContain('.dark, [data-theme="dark"]');
+    expect(css).toContain('--paper: #10140f;');
+    expect(css).toContain('--primary-500: #6aa878;');
   });
 });

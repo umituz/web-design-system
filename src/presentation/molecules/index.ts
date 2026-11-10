@@ -99,3 +99,6 @@ export type { EntityRowProps } from './EntityRow';
 
 export { PlaceholderPanel } from './PlaceholderPanel';
 export type { PlaceholderPanelProps } from './PlaceholderPanel';
+
+export { ConditionPips } from './ConditionPips';
+export type { ConditionPipsProps } from './ConditionPips';

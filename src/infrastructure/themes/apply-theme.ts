@@ -108,12 +108,24 @@ export function themeToCssVariables(theme: ThemeConfig): string {
 
   let css = `:root {\n  ${rootLines.join('\n  ')}\n}\n`;
 
-  if (theme.darkColors && Object.keys(theme.darkColors).length > 0) {
-    const darkMerged: ThemeColors = {
-      ...theme.colors,
-      ...theme.darkColors,
-    };
-    css += `\n.dark, [data-theme="dark"] {\n  ${colorPropsToCss(darkMerged)}\n}\n`;
+  const hasDarkColors = Boolean(theme.darkColors && Object.keys(theme.darkColors).length > 0);
+  const hasDarkVars = Boolean(theme.darkCustomVars && Object.keys(theme.darkCustomVars).length > 0);
+
+  if (hasDarkColors || hasDarkVars) {
+    const darkLines: string[] = [];
+    if (hasDarkColors) {
+      const darkMerged: ThemeColors = {
+        ...theme.colors,
+        ...theme.darkColors,
+      };
+      darkLines.push(colorPropsToCss(darkMerged));
+    }
+    if (hasDarkVars && theme.darkCustomVars) {
+      for (const [k, v] of Object.entries(theme.darkCustomVars)) {
+        darkLines.push(`--${k}: ${v};`);
+      }
+    }
+    css += `\n.dark, [data-theme="dark"] {\n  ${darkLines.join('\n  ')}\n}\n`;
   }
 
   return css;
