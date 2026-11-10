@@ -24,6 +24,34 @@ export interface DesignSystemProviderProps {
   theme?: string | ThemeConfig;
   mode?: ThemeMode;
   storageKey?: string;
+  persist?: 'local' | 'cookie' | 'none';
+}
+
+type PersistMode = NonNullable<DesignSystemProviderProps['persist']>;
+
+function readStoredMode(key: string, persist: PersistMode): string | null {
+  if (typeof window === 'undefined' || persist === 'none') return null;
+  if (persist === 'cookie') {
+    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredMode(key: string, mode: 'light' | 'dark', persist: PersistMode): void {
+  if (persist === 'cookie') {
+    document.cookie = `${key}=${mode}; max-age=31536000; path=/; samesite=lax`;
+  } else if (persist === 'local') {
+    try {
+      localStorage.setItem(key, mode);
+    } catch {
+      return;
+    }
+  }
 }
 
 export function DesignSystemProvider({
@@ -31,6 +59,7 @@ export function DesignSystemProvider({
   theme: initialTheme = 'default',
   mode: initialMode = 'system',
   storageKey = 'umituz-theme-mode',
+  persist = 'local',
 }: DesignSystemProviderProps) {
   const [overrideTheme, setOverrideTheme] = useState<ThemeConfig | null>(null);
 
@@ -45,7 +74,7 @@ export function DesignSystemProvider({
     }
 
     if (storageKey) {
-      const stored = localStorage.getItem(storageKey);
+      const stored = readStoredMode(storageKey, persist);
       if (stored === 'light' || stored === 'dark') return stored;
     }
 
@@ -75,9 +104,9 @@ export function DesignSystemProvider({
     }
 
     if (storageKey) {
-      localStorage.setItem(storageKey, activeMode);
+      writeStoredMode(storageKey, activeMode, persist);
     }
-  }, [currentTheme, activeMode, storageKey]);
+  }, [currentTheme, activeMode, storageKey, persist]);
 
   const value = useMemo<DesignSystemContextValue>(() => {
     return {
