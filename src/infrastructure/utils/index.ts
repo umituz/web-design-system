@@ -33,6 +33,9 @@ export { initialsOf, nameHue } from './name.util';
 export { timeAgo } from './time.util';
 export type { TimeAgoOptions } from './time.util';
 
+export { formatDate, formatDateTime, parseDateInput } from './date.util';
+export type { DateStyle, DateFormatOptions, DateTimeFormatOptions } from './date.util';
+
 export { formatCount } from './format.util';
 export type { CountFormatOptions } from './format.util';
 
