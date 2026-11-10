@@ -33,7 +33,8 @@ function readStoredMode(key: string, persist: PersistMode): string | null {
   if (typeof window === 'undefined' || persist === 'none') return null;
   if (persist === 'cookie') {
     const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]*)`));
-    return match ? decodeURIComponent(match[1]) : null;
+    const stored = match?.[1];
+    return stored ? decodeURIComponent(stored) : null;
   }
   try {
     return localStorage.getItem(key);
