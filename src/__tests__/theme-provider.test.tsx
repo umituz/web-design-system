@@ -14,6 +14,7 @@ import {
   editorialTheme,
   oceanTheme,
   defaultTheme,
+  forestTheme,
 } from '../infrastructure/themes';
 import type { ThemeConfig } from '../domain/types';
 
@@ -30,6 +31,7 @@ describe('Theme System and Provider', () => {
     expect(getTheme('midnight').name).toBe('midnight');
     expect(getTheme('editorial').name).toBe('editorial');
     expect(getTheme('ocean').name).toBe('ocean');
+    expect(getTheme('forest').name).toBe('forest');
     expect(getTheme('default').name).toBe('default');
     expect(getTheme('non-existent').name).toBe('default');
   });
@@ -114,6 +116,11 @@ describe('Theme System and Provider', () => {
 
     const defaultCss = themeToCssVariables(defaultTheme);
     expect(defaultCss).toContain('--color-primary: #2563eb;');
+
+    const forestCss = themeToCssVariables(forestTheme);
+    expect(forestCss).toContain('--color-primary: #14705f;');
+    expect(forestCss).toContain('--color-background: #faf9f7;');
+    expect(forestCss).toContain('--color-brand-600: #14705f;');
   });
 
   it('applies theme variables to document head', () => {

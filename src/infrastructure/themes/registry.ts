@@ -3,12 +3,14 @@ import { defaultTheme } from './default.theme';
 import { oceanTheme } from './ocean.theme';
 import { midnightTheme } from './midnight.theme';
 import { editorialTheme } from './editorial.theme';
+import { forestTheme } from './forest.theme';
 
 const themeRegistry = new Map<string, ThemeConfig>([
   ['default', defaultTheme],
   ['ocean', oceanTheme],
   ['midnight', midnightTheme],
   ['editorial', editorialTheme],
+  ['forest', forestTheme],
 ]);
 
 export function registerTheme(theme: ThemeConfig): void {
