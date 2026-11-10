@@ -9,6 +9,7 @@ export interface ThemeOverrides {
   typography?: Partial<ThemeTypography>;
   radii?: Partial<ThemeRadii>;
   customVars?: Record<string, string>;
+  darkCustomVars?: Record<string, string>;
 }
 
 export function createTheme(
@@ -44,6 +45,10 @@ export function createTheme(
     customVars: {
       ...(base.customVars ?? {}),
       ...(overrides.customVars ?? {}),
+    },
+    darkCustomVars: {
+      ...(base.darkCustomVars ?? {}),
+      ...(overrides.darkCustomVars ?? {}),
     },
   };
 }
