@@ -1,4 +1,3 @@
-import React from 'react';
 import { cn } from '../../infrastructure/utils/cn.util';
 import { formatCountdown } from '../../infrastructure/utils/time.util';
 import { useNow } from '../hooks/useNow';
