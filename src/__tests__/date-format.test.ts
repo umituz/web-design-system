@@ -92,6 +92,31 @@ describe('formatDateTime', () => {
   });
 });
 
+describe('preset overrides', () => {
+  it('drops the weekday from the long style', () => {
+    expect(formatDate('2026-11-10', 'long', { weekday: 'none' })).toBe('November 10, 2026');
+  });
+
+  it('shortens the weekday of the long style', () => {
+    expect(formatDate('2026-11-10', 'long', { weekday: 'short' })).toBe('Tue, November 10, 2026');
+  });
+
+  it('lengthens the month of the monthYear style', () => {
+    expect(formatDate('2026-01-15', 'monthYear', { month: 'long' })).toBe('January 2026');
+  });
+
+  it('lengthens the month of the medium style', () => {
+    expect(formatDate('2026-01-15', 'medium', { month: 'long' })).toBe('January 15, 2026');
+  });
+
+  it('does not leak overrides into other calls through the cache', () => {
+    expect(formatDate('2026-11-10', 'monthYear', { month: 'long' })).toBe('November 2026');
+    expect(formatDate('2026-11-10', 'monthYear')).toBe('Nov 2026');
+    expect(formatDate('2026-11-10', 'long', { weekday: 'none' })).toBe('November 10, 2026');
+    expect(formatDate('2026-11-10', 'long')).toBe('Tuesday, November 10, 2026');
+  });
+});
+
 describe('formatter cache', () => {
   it('does not contaminate across locales for the same instant', () => {
     const en = formatDate('2026-11-10');

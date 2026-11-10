@@ -5,6 +5,8 @@ export interface DateFormatOptions {
   order?: 'dmy' | 'mdy' | 'ymd';
   separator?: string;
   invalidOutput?: string;
+  weekday?: 'short' | 'long' | 'none';
+  month?: 'short' | 'long';
 }
 
 export interface DateTimeFormatOptions extends DateFormatOptions {
@@ -32,6 +34,19 @@ const cachedFormatter = (locale: string, options: Intl.DateTimeFormatOptions): I
     formatterCache.set(key, formatter);
   }
   return formatter;
+};
+
+const resolveOptions = (style: Exclude<DateStyle, 'numeric'>, options: DateFormatOptions): Intl.DateTimeFormatOptions => {
+  const resolved: Intl.DateTimeFormatOptions = { ...PRESET_OPTIONS[style] };
+  if (options.weekday === 'none') {
+    delete resolved.weekday;
+  } else if (options.weekday !== undefined) {
+    resolved.weekday = options.weekday;
+  }
+  if (options.month !== undefined) {
+    resolved.month = options.month;
+  }
+  return resolved;
 };
 
 export const parseDateInput = (input: string | Date): Date | null => {
@@ -85,7 +100,7 @@ export const formatDate = (
   if (style === 'numeric') {
     return formatNumeric(date, locale, options.order ?? 'dmy', options.separator ?? DEFAULT_SEPARATOR);
   }
-  return cachedFormatter(locale, PRESET_OPTIONS[style]).format(date);
+  return cachedFormatter(locale, resolveOptions(style, options)).format(date);
 };
 
 export const formatDateTime = (
