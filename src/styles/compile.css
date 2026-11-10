@@ -3,7 +3,6 @@
 @import "tw-animate-css";
 @import "./theme.css";
 @import "./charts.css";
-@import "./console.css";
 @source "../src";
 
 @media (max-width: 767.98px) {
