@@ -28,3 +28,15 @@ export const timeAgo = (input: Date | string | number, options: TimeAgoOptions =
   if (abs < YEAR) return formatter.format(Math.round(deltaSeconds / MONTH), 'month');
   return formatter.format(Math.round(deltaSeconds / YEAR), 'year');
 };
+
+export const formatCountdown = (ms: number): string => {
+  if (ms <= 0) return '0:00';
+  const s = Math.floor(ms / 1000);
+  const d = Math.floor(s / 86400);
+  const h = Math.floor((s % 86400) / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (d >= 1) return `${d}d ${h}h`;
+  if (h >= 1) return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  return `${m}:${String(sec).padStart(2, '0')}`;
+};

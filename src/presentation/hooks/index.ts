@@ -20,3 +20,5 @@ export type { UseClipboardReturn } from './useClipboard';
 export { useToggle } from './useToggle';
 
 export { useScrollLock } from './useScrollLock';
+
+export { useNow } from './useNow';

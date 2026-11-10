@@ -115,6 +115,10 @@ describe('Theme System and Provider', () => {
 
     const editorialCss = themeToCssVariables(editorialTheme);
     expect(editorialCss).toContain('--color-primary: #33406b;');
+    expect(editorialCss).toContain('--paper: #f6f4ef;');
+    expect(editorialCss).toContain('--ink: #191712;');
+    expect(editorialCss).toContain('--accent: #2434c9;');
+    expect(editorialCss).toContain('.dark, [data-theme="dark"]');
 
     const oceanCss = themeToCssVariables(oceanTheme);
     expect(oceanCss).toContain('--color-primary: #0284c7;');

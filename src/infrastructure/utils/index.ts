@@ -32,7 +32,7 @@ export { hashSeed } from './hash.util';
 
 export { initialsOf, nameHue } from './name.util';
 
-export { timeAgo } from './time.util';
+export { timeAgo, formatCountdown } from './time.util';
 export type { TimeAgoOptions } from './time.util';
 
 export { formatDate, formatDateTime, parseDateInput } from './date.util';
