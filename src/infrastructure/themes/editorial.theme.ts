@@ -1,7 +1,7 @@
 import type { ThemeConfig } from '../../domain/types';
 
-export const hangoraTheme: ThemeConfig = {
-  name: 'hangora',
+export const editorialTheme: ThemeConfig = {
+  name: 'editorial',
   mode: 'light',
   colors: {
     background: '#f4f1e9',

@@ -9,7 +9,11 @@ import {
   registerTheme,
   applyTheme,
   themeToCssVariables,
-  accessiaTheme,
+  createTheme,
+  midnightTheme,
+  editorialTheme,
+  oceanTheme,
+  defaultTheme,
 } from '../infrastructure/themes';
 import type { ThemeConfig } from '../domain/types';
 
@@ -22,11 +26,48 @@ describe('Theme System and Provider', () => {
     if (existing) existing.remove();
   });
 
-  it('retrieves default and built-in themes by name', () => {
-    expect(getTheme('accessia').name).toBe('accessia');
-    expect(getTheme('hangora').name).toBe('hangora');
+  it('retrieves default and built-in themes by generic archetype name', () => {
+    expect(getTheme('midnight').name).toBe('midnight');
+    expect(getTheme('editorial').name).toBe('editorial');
+    expect(getTheme('ocean').name).toBe('ocean');
     expect(getTheme('default').name).toBe('default');
     expect(getTheme('non-existent').name).toBe('default');
+  });
+
+  it('allows createTheme to customize an existing preset or define from scratch', () => {
+    const customized = createTheme('midnight', {
+      name: 'midnight-custom',
+      colors: { primary: '#10b981' },
+    });
+
+    expect(customized.name).toBe('midnight-custom');
+    expect(customized.colors.primary).toBe('#10b981');
+    expect(customized.colors.background).toBe(midnightTheme.colors.background);
+
+    const fromScratch = createTheme({
+      name: 'standalone',
+      colors: {
+        background: '#000',
+        foreground: '#fff',
+        card: '#111',
+        cardForeground: '#fff',
+        popover: '#111',
+        popoverForeground: '#fff',
+        primary: '#f00',
+        primaryForeground: '#fff',
+        secondary: '#222',
+        secondaryForeground: '#fff',
+        muted: '#222',
+        mutedForeground: '#888',
+        accent: '#333',
+        accentForeground: '#fff',
+        border: '#444',
+        input: '#444',
+        destructive: '#f00',
+        destructiveForeground: '#fff',
+      },
+    });
+    expect(fromScratch.name).toBe('standalone');
   });
 
   it('registers and retrieves custom themes', () => {
@@ -59,16 +100,24 @@ describe('Theme System and Provider', () => {
   });
 
   it('converts theme config to CSS variables string', () => {
-    const css = themeToCssVariables(accessiaTheme);
+    const css = themeToCssVariables(midnightTheme);
     expect(css).toContain('--color-primary: #4e8cff;');
     expect(css).toContain('--app-primary: #4e8cff;');
     expect(css).toContain('--color-background: #060a12;');
-    expect(css).toContain('--bg-0: #060a12;');
     expect(css).toContain('--font-sans:');
+
+    const editorialCss = themeToCssVariables(editorialTheme);
+    expect(editorialCss).toContain('--color-primary: #33406b;');
+
+    const oceanCss = themeToCssVariables(oceanTheme);
+    expect(oceanCss).toContain('--color-primary: #0284c7;');
+
+    const defaultCss = themeToCssVariables(defaultTheme);
+    expect(defaultCss).toContain('--color-primary: #2563eb;');
   });
 
   it('applies theme variables to document head', () => {
-    applyTheme(accessiaTheme);
+    applyTheme(midnightTheme);
     const styleEl = document.getElementById('umituz-theme-vars');
     expect(styleEl).toBeTruthy();
     expect(styleEl?.textContent).toContain('--color-primary: #4e8cff;');
@@ -92,12 +141,12 @@ describe('Theme System and Provider', () => {
     }
 
     render(
-      <DesignSystemProvider theme="accessia" mode="dark">
+      <DesignSystemProvider theme="midnight" mode="dark">
         <Consumer />
       </DesignSystemProvider>
     );
 
-    expect(screen.getByTestId('theme-name').textContent).toBe('accessia');
+    expect(screen.getByTestId('theme-name').textContent).toBe('midnight');
     expect(screen.getByTestId('theme-mode').textContent).toBe('dark');
     expect(document.documentElement.classList.contains('dark')).toBe(true);
 

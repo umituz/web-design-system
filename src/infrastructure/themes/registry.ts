@@ -1,12 +1,14 @@
 import type { ThemeConfig } from '../../domain/types';
-import { accessiaTheme } from './accessia.theme';
-import { hangoraTheme } from './hangora.theme';
 import { defaultTheme } from './default.theme';
+import { oceanTheme } from './ocean.theme';
+import { midnightTheme } from './midnight.theme';
+import { editorialTheme } from './editorial.theme';
 
 const themeRegistry = new Map<string, ThemeConfig>([
   ['default', defaultTheme],
-  ['accessia', accessiaTheme],
-  ['hangora', hangoraTheme],
+  ['ocean', oceanTheme],
+  ['midnight', midnightTheme],
+  ['editorial', editorialTheme],
 ]);
 
 export function registerTheme(theme: ThemeConfig): void {

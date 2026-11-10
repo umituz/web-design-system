@@ -1,5 +1,8 @@
-export { accessiaTheme } from './accessia.theme';
-export { hangoraTheme } from './hangora.theme';
 export { defaultTheme } from './default.theme';
+export { oceanTheme } from './ocean.theme';
+export { midnightTheme } from './midnight.theme';
+export { editorialTheme } from './editorial.theme';
+export { createTheme } from './create-theme';
+export type { ThemeOverrides } from './create-theme';
 export { registerTheme, getTheme, hasTheme, listThemes } from './registry';
 export { themeToCssVariables, applyTheme } from './apply-theme';

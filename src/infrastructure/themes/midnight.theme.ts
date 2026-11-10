@@ -1,7 +1,7 @@
 import type { ThemeConfig } from '../../domain/types';
 
-export const accessiaTheme: ThemeConfig = {
-  name: 'accessia',
+export const midnightTheme: ThemeConfig = {
+  name: 'midnight',
   mode: 'dark',
   colors: {
     background: '#060a12',
