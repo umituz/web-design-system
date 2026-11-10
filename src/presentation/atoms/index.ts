@@ -85,9 +85,18 @@ export type { KbdProps } from './Kbd';
 export { Money } from './Money';
 export type { MoneyProps } from './Money';
 
-// New Productivity Atoms
 export { CopyButton } from './CopyButton';
 export type { CopyButtonProps } from './CopyButton';
 
 export { StatusDot } from './StatusDot';
 export type { StatusDotProps, StatusType } from './StatusDot';
+
+export { Stack } from './Stack';
+export type { StackProps, StackGap, StackAlign, StackJustify } from './Stack';
+
+export { Row } from './Row';
+export type { RowProps, RowGap, RowAlign, RowJustify } from './Row';
+
+export { Grid } from './Grid';
+export type { GridProps, GridCols, GridColsNumber, ResponsiveGridCols, GridGap } from './Grid';
+

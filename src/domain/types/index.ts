@@ -18,3 +18,12 @@ export type {
   BreakpointState,
   UseBreakpointReturn,
 } from './breakpoint.types';
+
+export type {
+  ThemeMode,
+  ThemeColors,
+  ThemeTypography,
+  ThemeRadii,
+  ThemeConfig,
+} from './theme.types';
+
