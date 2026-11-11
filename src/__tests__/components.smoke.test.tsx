@@ -668,7 +668,7 @@ describe('fleet surface supersets', () => {
 
   it('KpiCard valueTone paints the metric value', () => {
     const { container } = render(<KpiCard label="Overdue" value="7" valueTone="destructive" />);
-    expect(container.querySelector('.text-2xl')!.className).toContain('text-destructive');
+    expect(container.querySelector('.whitespace-nowrap')!.className).toContain('text-destructive');
   });
 
   it('KpiCard alert applies destructive emphasis', () => {

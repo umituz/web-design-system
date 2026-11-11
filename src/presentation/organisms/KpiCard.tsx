@@ -74,7 +74,7 @@ export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-muted-foreground">{label}</p>
-              <p className={cn('mt-1 text-2xl font-semibold leading-none tracking-tight', valueTone === 'success' && 'text-success', valueTone === 'warning' && 'text-warning', (valueTone === 'destructive' || valueTone === 'danger') && 'text-destructive', valueTone === 'info' && 'text-info', valueTone === 'violet' && 'text-violet-600', (valueTone === 'muted' || valueTone === 'neutral') && 'text-muted-foreground')}>{value}</p>
+              <p className={cn('mt-1 whitespace-nowrap text-[1.35rem] font-semibold leading-none tracking-tight', valueTone === 'success' && 'text-success', valueTone === 'warning' && 'text-warning', (valueTone === 'destructive' || valueTone === 'danger') && 'text-destructive', valueTone === 'info' && 'text-info', valueTone === 'violet' && 'text-violet-600', (valueTone === 'muted' || valueTone === 'neutral') && 'text-muted-foreground')}>{value}</p>
             </div>
             {icon !== undefined && (
               <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg [&_svg]:size-4', toneTextClasses[iconTone])}>
@@ -99,7 +99,7 @@ export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(
                 {hint !== undefined && <span className="truncate text-muted-foreground">{hint}</span>}
               </div>
               {spark !== undefined && spark.length > 1 && (
-                <Sparkline data={spark} tone={sparkTone} className="shrink-0" />
+                <Sparkline data={spark} tone={sparkTone} className="max-w-[64%] shrink-0" />
               )}
             </div>
           )}
