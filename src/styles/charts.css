@@ -7,6 +7,13 @@
   --udb-chart-6: #5e7d5a;
   --udb-chart-7: #a8b5a0;
   --udb-chart-8: #c9862f;
+  --udb-font-size-xs: 11px;
+  --udb-font-size-sm: 12px;
+  --udb-font-size-md: 14px;
+  --udb-font-size-lg: 16px;
+  --udb-space-3: 12px;
+  --udb-radius-pill: 9999px;
+  --udb-border-strong: #cbd5e1;
 }
 .udb-chartcard {
   display: flex;
@@ -271,6 +278,7 @@
 .udb-donut {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
 }
 .udb-donut__wrap {
@@ -325,6 +333,9 @@
   gap: 8px;
   font-size: var(--udb-font-size-sm);
   color: var(--color-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .udb-donut__dot {
   width: 8px;

@@ -30,9 +30,10 @@ export interface TipState {
   rows: TipRow[];
 }
 
-export function useTip() {
+export function useTip(externalRef?: React.RefObject<HTMLDivElement | null>) {
   const [tip, setTip] = useState<TipState | null>(null);
-  const hostRef = useRef<HTMLDivElement>(null);
+  const internalRef = useRef<HTMLDivElement>(null);
+  const hostRef = externalRef ?? internalRef;
   const show = (e: React.MouseEvent, title: string, rows: TipRow[]) => {
     const rect = hostRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -54,4 +55,8 @@ export function niceMax(max: number): number {
 export function gridTicks(max: number, count = 4): number[] {
   const nice = niceMax(max);
   return Array.from({ length: count + 1 }, (_, i) => (nice / count) * i);
+}
+
+export function shortLabel(label: string, max = 12): string {
+  return label.length > max ? `${label.slice(0, max - 1)}…` : label;
 }

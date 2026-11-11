@@ -19,6 +19,9 @@ export type { UseClipboardReturn } from './useClipboard';
 
 export { useToggle } from './useToggle';
 
+export { useElementWidth } from './useElementWidth';
+export type { UseElementWidthReturn } from './useElementWidth';
+
 export { useScrollLock } from './useScrollLock';
 
 export { useNow } from './useNow';
