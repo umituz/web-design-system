@@ -73,7 +73,7 @@ export const KpiCard = forwardRef<HTMLDivElement, KpiCardProps>(
         <CardContent className="p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-muted-foreground">{label}</p>
+              <p className="line-clamp-2 text-sm font-medium leading-snug text-muted-foreground">{label}</p>
               <p className={cn('mt-1 whitespace-nowrap text-[1.35rem] font-semibold leading-none tracking-tight', valueTone === 'success' && 'text-success', valueTone === 'warning' && 'text-warning', (valueTone === 'destructive' || valueTone === 'danger') && 'text-destructive', valueTone === 'info' && 'text-info', valueTone === 'violet' && 'text-violet-600', (valueTone === 'muted' || valueTone === 'neutral') && 'text-muted-foreground')}>{value}</p>
             </div>
             {icon !== undefined && (
