@@ -7,6 +7,7 @@ export interface DateFormatOptions {
   invalidOutput?: string;
   weekday?: 'short' | 'long' | 'none';
   month?: 'short' | 'long';
+  timeZone?: string;
 }
 
 export interface DateTimeFormatOptions extends DateFormatOptions {
@@ -46,6 +47,9 @@ const resolveOptions = (style: Exclude<DateStyle, 'numeric'>, options: DateForma
   if (options.month !== undefined) {
     resolved.month = options.month;
   }
+  if (options.timeZone !== undefined) {
+    resolved.timeZone = options.timeZone;
+  }
   return resolved;
 };
 
@@ -69,11 +73,18 @@ export const parseDateInput = (input: string | Date): Date | null => {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
-const formatNumeric = (date: Date, locale: string, order: NonNullable<DateFormatOptions['order']>, separator: string): string => {
+const formatNumeric = (
+  date: Date,
+  locale: string,
+  order: NonNullable<DateFormatOptions['order']>,
+  separator: string,
+  timeZone?: string,
+): string => {
   const parts = cachedFormatter(locale, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
+    ...(timeZone !== undefined ? { timeZone } : {}),
   }).formatToParts(date);
   const valueOf = (type: string): string => parts.find((part) => part.type === type)?.value ?? '';
   const day = valueOf('day');
@@ -98,7 +109,13 @@ export const formatDate = (
   }
   const locale = options.locale ?? DEFAULT_LOCALE;
   if (style === 'numeric') {
-    return formatNumeric(date, locale, options.order ?? 'dmy', options.separator ?? DEFAULT_SEPARATOR);
+    return formatNumeric(
+      date,
+      locale,
+      options.order ?? 'dmy',
+      options.separator ?? DEFAULT_SEPARATOR,
+      options.timeZone
+    );
   }
   return cachedFormatter(locale, resolveOptions(style, options)).format(date);
 };
@@ -119,6 +136,17 @@ export const formatDateTime = (
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    ...(options.timeZone !== undefined ? { timeZone: options.timeZone } : {}),
   }).format(date);
-  return `${formatDate(date, 'medium', { locale })}${options.timeSeparator ?? ', '}${clock}`;
+  return `${formatDate(date, 'medium', { locale, timeZone: options.timeZone })}${
+    options.timeSeparator ?? ', '
+  }${clock}`;
+};
+
+export const getUserTimeZone = (fallback: string = 'UTC'): string => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || fallback;
+  } catch {
+    return fallback;
+  }
 };

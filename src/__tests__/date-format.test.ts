@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatDateTime, parseDateInput } from '../infrastructure/utils/date.util';
+import { formatDate, formatDateTime, getUserTimeZone, parseDateInput } from '../infrastructure/utils/date.util';
 
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d);
 
@@ -122,5 +122,43 @@ describe('formatter cache', () => {
     const en = formatDate('2026-11-10');
     formatDate('2026-11-10', 'medium', { locale: 'de-DE' });
     expect(formatDate('2026-11-10')).toBe(en);
+  });
+});
+
+describe('time zone formatting', () => {
+  it('renders the same instant on different days per time zone', () => {
+    const instant = '2026-11-10T23:30:00Z';
+
+    expect(formatDate(instant, 'medium', { timeZone: 'Europe/Istanbul' })).toBe(
+      'Nov 11, 2026'
+    );
+    expect(formatDate(instant, 'medium', { timeZone: 'America/New_York' })).toBe(
+      'Nov 10, 2026'
+    );
+  });
+
+  it('shifts the clock of formatDateTime by the given zone', () => {
+    const instant = '2026-11-10T23:30:00Z';
+
+    expect(formatDateTime(instant, { timeZone: 'Europe/Istanbul' })).toBe(
+      'Nov 11, 2026, 02:30'
+    );
+    expect(formatDateTime(instant, { timeZone: 'America/New_York' })).toBe(
+      'Nov 10, 2026, 18:30'
+    );
+  });
+
+  it('applies the zone to numeric style as well', () => {
+    const instant = '2026-11-10T23:30:00Z';
+
+    expect(formatDate(instant, 'numeric', { timeZone: 'Europe/Istanbul' })).toBe(
+      '11.11.2026'
+    );
+  });
+
+  it('resolves the user time zone as a non-empty identifier', () => {
+    const zone = getUserTimeZone();
+    expect(typeof zone).toBe('string');
+    expect(zone.length).toBeGreaterThan(0);
   });
 });

@@ -32,12 +32,13 @@ export { hashSeed } from './hash.util';
 
 export {
   createCachedValue,
+  createMemoryCache,
   isCacheExpired,
   getRemainingTTL,
   getCacheAge,
   buildCacheKey,
 } from './cache.util';
-export type { CachedValue } from './cache.util';
+export type { CachedValue, MemoryCache, MemoryCacheOptions } from './cache.util';
 
 export { initialsOf, nameHue } from './name.util';
 

@@ -41,3 +41,6 @@ export type {
   UseInfiniteScrollOptions,
   UseInfiniteScrollReturn,
 } from './useInfiniteScroll';
+
+export { useGlobalLoading } from './useGlobalLoading';
+export type { UseGlobalLoadingReturn } from './useGlobalLoading';

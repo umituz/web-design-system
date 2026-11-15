@@ -24,11 +24,19 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(
 
 Form.displayName = 'Form';
 
-export const FormActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export interface FormActionsProps extends HTMLAttributes<HTMLDivElement> {
+  sticky?: boolean;
+}
+
+export const FormActions = forwardRef<HTMLDivElement, FormActionsProps>(
+  ({ className, sticky = false, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex items-center gap-2 justify-end', className)}
+      className={cn(
+        'flex items-center gap-2 justify-end',
+        sticky && 'sticky bottom-0 z-10 bg-background/95 pt-3 pb-1 backdrop-blur',
+        className
+      )}
       {...props}
     />
   )
