@@ -29,6 +29,20 @@ export const timeAgo = (input: Date | string | number, options: TimeAgoOptions =
   return formatter.format(Math.round(deltaSeconds / YEAR), 'year');
 };
 
+export const formatDuration = (totalSeconds: number): string => {
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) return '0s';
+  const seconds = Math.floor(totalSeconds);
+  const hours = Math.floor(seconds / HOUR);
+  const minutes = Math.floor((seconds % HOUR) / MINUTE);
+  const rest = seconds % MINUTE;
+
+  const parts: string[] = [];
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (rest > 0 || parts.length === 0) parts.push(`${rest}s`);
+  return parts.join(' ');
+};
+
 export const formatCountdown = (ms: number): string => {
   if (ms <= 0) return '0:00';
   const s = Math.floor(ms / 1000);

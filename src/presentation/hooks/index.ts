@@ -25,3 +25,19 @@ export type { UseElementWidthReturn } from './useElementWidth';
 export { useScrollLock } from './useScrollLock';
 
 export { useNow } from './useNow';
+
+export { useOffline } from './useOffline';
+export type { UseOfflineReturn } from './useOffline';
+
+export { useAsyncOperation } from './useAsyncOperation';
+export type {
+  UseAsyncOperationOptions,
+  UseAsyncOperationReturn,
+} from './useAsyncOperation';
+
+export { useInfiniteScroll } from './useInfiniteScroll';
+export type {
+  InfinitePage,
+  UseInfiniteScrollOptions,
+  UseInfiniteScrollReturn,
+} from './useInfiniteScroll';

@@ -30,9 +30,18 @@ export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
 
+export {
+  createCachedValue,
+  isCacheExpired,
+  getRemainingTTL,
+  getCacheAge,
+  buildCacheKey,
+} from './cache.util';
+export type { CachedValue } from './cache.util';
+
 export { initialsOf, nameHue } from './name.util';
 
-export { timeAgo, formatCountdown } from './time.util';
+export { timeAgo, formatCountdown, formatDuration } from './time.util';
 export type { TimeAgoOptions } from './time.util';
 
 export { formatDate, formatDateTime, parseDateInput } from './date.util';
@@ -40,8 +49,10 @@ export type { DateStyle, DateFormatOptions, DateTimeFormatOptions } from './date
 
 export { formatCount } from './format.util';
 export type { CountFormatOptions } from './format.util';
+export { formatFileSize, truncateText, toSlug } from './format.util';
+export type { FileSizeFormatOptions } from './format.util';
 
-export { uniqueId } from './id.util';
+export { uniqueId, randomUUID, isValidUUID } from './id.util';
 
 export {
   currencyFractionDigits,

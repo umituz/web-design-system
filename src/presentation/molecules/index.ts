@@ -105,3 +105,6 @@ export type { ConditionPipsProps } from './ConditionPips';
 
 export { Countdown } from './Countdown';
 export type { CountdownProps } from './Countdown';
+
+export { OfflineBanner } from './OfflineBanner';
+export type { OfflineBannerProps } from './OfflineBanner';
