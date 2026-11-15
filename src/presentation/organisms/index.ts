@@ -209,3 +209,6 @@ export type { NextStepsProps, NextStepLink } from './NextSteps';
 
 // Visual Data Visualization & Charts
 export * from './charts';
+
+// Calendar
+export * from './Calendar';
