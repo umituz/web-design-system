@@ -1,4 +1,4 @@
-export type DateStyle = 'medium' | 'long' | 'short' | 'monthYear' | 'numeric';
+export type DateStyle = 'medium' | 'long' | 'short' | 'monthYear' | 'numeric' | 'locale';
 
 export interface DateFormatOptions {
   locale?: string;
@@ -34,6 +34,7 @@ const PRESET_OPTIONS: Record<Exclude<DateStyle, 'numeric'>, Intl.DateTimeFormatO
   long: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
   short: { day: 'numeric', month: 'short' },
   monthYear: { month: 'short', year: 'numeric' },
+  locale: { dateStyle: 'medium' },
 };
 
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
@@ -49,6 +50,12 @@ const cachedFormatter = (locale: string, options: Intl.DateTimeFormatOptions): I
 };
 
 const resolveOptions = (style: Exclude<DateStyle, 'numeric'>, options: DateFormatOptions): Intl.DateTimeFormatOptions => {
+  if (style === 'locale') {
+    return {
+      dateStyle: 'medium',
+      ...(options.timeZone !== undefined ? { timeZone: options.timeZone } : {}),
+    };
+  }
   const resolved: Intl.DateTimeFormatOptions = { ...PRESET_OPTIONS[style] };
   if (options.weekday === 'none') {
     delete resolved.weekday;

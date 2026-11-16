@@ -34,6 +34,25 @@ describe('timeAgo', () => {
     expect(timeAgo(at(-3 * 3600), { now, compact: true })).toBe('3h ago');
   });
 
+  it('compacts future spans with in-prefixes', () => {
+    expect(timeAgo(at(3 * 60), { now, compact: true })).toBe('in 3m');
+    expect(timeAgo(at(3 * 3600), { now, compact: true })).toBe('in 3h');
+    expect(timeAgo(at(3 * 86400), { now, compact: true })).toBe('in 3d');
+  });
+
+  it('compacts every unit bucket on the past side', () => {
+    expect(timeAgo(at(-3 * 60), { now, compact: true })).toBe('3m ago');
+    expect(timeAgo(at(-2 * 86400), { now, compact: true })).toBe('2d ago');
+    expect(timeAgo(at(-14 * 86400), { now, compact: true })).toBe('2w ago');
+    expect(timeAgo(at(-70 * 86400), { now, compact: true })).toBe('2mo ago');
+    expect(timeAgo(at(-800 * 86400), { now, compact: true })).toBe('2y ago');
+  });
+
+  it('keeps the auto now inside the 45s window when compact', () => {
+    expect(timeAgo(at(-10), { now, compact: true })).toBe('now');
+    expect(timeAgo(at(10), { now, compact: true })).toBe('now');
+  });
+
   it('accepts iso strings and timestamps', () => {
     expect(timeAgo('2026-11-09T11:00:00Z', { now })).toBe('1 hour ago');
     expect(timeAgo(now.getTime() - 7200_000, { now })).toBe('2 hours ago');

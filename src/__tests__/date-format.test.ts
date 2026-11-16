@@ -176,6 +176,30 @@ describe('formatTime', () => {
   });
 });
 
+describe('locale style', () => {
+  it('defers to the medium dateStyle of the default locale', () => {
+    expect(formatDate('2026-11-10', 'locale')).toBe('Nov 10, 2026');
+  });
+
+  it('renders numeric medium for German', () => {
+    expect(formatDate('2026-11-10', 'locale', { locale: 'de-DE' })).toBe('10.11.2026');
+  });
+
+  it('renders the month name for Turkish', () => {
+    expect(formatDate('2026-11-10', 'locale', { locale: 'tr-TR' })).toBe('10 Kas 2026');
+  });
+
+  it('applies the time zone while the locale decides the shape', () => {
+    expect(formatDate('2026-11-10T23:30:00Z', 'locale', { locale: 'de-DE', timeZone: 'Europe/Istanbul' })).toBe('11.11.2026');
+  });
+
+  it('does not contaminate the hand-built presets through the cache', () => {
+    formatDate('2026-11-10', 'locale', { locale: 'de-DE' });
+    expect(formatDate('2026-11-10', 'medium', { locale: 'de-DE' })).toBe('10. Nov. 2026');
+    expect(formatDate('2026-11-10')).toBe('Nov 10, 2026');
+  });
+});
+
 describe('formatter cache', () => {
   it('does not contaminate across locales for the same instant', () => {
     const en = formatDate('2026-11-10');
