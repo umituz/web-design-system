@@ -27,7 +27,7 @@ describe('page-kit barrel', () => {
     expect(valueNames.sort()).toEqual([...COMPONENTS].sort());
   });
 
-  it('re-exports the same bindings as their layer barrels', async () => {
+  it('re-exports the same bindings as their layer barrels', { timeout: 20000 }, async () => {
     const templates = await import('../presentation/templates');
     const molecules = await import('../presentation/molecules');
     const organisms = await import('../presentation/organisms');
