@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { addDaysKey, addMonthsKey } from '../infrastructure/utils/day-key.util';
 import {
-  addDaysKey,
-  addMonthsKey,
   eventGeometry,
   findConflicts,
   generateDaySlots,

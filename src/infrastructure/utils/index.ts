@@ -42,8 +42,32 @@ export type { CachedValue, MemoryCache, MemoryCacheOptions } from './cache.util'
 
 export { initialsOf, nameHue, colorForName, NAME_COLOR_PALETTE, mentionsAny } from './name.util';
 
-export { timeAgo, formatCountdown, formatDuration, formatUntil } from './time.util';
+export { timeAgo, formatCountdown, formatDuration, formatUntil, formatClock } from './time.util';
 export type { TimeAgoOptions, FormatUntilOptions } from './time.util';
+
+export {
+  toDayKey,
+  todayKey,
+  dayKeyDaysAgo,
+  dayKeyFromIso,
+  parseDayKey,
+  addDaysKey,
+  addMonthsKey,
+  daysUntilDayKey,
+  isoDaysAgo,
+  nowIso,
+} from './day-key.util';
+
+export {
+  getStorageItem,
+  setStorageItem,
+  removeStorageItems,
+  clearStorage,
+  getStorageJson,
+  setStorageJson,
+} from './storage.util';
+
+export { downloadTextFile } from './file.util';
 
 export { formatDate, formatDateTime, formatTime, parseDateInput } from './date.util';
 export type { DateStyle, DateFormatOptions, DateTimeFormatOptions, TimeFormatOptions } from './date.util';

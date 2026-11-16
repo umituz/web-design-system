@@ -1,4 +1,5 @@
 import type { CalendarItem } from './calendar.types';
+import { addDaysKey, parseDayKey } from '../../../infrastructure/utils/day-key.util';
 
 export const DAY_MINUTES = 24 * 60;
 export const DEFAULT_DAY_START_MIN = 7 * 60;
@@ -8,35 +9,6 @@ export const SLOT_QUANTUM_MIN = 30;
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
-}
-
-export function parseDayKey(dayKey: string): Date {
-  const [year, month, day] = dayKey.split('-').map(Number);
-  return new Date(year ?? 1970, (month ?? 1) - 1, day ?? 1);
-}
-
-export function toDayKey(date: Date): string {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
-export function todayKey(): string {
-  return toDayKey(new Date());
-}
-
-export function addDaysKey(dayKey: string, days: number): string {
-  const date = parseDayKey(dayKey);
-  date.setDate(date.getDate() + days);
-  return toDayKey(date);
-}
-
-export function addMonthsKey(dayKey: string, months: number): string {
-  const date = parseDayKey(dayKey);
-  const dayOfMonth = date.getDate();
-  date.setDate(1);
-  date.setMonth(date.getMonth() + months);
-  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  date.setDate(Math.min(dayOfMonth, lastDay));
-  return toDayKey(date);
 }
 
 export function startOfWeekKey(dayKey: string, weekStartsOn: 0 | 1 = 1): string {

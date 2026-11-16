@@ -51,4 +51,7 @@ export type { DocumentTitleOptions } from './useDocumentTitle';
 export { useAsync } from './useAsync';
 export type { AsyncState } from './useAsync';
 
+export { useAsyncPhase } from './useAsyncPhase';
+export type { AsyncPhase, UseAsyncPhaseReturn } from './useAsyncPhase';
+
 export { useRadioGroup } from './useRadioGroup';

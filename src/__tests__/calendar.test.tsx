@@ -4,7 +4,7 @@ import { Calendar } from '../presentation/organisms/Calendar/Calendar';
 import { CalendarMonth } from '../presentation/organisms/Calendar/CalendarMonth';
 import { CalendarAgenda } from '../presentation/organisms/Calendar/CalendarAgenda';
 import type { CalendarItem } from '../presentation/organisms/Calendar/calendar.types';
-import { todayKey } from '../presentation/organisms/Calendar/layout';
+import { todayKey } from '../infrastructure/utils/day-key.util';
 
 const item = (id: string, dayKey: string, startMin?: number, endMin?: number): CalendarItem => ({
   id,

@@ -15,15 +15,13 @@ import {
   DEFAULT_DAY_END_MIN,
   DEFAULT_DAY_START_MIN,
   DEFAULT_MAX_PER_DAY,
-  addDaysKey,
-  addMonthsKey,
   formatAgendaTitle,
   formatDayTitle,
   formatMonthTitle,
   formatWeekTitle,
-  todayKey,
   weekDays,
 } from './layout';
+import { addDaysKey, addMonthsKey, todayKey } from '../../../infrastructure/utils/day-key.util';
 import { CalendarAgenda } from './CalendarAgenda';
 import { CalendarMonth } from './CalendarMonth';
 import { CalendarTimeGrid } from './CalendarTimeGrid';

@@ -16,8 +16,8 @@ import {
   itemSpan,
   layoutColumns,
   minutesToLabel,
-  todayKey,
 } from './layout';
+import { todayKey } from '../../../infrastructure/utils/day-key.util';
 
 export interface CalendarTimeGridProps {
   items: readonly CalendarItem[];

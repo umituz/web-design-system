@@ -6,12 +6,11 @@ import {
   type CalendarLabels,
 } from './calendar.types';
 import {
-  addDaysKey,
   formatDayTitle,
   groupByDayKey,
   minutesToLabel,
-  todayKey,
 } from './layout';
+import { addDaysKey, todayKey } from '../../../infrastructure/utils/day-key.util';
 
 export interface CalendarAgendaProps {
   items: readonly CalendarItem[];

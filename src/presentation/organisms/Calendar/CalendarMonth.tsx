@@ -11,9 +11,9 @@ import {
   minutesToLabel,
   monthMatrix,
   sameMonth,
-  todayKey,
   weekDays,
 } from './layout';
+import { todayKey } from '../../../infrastructure/utils/day-key.util';
 
 export interface CalendarMonthProps {
   items: readonly CalendarItem[];

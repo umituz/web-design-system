@@ -43,6 +43,14 @@ export const formatDuration = (totalSeconds: number): string => {
   return parts.join(' ');
 };
 
+export const formatClock = (totalSeconds: number, padMinutes = false): string => {
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) return padMinutes ? '00:00' : '0:00';
+  const minutes = Math.floor(totalSeconds / MINUTE);
+  const seconds = Math.floor(totalSeconds % MINUTE);
+  const mins = padMinutes ? String(minutes).padStart(2, '0') : String(minutes);
+  return `${mins}:${String(seconds).padStart(2, '0')}`;
+};
+
 export const formatCountdown = (ms: number): string => {
   if (ms <= 0) return '0:00';
   const s = Math.floor(ms / 1000);
