@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatDateTime, getUserTimeZone, parseDateInput } from '../infrastructure/utils/date.util';
+import { formatDate, formatDateTime, formatTime, getUserTimeZone, parseDateInput } from '../infrastructure/utils/date.util';
 
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d);
 
@@ -114,6 +114,65 @@ describe('preset overrides', () => {
     expect(formatDate('2026-11-10', 'monthYear')).toBe('Nov 2026');
     expect(formatDate('2026-11-10', 'long', { weekday: 'none' })).toBe('November 10, 2026');
     expect(formatDate('2026-11-10', 'long')).toBe('Tuesday, November 10, 2026');
+  });
+});
+
+describe('day, year, and month granularity overrides', () => {
+  it('pads the day to two digits on the medium style', () => {
+    expect(formatDate('2026-01-05', 'medium', { day: '2-digit' })).toBe('Jan 05, 2026');
+  });
+
+  it('pads the day of the yearless short style', () => {
+    expect(formatDate('2026-01-05', 'short', { day: '2-digit', locale: 'en-GB' })).toBe('05 Jan');
+  });
+
+  it('drops the year from the medium style', () => {
+    expect(formatDate('2026-11-10', 'medium', { year: 'none', locale: 'en-GB' })).toBe('10 Nov');
+  });
+
+  it('shortens the year of the monthYear style', () => {
+    expect(formatDate('2026-11-10', 'monthYear', { year: '2-digit' })).toBe('Nov 26');
+  });
+
+  it('renders weekday and day without the month', () => {
+    expect(formatDate('2026-11-10', 'short', { weekday: 'short', month: 'none', locale: 'en-GB' })).toBe('Tue 10');
+  });
+
+  it('keeps numeric style unaffected by granularity overrides', () => {
+    expect(formatDate('2026-11-10', 'numeric', { day: '2-digit' })).toBe('10.11.2026');
+  });
+});
+
+describe('formatDateTime year and clock options', () => {
+  it('renders a yearless datetime', () => {
+    expect(formatDateTime('2026-11-10T14:05:00', { locale: 'en-GB', year: 'none', timeSeparator: ' · ' })).toBe('10 Nov · 14:05');
+  });
+
+  it('renders a 2-digit year datetime', () => {
+    expect(formatDateTime('2026-11-10T14:05:00', { locale: 'en-GB', year: '2-digit', timeSeparator: ' · ' })).toBe('10 Nov 26 · 14:05');
+  });
+
+  it('renders a 12h clock when requested', () => {
+    expect(formatDateTime('2026-11-10T14:05:00', { hour12: true })).toBe('Nov 10, 2026, 02:05 PM');
+  });
+});
+
+describe('formatTime', () => {
+  it('renders a 24h clock by default', () => {
+    expect(formatTime('2026-11-10T14:05:00')).toBe('14:05');
+  });
+
+  it('renders a 12h clock when requested', () => {
+    expect(formatTime('2026-11-10T14:05:00', { hour12: true })).toBe('02:05 PM');
+  });
+
+  it('includes seconds when requested', () => {
+    expect(formatTime('2026-11-10T14:05:09', { withSeconds: true })).toBe('14:05:09');
+  });
+
+  it('renders the placeholder for invalid input', () => {
+    expect(formatTime('nope')).toBe('—');
+    expect(formatTime(null, { invalidOutput: 'n/a' })).toBe('n/a');
   });
 });
 

@@ -45,8 +45,31 @@ export { initialsOf, nameHue } from './name.util';
 export { timeAgo, formatCountdown, formatDuration } from './time.util';
 export type { TimeAgoOptions } from './time.util';
 
-export { formatDate, formatDateTime, parseDateInput } from './date.util';
-export type { DateStyle, DateFormatOptions, DateTimeFormatOptions } from './date.util';
+export { formatDate, formatDateTime, formatTime, parseDateInput } from './date.util';
+export type { DateStyle, DateFormatOptions, DateTimeFormatOptions, TimeFormatOptions } from './date.util';
+
+export {
+  addDays,
+  addMinutes,
+  differenceInMinutes,
+  eachDayOfInterval,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
+  isSameDay,
+  isToday,
+  isValidDate,
+  isTomorrow,
+  isYesterday,
+  setHours,
+  setMinutes,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  subDays,
+  subMonths,
+} from './date-math.util';
+export type { WeekStartsOn, DateInterval } from './date-math.util';
 
 export { formatCount } from './format.util';
 export type { CountFormatOptions } from './format.util';

@@ -6,12 +6,23 @@ export interface DateFormatOptions {
   separator?: string;
   invalidOutput?: string;
   weekday?: 'short' | 'long' | 'none';
-  month?: 'short' | 'long';
+  month?: 'short' | 'long' | 'none';
+  day?: 'numeric' | '2-digit';
+  year?: 'numeric' | '2-digit' | 'none';
   timeZone?: string;
 }
 
 export interface DateTimeFormatOptions extends DateFormatOptions {
   timeSeparator?: string;
+  hour12?: boolean;
+}
+
+export interface TimeFormatOptions {
+  locale?: string;
+  hour12?: boolean;
+  withSeconds?: boolean;
+  timeZone?: string;
+  invalidOutput?: string;
 }
 
 const DEFAULT_LOCALE = 'en';
@@ -44,8 +55,18 @@ const resolveOptions = (style: Exclude<DateStyle, 'numeric'>, options: DateForma
   } else if (options.weekday !== undefined) {
     resolved.weekday = options.weekday;
   }
-  if (options.month !== undefined) {
+  if (options.month === 'none') {
+    delete resolved.month;
+  } else if (options.month !== undefined) {
     resolved.month = options.month;
+  }
+  if (options.day !== undefined) {
+    resolved.day = options.day;
+  }
+  if (options.year === 'none') {
+    delete resolved.year;
+  } else if (options.year !== undefined) {
+    resolved.year = options.year;
   }
   if (options.timeZone !== undefined) {
     resolved.timeZone = options.timeZone;
@@ -135,12 +156,41 @@ export const formatDateTime = (
   const clock = cachedFormatter(locale, {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false,
+    hour12: options.hour12 ?? false,
     ...(options.timeZone !== undefined ? { timeZone: options.timeZone } : {}),
   }).format(date);
-  return `${formatDate(date, 'medium', { locale, timeZone: options.timeZone })}${
+  const dateOptions: DateFormatOptions = {
+    weekday: options.weekday,
+    month: options.month,
+    day: options.day,
+    year: options.year,
+    timeZone: options.timeZone,
+  };
+  return `${formatDate(date, 'medium', { ...dateOptions, locale })}${
     options.timeSeparator ?? ', '
   }${clock}`;
+};
+
+export const formatTime = (
+  input: string | Date | null | undefined,
+  options: TimeFormatOptions = {},
+): string => {
+  if (input === null || input === undefined) {
+    return options.invalidOutput ?? DEFAULT_INVALID_OUTPUT;
+  }
+  const date = parseDateInput(input);
+  if (!date) {
+    return options.invalidOutput ?? DEFAULT_INVALID_OUTPUT;
+  }
+  const locale = options.locale ?? DEFAULT_LOCALE;
+  const clockOptions: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: options.hour12 ?? false,
+    ...(options.withSeconds ? { second: '2-digit' as const } : {}),
+    ...(options.timeZone !== undefined ? { timeZone: options.timeZone } : {}),
+  };
+  return cachedFormatter(locale, clockOptions).format(date);
 };
 
 export const getUserTimeZone = (fallback: string = 'UTC'): string => {
