@@ -4,7 +4,7 @@ export {
 } from './cn.util';
 export type { ClassValue } from './cn.util';
 
-export { createStyles } from './styles.util';
+export { createStyles, cssVars } from './styles.util';
 
 export {
   getSpacing,
@@ -40,10 +40,10 @@ export {
 } from './cache.util';
 export type { CachedValue, MemoryCache, MemoryCacheOptions } from './cache.util';
 
-export { initialsOf, nameHue } from './name.util';
+export { initialsOf, nameHue, colorForName, NAME_COLOR_PALETTE } from './name.util';
 
-export { timeAgo, formatCountdown, formatDuration } from './time.util';
-export type { TimeAgoOptions } from './time.util';
+export { timeAgo, formatCountdown, formatDuration, formatUntil } from './time.util';
+export type { TimeAgoOptions, FormatUntilOptions } from './time.util';
 
 export { formatDate, formatDateTime, formatTime, parseDateInput } from './date.util';
 export type { DateStyle, DateFormatOptions, DateTimeFormatOptions, TimeFormatOptions } from './date.util';
@@ -51,6 +51,8 @@ export type { DateStyle, DateFormatOptions, DateTimeFormatOptions, TimeFormatOpt
 export {
   addDays,
   addMinutes,
+  byNewest,
+  byOldest,
   differenceInMinutes,
   eachDayOfInterval,
   endOfDay,
@@ -69,12 +71,14 @@ export {
   subDays,
   subMonths,
 } from './date-math.util';
-export type { WeekStartsOn, DateInterval } from './date-math.util';
+export type { WeekStartsOn, DateInterval, Timestamped } from './date-math.util';
 
 export { formatCount } from './format.util';
 export type { CountFormatOptions } from './format.util';
-export { formatFileSize, truncateText, toSlug } from './format.util';
+export { formatFileSize, truncateText, toSlug, formatCompact, formatBadgeCount } from './format.util';
 export type { FileSizeFormatOptions } from './format.util';
+
+export { getErrorMessage } from './error.util';
 
 export { uniqueId, randomUUID, isValidUUID } from './id.util';
 

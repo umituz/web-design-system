@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   addDays,
   addMinutes,
+  byNewest,
+  byOldest,
   differenceInMinutes,
   eachDayOfInterval,
   endOfDay,
@@ -145,5 +147,28 @@ describe('eachDayOfInterval', () => {
 
   it('returns an empty list for a reversed interval', () => {
     expect(eachDayOfInterval({ start: D(2026, 11, 13), end: D(2026, 11, 10) })).toEqual([]);
+  });
+});
+
+describe('createdAt comparators', () => {
+  const rows = [
+    { id: 'c', createdAt: '2026-11-12T10:00:00Z' },
+    { id: 'a', createdAt: '2026-11-10T10:00:00Z' },
+    { id: 'b', createdAt: '2026-11-11T10:00:00Z' },
+  ];
+
+  it('byOldest sorts oldest first', () => {
+    expect([...rows].sort(byOldest).map((r) => r.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('byNewest sorts newest first', () => {
+    expect([...rows].sort(byNewest).map((r) => r.id)).toEqual(['c', 'b', 'a']);
+  });
+
+  it('keeps equal timestamps adjacent with zero delta', () => {
+    const a = { createdAt: '2026-11-11T10:00:00Z' };
+    const b = { createdAt: '2026-11-11T10:00:00Z' };
+    expect(byOldest(a, b)).toBe(0);
+    expect(byNewest(a, b)).toBe(0);
   });
 });

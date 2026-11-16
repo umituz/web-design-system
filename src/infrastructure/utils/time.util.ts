@@ -54,3 +54,25 @@ export const formatCountdown = (ms: number): string => {
   if (h >= 1) return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   return `${m}:${String(sec).padStart(2, '0')}`;
 };
+
+export interface FormatUntilOptions {
+  now?: Date;
+  locale?: string;
+}
+
+export const formatUntil = (input: Date | string | number, options: FormatUntilOptions = {}): string => {
+  const { now = new Date() } = options;
+  const date = input instanceof Date ? input : new Date(input);
+  const seconds = Math.floor((date.getTime() - now.getTime()) / 1000);
+  if (seconds > -60 && seconds < 60) return 'just now';
+  if (seconds >= 60) {
+    const minutes = Math.floor(seconds / MINUTE);
+    if (minutes < 60) return `in ${minutes}m`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `in ${hours}h`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `in ${days}d`;
+    return new Intl.DateTimeFormat(options.locale, { month: 'short', day: 'numeric' }).format(date);
+  }
+  return timeAgo(date, { now, locale: options.locale, compact: true });
+};

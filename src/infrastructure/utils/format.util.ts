@@ -52,3 +52,20 @@ export const toSlug = (text: string): string =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+const COMPACT_SUFFIXES = ['K', 'M', 'B'] as const;
+
+export const formatCompact = (value: number): string => {
+  if (value < 1000) return String(value);
+  let tier = value >= 1_000_000_000 ? 2 : value >= 1_000_000 ? 1 : 0;
+  const scaled = value / 1000 ** (tier + 1);
+  let rounded = scaled >= 100 ? Math.round(scaled) : Number(scaled.toFixed(1));
+  if (rounded >= 1000 && tier < 2) {
+    rounded = rounded >= 10_000 ? Math.round(rounded / 1000) : Number((rounded / 1000).toFixed(1));
+    tier += 1;
+  }
+  return `${rounded}${COMPACT_SUFFIXES[tier]}`;
+};
+
+export const formatBadgeCount = (count: number, cap = 9): string =>
+  count > cap ? `${cap}+` : String(count);
+

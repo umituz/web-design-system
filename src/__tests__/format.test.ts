@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { formatCount, formatFileSize, truncateText, toSlug, formatDuration } from '../infrastructure/utils';
+import {
+  formatCount,
+  formatFileSize,
+  truncateText,
+  toSlug,
+  formatDuration,
+  formatCompact,
+  formatBadgeCount,
+} from '../infrastructure/utils';
 
 describe('formatCount', () => {
   it('formats with grouping separators for the locale', () => {
@@ -80,6 +88,51 @@ describe('formatDuration', () => {
     expect(formatDuration(0)).toBe('0s');
     expect(formatDuration(-5)).toBe('0s');
     expect(formatDuration(Number.NaN)).toBe('0s');
+  });
+});
+
+describe('formatCompact', () => {
+  it('passes small values through as-is', () => {
+    expect(formatCompact(0)).toBe('0');
+    expect(formatCompact(999)).toBe('999');
+  });
+
+  it('scales into K with one decimal below 100', () => {
+    expect(formatCompact(1000)).toBe('1K');
+    expect(formatCompact(1200)).toBe('1.2K');
+    expect(formatCompact(9500)).toBe('9.5K');
+  });
+
+  it('rounds whole numbers above 100 in the tier', () => {
+    expect(formatCompact(123_000)).toBe('123K');
+  });
+
+  it('scales into M and B', () => {
+    expect(formatCompact(1_000_000)).toBe('1M');
+    expect(formatCompact(3_400_000)).toBe('3.4M');
+    expect(formatCompact(2_000_000_000)).toBe('2B');
+  });
+
+  it('carries rounding across the unit boundary', () => {
+    expect(formatCompact(999_999)).toBe('1M');
+    expect(formatCompact(999_999_999)).toBe('1B');
+  });
+});
+
+describe('formatBadgeCount', () => {
+  it('renders counts up to the cap verbatim', () => {
+    expect(formatBadgeCount(0)).toBe('0');
+    expect(formatBadgeCount(9)).toBe('9');
+  });
+
+  it('caps larger counts', () => {
+    expect(formatBadgeCount(10)).toBe('9+');
+    expect(formatBadgeCount(99)).toBe('9+');
+  });
+
+  it('supports a custom cap', () => {
+    expect(formatBadgeCount(100, 99)).toBe('99+');
+    expect(formatBadgeCount(99, 99)).toBe('99');
   });
 });
 

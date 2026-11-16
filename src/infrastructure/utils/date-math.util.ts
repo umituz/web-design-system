@@ -109,3 +109,13 @@ export const eachDayOfInterval = (interval: DateInterval): Date[] => {
   }
   return days;
 };
+
+export interface Timestamped {
+  createdAt: string;
+}
+
+export const byOldest = <T extends Timestamped>(a: T, b: T): number =>
+  +new Date(a.createdAt) - +new Date(b.createdAt);
+
+export const byNewest = <T extends Timestamped>(a: T, b: T): number =>
+  +new Date(b.createdAt) - +new Date(a.createdAt);
