@@ -28,3 +28,12 @@ export const NAME_COLOR_PALETTE = [
 
 export const colorForName = (name: string, palette: readonly string[] = NAME_COLOR_PALETTE): string =>
   palette[hashSeed(name) % palette.length] as string;
+
+export const mentionsAny = (text: string, names: readonly string[]): boolean => {
+  const patterns = names
+    .map((name) => name.trim())
+    .filter((name) => name.length >= 3)
+    .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  if (patterns.length === 0) return false;
+  return new RegExp(`\\b(?:${patterns.join('|')})\\b`, 'i').test(text);
+};

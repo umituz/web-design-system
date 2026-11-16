@@ -22,13 +22,24 @@ interface ToastApi {
     (t: ToastOptions): void;
     (title: string, options?: ToastShorthandOptions): void;
   };
+  success: (title: string, description?: string) => void;
+  error: (title: string, description?: string) => void;
+  warning: (title: string, description?: string) => void;
+  info: (title: string, description?: string) => void;
 }
 
 interface ToastEntry extends ToastOptions {
   id: number;
 }
 
-const ToastContext = createContext<ToastApi>({ toast: () => {} });
+const noop = (): void => {};
+const ToastContext = createContext<ToastApi>({
+  toast: noop as ToastApi['toast'],
+  success: noop,
+  error: noop,
+  warning: noop,
+  info: noop,
+});
 
 export function useToast(): ToastApi {
   return useContext(ToastContext);
@@ -84,7 +95,16 @@ export function ToastProvider({ children, maxVisible = 4, duration = 4200 }: Toa
     [dismiss, maxVisible, duration],
   );
 
-  const value = useMemo(() => ({ toast }), [toast]);
+  const value = useMemo<ToastApi>(
+    () => ({
+      toast,
+      success: (title: string, description?: string) => toast({ kind: 'success', title, description }),
+      error: (title: string, description?: string) => toast({ kind: 'error', title, description }),
+      warning: (title: string, description?: string) => toast({ kind: 'warning', title, description }),
+      info: (title: string, description?: string) => toast({ kind: 'info', title, description }),
+    }),
+    [toast],
+  );
 
   return (
     <ToastContext.Provider value={value}>

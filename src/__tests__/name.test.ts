@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { initialsOf, nameHue, colorForName, NAME_COLOR_PALETTE, hashSeed } from '../infrastructure/utils';
+import {
+  initialsOf,
+  nameHue,
+  colorForName,
+  NAME_COLOR_PALETTE,
+  hashSeed,
+  mentionsAny,
+} from '../infrastructure/utils';
 
 describe('initialsOf', () => {
   it('takes first and last word initials', () => {
@@ -63,5 +70,29 @@ describe('colorForName', () => {
     expect(colorForName('whoever', ['#ff0000', '#00ff00'])).toBe(
       ['#ff0000', '#00ff00'][hashSeed('whoever') % 2],
     );
+  });
+});
+
+describe('mentionsAny', () => {
+  const names = ['Nova', 'novacohost'];
+
+  it('matches case-insensitively on word boundaries', () => {
+    expect(mentionsAny('hey NOVA what do you think?', names)).toBe(true);
+    expect(mentionsAny('@novacohost call the strat', names)).toBe(true);
+    expect(mentionsAny('Nova,', names)).toBe(true);
+  });
+
+  it('does not match inside other words', () => {
+    expect(mentionsAny('that supernova play was insane', names)).toBe(false);
+  });
+
+  it('returns false when nothing matches or names are too short', () => {
+    expect(mentionsAny('gg wp', names)).toBe(false);
+    expect(mentionsAny('xx yy zz', ['ab', 'cd'])).toBe(false);
+  });
+
+  it('escapes regex metacharacters in names', () => {
+    expect(mentionsAny('choose a.b+c?', ['a.b+c'])).toBe(true);
+    expect(mentionsAny('choose abc?', ['a.b+c'])).toBe(false);
   });
 });
