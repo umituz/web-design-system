@@ -69,6 +69,18 @@ export const formatCompact = (value: number): string => {
   return `${rounded}${COMPACT_SUFFIXES[tier]}`;
 };
 
+export const titleCase = (value: string): string =>
+  value
+    .split(/[-\s]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+export const humanize = (value: string): string => {
+  const spaced = value.replace(/[-_]+/g, ' ');
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+};
+
 export const formatDateRange = (
   start: string | Date,
   end: string | Date,

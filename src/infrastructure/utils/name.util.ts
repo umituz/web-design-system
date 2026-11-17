@@ -29,6 +29,9 @@ export const NAME_COLOR_PALETTE = [
 export const colorForName = (name: string, palette: readonly string[] = NAME_COLOR_PALETTE): string =>
   palette[hashSeed(name) % palette.length] as string;
 
+export const fullNameOf = (person: { firstName: string; lastName?: string }): string =>
+  person.lastName ? `${person.firstName} ${person.lastName}` : person.firstName;
+
 export const mentionsAny = (text: string, names: readonly string[]): boolean => {
   const patterns = names
     .map((name) => name.trim())

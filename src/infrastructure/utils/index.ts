@@ -32,7 +32,11 @@ export {
 export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
-export { seededRandom, pick } from './random.util';
+export { seededRandom, pick, randInt } from './random.util';
+
+export { unique, groupBy, groupByRecord, moveItem, replaceWhere } from './collections.util';
+
+export { debounce } from './fn.util';
 
 export {
   createCachedValue,
@@ -44,7 +48,7 @@ export {
 } from './cache.util';
 export type { CachedValue, MemoryCache, MemoryCacheOptions } from './cache.util';
 
-export { initialsOf, nameHue, colorForName, NAME_COLOR_PALETTE, mentionsAny } from './name.util';
+export { initialsOf, nameHue, colorForName, NAME_COLOR_PALETTE, fullNameOf, mentionsAny } from './name.util';
 
 export { timeAgo, formatCountdown, formatDuration, formatUntil, formatClock } from './time.util';
 export type { TimeAgoOptions, FormatUntilOptions } from './time.util';
@@ -104,7 +108,16 @@ export type { WeekStartsOn, DateInterval, Timestamped } from './date-math.util';
 
 export { formatCount } from './format.util';
 export type { CountFormatOptions } from './format.util';
-export { formatFileSize, truncateText, toSlug, formatCompact, formatBadgeCount, formatDateRange } from './format.util';
+export {
+  formatFileSize,
+  truncateText,
+  toSlug,
+  formatCompact,
+  formatBadgeCount,
+  formatDateRange,
+  titleCase,
+  humanize,
+} from './format.util';
 export type { FileSizeFormatOptions } from './format.util';
 
 export { getErrorMessage } from './error.util';

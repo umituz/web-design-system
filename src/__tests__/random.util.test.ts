@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { hashSeed } from '../infrastructure/utils/hash.util';
-import { pick, seededRandom } from '../infrastructure/utils/random.util';
+import { pick, randInt, seededRandom } from '../infrastructure/utils/random.util';
 import { sum, sumBy } from '../infrastructure/utils/calculation.utils';
 import { percentOf } from '../infrastructure/utils/calculation.utils';
 import { daysBetweenKeys } from '../infrastructure/utils/day-key.util';
-import { formatDate, formatDateRange } from '../infrastructure/utils';
+import { formatDate, formatDateRange, fullNameOf, humanize, titleCase } from '../infrastructure/utils';
 
 describe('seededRandom', () => {
   it('returns the same sequence for the same seed', () => {
@@ -43,6 +43,52 @@ describe('pick', () => {
 
   it('picks deterministically for a seed', () => {
     expect(pick(seededRandom('s'), [10, 20, 30])).toBe(pick(seededRandom('s'), [10, 20, 30]));
+  });
+});
+
+describe('randInt', () => {
+  it('stays within the inclusive range', () => {
+    const rng = seededRandom('rand-int');
+    for (let i = 0; i < 50; i += 1) {
+      const value = randInt(rng, 2, 5);
+      expect(value).toBeGreaterThanOrEqual(2);
+      expect(value).toBeLessThanOrEqual(5);
+    }
+  });
+
+  it('is deterministic for a seed', () => {
+    expect(randInt(seededRandom('r'), 0, 100)).toBe(randInt(seededRandom('r'), 0, 100));
+  });
+
+  it('covers the whole range', () => {
+    const rng = seededRandom('cover');
+    const seen = new Set<number>();
+    for (let i = 0; i < 200; i += 1) seen.add(randInt(rng, 1, 3));
+    expect(seen).toEqual(new Set([1, 2, 3]));
+  });
+});
+
+describe('titleCase and humanize', () => {
+  it('capitalizes every dash- or space-separated word', () => {
+    expect(titleCase('story-boards')).toBe('Story Boards');
+    expect(titleCase('  draft   notes ')).toBe('Draft Notes');
+  });
+
+  it('humanize capitalizes only the first letter of a slug', () => {
+    expect(humanize('chapter-notes')).toBe('Chapter notes');
+    expect(humanize('draft_notes')).toBe('Draft notes');
+    expect(humanize('single')).toBe('Single');
+  });
+});
+
+describe('fullNameOf', () => {
+  it('joins first and last name', () => {
+    expect(fullNameOf({ firstName: 'Ada', lastName: 'Lovelace' })).toBe('Ada Lovelace');
+  });
+
+  it('falls back to the first name when last is missing or empty', () => {
+    expect(fullNameOf({ firstName: 'Ada' })).toBe('Ada');
+    expect(fullNameOf({ firstName: 'Ada', lastName: undefined })).toBe('Ada');
   });
 });
 

@@ -13,3 +13,6 @@ export const seededRandom = (seed: string): (() => number) => {
 
 export const pick = <T>(rng: () => number, items: readonly T[]): T =>
   items[Math.floor(rng() * items.length)]!;
+
+export const randInt = (rng: () => number, min: number, max: number): number =>
+  min + Math.floor(rng() * (max - min + 1));
