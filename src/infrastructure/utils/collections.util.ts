@@ -41,3 +41,18 @@ export const replaceWhere = <T>(
   predicate: (item: T) => boolean,
   updater: (item: T) => T,
 ): T[] => items.map((item) => (predicate(item) ? updater(item) : item));
+
+export const sortBy = <T>(
+  items: readonly T[],
+  key: (item: T) => string | number | boolean,
+  dir: 'asc' | 'desc' = 'asc',
+): T[] =>
+  [...items].sort((a, b) => {
+    const ka = key(a);
+    const kb = key(b);
+    const cmp =
+      typeof ka === 'string' || typeof kb === 'string'
+        ? String(ka).localeCompare(String(kb))
+        : Number(ka) - Number(kb);
+    return dir === 'asc' ? cmp : -cmp;
+  });

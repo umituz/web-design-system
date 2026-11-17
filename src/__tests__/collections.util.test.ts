@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { groupBy, groupByRecord, moveItem, replaceWhere, unique } from '../infrastructure/utils/collections.util';
+import { groupBy, groupByRecord, moveItem, replaceWhere, sortBy, unique } from '../infrastructure/utils/collections.util';
 
 describe('unique', () => {
   it('removes duplicate primitives', () => {
@@ -79,5 +79,18 @@ describe('replaceWhere', () => {
         (n) => n * 10,
       ),
     ).toEqual([1, 20, 3, 40]);
+  });
+});
+
+describe('sortBy', () => {
+  it('sorts by numeric key in both directions without mutating the input', () => {
+    const input = [{ n: 3 }, { n: 1 }, { n: 2 }];
+    expect(sortBy(input, (item) => item.n).map((item) => item.n)).toEqual([1, 2, 3]);
+    expect(sortBy(input, (item) => item.n, 'desc').map((item) => item.n)).toEqual([3, 2, 1]);
+    expect(input.map((item) => item.n)).toEqual([3, 1, 2]);
+  });
+
+  it('compares string keys with localeCompare', () => {
+    expect(sortBy(['b', 'a', 'c'], (item) => item)).toEqual(['a', 'b', 'c']);
   });
 });

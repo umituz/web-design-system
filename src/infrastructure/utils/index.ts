@@ -20,6 +20,8 @@ export {
   sum,
   sumBy,
   percentOf,
+  avg,
+  round,
   clampToRange,
   clampToNonNegative,
   clampToPositive,
@@ -34,9 +36,15 @@ export type { PageBounds } from './calculation.utils';
 export { hashSeed } from './hash.util';
 export { seededRandom, pick, randInt } from './random.util';
 
-export { unique, groupBy, groupByRecord, moveItem, replaceWhere } from './collections.util';
+export { unique, groupBy, groupByRecord, moveItem, replaceWhere, sortBy } from './collections.util';
 
 export { debounce } from './fn.util';
+
+export { toCsv, downloadCsv } from './csv.util';
+export type { CsvColumn } from './csv.util';
+
+export { tzOffsetMs, zonedParts, zonedDayStartUtc, todayInTz } from './zoned.util';
+export type { ZonedParts } from './zoned.util';
 
 export {
   createCachedValue,
@@ -63,6 +71,7 @@ export {
   addMonthsKey,
   daysUntilDayKey,
   daysBetweenKeys,
+  weekStartKey,
   isoDaysAgo,
   nowIso,
 } from './day-key.util';
@@ -117,7 +126,10 @@ export {
   formatDateRange,
   titleCase,
   humanize,
+  pluralize,
+  formatPercent,
 } from './format.util';
+export type { PercentFormatOptions } from './format.util';
 export type { FileSizeFormatOptions } from './format.util';
 
 export { getErrorMessage } from './error.util';

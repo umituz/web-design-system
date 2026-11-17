@@ -71,7 +71,7 @@ export const formatCompact = (value: number): string => {
 
 export const titleCase = (value: string): string =>
   value
-    .split(/[-\s]+/)
+    .split(/[-\s_]+/)
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
@@ -80,6 +80,24 @@ export const humanize = (value: string): string => {
   const spaced = value.replace(/[-_]+/g, ' ');
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 };
+
+export const pluralize = (count: number, one: string, many = `${one}s`): string =>
+  `${count} ${count === 1 ? one : many}`;
+
+export interface PercentFormatOptions {
+  fractionDigits?: number;
+}
+
+export const formatPercent = (
+  value: number,
+  locale: string,
+  options: PercentFormatOptions = {},
+): string =>
+  new Intl.NumberFormat(locale, {
+    style: 'percent',
+    minimumFractionDigits: options.fractionDigits ?? 0,
+    maximumFractionDigits: options.fractionDigits ?? 0,
+  }).format(value);
 
 export const formatDateRange = (
   start: string | Date,

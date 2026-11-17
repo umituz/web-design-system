@@ -45,6 +45,14 @@ export const daysUntilDayKey = (day: string): number => {
 export const daysBetweenKeys = (firstDay: string, secondDay: string): number =>
   Math.round((parseDayKey(secondDay).getTime() - parseDayKey(firstDay).getTime()) / 86400000);
 
+export const weekStartKey = (day: string): string => {
+  const [year = 0, month = 1, date = 1] = day.split('-').map(Number);
+  const utc = new Date(Date.UTC(year, month - 1, date));
+  const dow = utc.getUTCDay();
+  const back = dow === 0 ? 6 : dow - 1;
+  return new Date(Date.UTC(year, month - 1, date - back)).toISOString().slice(0, 10);
+};
+
 export const isoDaysAgo = (days: number, hour: number, minute: number): string => {
   const date = new Date();
   date.setDate(date.getDate() - days);

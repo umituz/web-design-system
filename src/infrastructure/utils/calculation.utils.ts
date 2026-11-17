@@ -9,6 +9,14 @@ export const sumBy = <T>(items: readonly T[], selector: (item: T) => number): nu
 export const percentOf = (part: number, whole: number): number =>
   whole === 0 ? 0 : Math.round((part / whole) * 100);
 
+export const avg = (values: readonly number[]): number =>
+  values.length === 0 ? 0 : sum(values) / values.length;
+
+export const round = (value: number, decimals = 0): number => {
+  const factor = 10 ** decimals;
+  return Math.round(value * factor) / factor;
+};
+
 export const clampToRange = (value: number, min: number, max: number): number => {
   if (Number.isNaN(value)) return min;
   if (min > max) [min, max] = [max, min];

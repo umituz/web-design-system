@@ -4,7 +4,8 @@ import { pick, randInt, seededRandom } from '../infrastructure/utils/random.util
 import { sum, sumBy } from '../infrastructure/utils/calculation.utils';
 import { percentOf } from '../infrastructure/utils/calculation.utils';
 import { daysBetweenKeys } from '../infrastructure/utils/day-key.util';
-import { formatDate, formatDateRange, fullNameOf, humanize, titleCase } from '../infrastructure/utils';
+import { formatDate, formatDateRange, formatPercent, fullNameOf, humanize, pluralize, titleCase } from '../infrastructure/utils';
+import { avg, round, weekStartKey } from '../infrastructure/utils';
 
 describe('seededRandom', () => {
   it('returns the same sequence for the same seed', () => {
@@ -69,15 +70,45 @@ describe('randInt', () => {
 });
 
 describe('titleCase and humanize', () => {
-  it('capitalizes every dash- or space-separated word', () => {
+  it('capitalizes every dash-, space- or underscore-separated word', () => {
     expect(titleCase('story-boards')).toBe('Story Boards');
     expect(titleCase('  draft   notes ')).toBe('Draft Notes');
+    expect(titleCase('lesson_plan')).toBe('Lesson Plan');
   });
 
   it('humanize capitalizes only the first letter of a slug', () => {
     expect(humanize('chapter-notes')).toBe('Chapter notes');
     expect(humanize('draft_notes')).toBe('Draft notes');
     expect(humanize('single')).toBe('Single');
+  });
+});
+
+describe('pluralize, formatPercent, avg, round, weekStartKey', () => {
+  it('pluralizes count words', () => {
+    expect(pluralize(1, 'seat')).toBe('1 seat');
+    expect(pluralize(3, 'seat')).toBe('3 seats');
+    expect(pluralize(0, 'person', 'people')).toBe('0 people');
+  });
+
+  it('formats percent with fraction digits', () => {
+    expect(formatPercent(0.25, 'en-US')).toBe('25%');
+    expect(formatPercent(0.2553, 'en-US', { fractionDigits: 1 })).toBe('25.5%');
+  });
+
+  it('averages and guards empty input', () => {
+    expect(avg([2, 4, 6])).toBe(4);
+    expect(avg([])).toBe(0);
+  });
+
+  it('rounds to decimals', () => {
+    expect(round(2.567, 2)).toBe(2.57);
+    expect(round(2.567)).toBe(3);
+  });
+
+  it('returns the monday of the week', () => {
+    expect(weekStartKey('2026-03-11')).toBe('2026-03-09');
+    expect(weekStartKey('2026-03-09')).toBe('2026-03-09');
+    expect(weekStartKey('2026-03-15')).toBe('2026-03-09');
   });
 });
 
