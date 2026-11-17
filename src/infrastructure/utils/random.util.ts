@@ -16,3 +16,17 @@ export const pick = <T>(rng: () => number, items: readonly T[]): T =>
 
 export const randInt = (rng: () => number, min: number, max: number): number =>
   min + Math.floor(rng() * (max - min + 1));
+
+export const pickWeighted = <T extends string>(
+  rng: () => number,
+  weights: Partial<Record<T, number>>,
+): T => {
+  const entries = Object.entries(weights) as Array<[T, number]>;
+  const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
+  let roll = rng() * total;
+  for (const [key, weight] of entries) {
+    roll -= weight;
+    if (roll <= 0) return key;
+  }
+  return entries[entries.length - 1]![0];
+};

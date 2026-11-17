@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { hashSeed } from '../infrastructure/utils/hash.util';
-import { pick, randInt, seededRandom } from '../infrastructure/utils/random.util';
+import { pick, pickWeighted, randInt, seededRandom } from '../infrastructure/utils/random.util';
 import { sum, sumBy } from '../infrastructure/utils/calculation.utils';
 import { percentOf } from '../infrastructure/utils/calculation.utils';
 import { daysBetweenKeys } from '../infrastructure/utils/day-key.util';
@@ -66,6 +66,28 @@ describe('randInt', () => {
     const seen = new Set<number>();
     for (let i = 0; i < 200; i += 1) seen.add(randInt(rng, 1, 3));
     expect(seen).toEqual(new Set([1, 2, 3]));
+  });
+});
+
+describe('pickWeighted', () => {
+  it('returns a key of the weights record', () => {
+    const rng = seededRandom('weighted');
+    for (let i = 0; i < 30; i += 1) {
+      expect(['a', 'b', 'c']).toContain(pickWeighted(rng, { a: 2, b: 3, c: 5 }));
+    }
+  });
+
+  it('is deterministic for a seed', () => {
+    expect(pickWeighted(seededRandom('w'), { a: 1, b: 9 })).toBe(pickWeighted(seededRandom('w'), { a: 1, b: 9 }));
+  });
+
+  it('scales with weight', () => {
+    const rng = seededRandom('skew');
+    let heavy = 0;
+    for (let i = 0; i < 400; i += 1) {
+      if (pickWeighted(rng, { light: 1, heavy: 9 }) === 'heavy') heavy += 1;
+    }
+    expect(heavy).toBeGreaterThan(280);
   });
 });
 

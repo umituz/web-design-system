@@ -34,7 +34,7 @@ export {
 export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
-export { seededRandom, pick, randInt } from './random.util';
+export { seededRandom, pick, pickWeighted, randInt } from './random.util';
 
 export { unique, groupBy, groupByRecord, moveItem, replaceWhere, sortBy } from './collections.util';
 
