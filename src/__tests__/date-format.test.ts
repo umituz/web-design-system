@@ -101,6 +101,10 @@ describe('preset overrides', () => {
     expect(formatDate('2026-11-10', 'long', { weekday: 'short' })).toBe('Tue, November 10, 2026');
   });
 
+  it('narrows the weekday for calendar strip labels', () => {
+    expect(formatDate('2026-11-10', 'medium', { weekday: 'narrow', day: 'none', month: 'none', year: 'none' })).toBe('T');
+  });
+
   it('lengthens the month of the monthYear style', () => {
     expect(formatDate('2026-01-15', 'monthYear', { month: 'long' })).toBe('January 2026');
   });

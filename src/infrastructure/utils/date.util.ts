@@ -5,7 +5,7 @@ export interface DateFormatOptions {
   order?: 'dmy' | 'mdy' | 'ymd';
   separator?: string;
   invalidOutput?: string;
-  weekday?: 'short' | 'long' | 'none';
+  weekday?: 'short' | 'long' | 'narrow' | 'none';
   month?: 'short' | 'long' | 'none';
   day?: 'numeric' | '2-digit' | 'none';
   year?: 'numeric' | '2-digit' | 'none';
