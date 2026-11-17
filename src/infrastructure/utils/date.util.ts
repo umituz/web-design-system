@@ -7,7 +7,7 @@ export interface DateFormatOptions {
   invalidOutput?: string;
   weekday?: 'short' | 'long' | 'none';
   month?: 'short' | 'long' | 'none';
-  day?: 'numeric' | '2-digit';
+  day?: 'numeric' | '2-digit' | 'none';
   year?: 'numeric' | '2-digit' | 'none';
   timeZone?: string;
 }
@@ -67,7 +67,9 @@ const resolveOptions = (style: Exclude<DateStyle, 'numeric'>, options: DateForma
   } else if (options.month !== undefined) {
     resolved.month = options.month;
   }
-  if (options.day !== undefined) {
+  if (options.day === 'none') {
+    delete resolved.day;
+  } else if (options.day !== undefined) {
     resolved.day = options.day;
   }
   if (options.year === 'none') {

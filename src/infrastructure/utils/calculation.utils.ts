@@ -1,5 +1,11 @@
 
 
+export const sum = (values: readonly number[]): number =>
+  values.reduce((total, value) => total + value, 0);
+
+export const sumBy = <T>(items: readonly T[], selector: (item: T) => number): number =>
+  items.reduce((total, item) => total + selector(item), 0);
+
 export const clampToRange = (value: number, min: number, max: number): number => {
   if (Number.isNaN(value)) return min;
   if (min > max) [min, max] = [max, min];

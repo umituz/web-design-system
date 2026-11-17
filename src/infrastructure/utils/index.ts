@@ -17,6 +17,8 @@ export {
 } from './responsive.utils';
 
 export {
+  sum,
+  sumBy,
   clampToRange,
   clampToNonNegative,
   clampToPositive,
@@ -29,6 +31,7 @@ export {
 export type { PageBounds } from './calculation.utils';
 
 export { hashSeed } from './hash.util';
+export { seededRandom, pick } from './random.util';
 
 export {
   createCachedValue,
@@ -99,7 +102,7 @@ export type { WeekStartsOn, DateInterval, Timestamped } from './date-math.util';
 
 export { formatCount } from './format.util';
 export type { CountFormatOptions } from './format.util';
-export { formatFileSize, truncateText, toSlug, formatCompact, formatBadgeCount } from './format.util';
+export { formatFileSize, truncateText, toSlug, formatCompact, formatBadgeCount, formatDateRange } from './format.util';
 export type { FileSizeFormatOptions } from './format.util';
 
 export { getErrorMessage } from './error.util';

@@ -1,3 +1,6 @@
+import type { DateStyle } from './date.util';
+import { formatDate } from './date.util';
+
 export interface CountFormatOptions {
   minimumFractionDigits?: number;
   maximumFractionDigits?: number;
@@ -65,6 +68,13 @@ export const formatCompact = (value: number): string => {
   }
   return `${rounded}${COMPACT_SUFFIXES[tier]}`;
 };
+
+export const formatDateRange = (
+  start: string | Date,
+  end: string | Date,
+  locale = 'en',
+  style: DateStyle = 'medium',
+): string => `${formatDate(start, style, { locale })} – ${formatDate(end, style, { locale })}`;
 
 export const formatBadgeCount = (count: number, cap = 9): string =>
   count > cap ? `${cap}+` : String(count);
