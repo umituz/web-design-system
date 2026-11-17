@@ -46,6 +46,9 @@ export type { CsvColumn } from './csv.util';
 export { tzOffsetMs, zonedParts, zonedDayStartUtc, todayInTz } from './zoned.util';
 export type { ZonedParts } from './zoned.util';
 
+export { formatTimeRange, overlaps } from './interval.util';
+export type { TimeRangeFormatOptions } from './interval.util';
+
 export {
   createCachedValue,
   createMemoryCache,
@@ -72,9 +75,12 @@ export {
   daysUntilDayKey,
   daysBetweenKeys,
   weekStartKey,
+  dateKeyParts,
+  monthGridWeekKeys,
   isoDaysAgo,
   nowIso,
 } from './day-key.util';
+export type { DayKeyParts } from './day-key.util';
 
 export {
   getStorageItem,
@@ -128,6 +134,8 @@ export {
   humanize,
   pluralize,
   formatPercent,
+  monthName,
+  weekdayNames,
 } from './format.util';
 export type { PercentFormatOptions } from './format.util';
 export type { FileSizeFormatOptions } from './format.util';

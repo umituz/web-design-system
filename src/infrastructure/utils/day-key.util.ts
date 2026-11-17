@@ -53,6 +53,35 @@ export const weekStartKey = (day: string): string => {
   return new Date(Date.UTC(year, month - 1, date - back)).toISOString().slice(0, 10);
 };
 
+export interface DayKeyParts {
+  year: number;
+  month: number;
+  day: number;
+}
+
+export const dateKeyParts = (day: string): DayKeyParts => {
+  const [year = 0, month = 1, date = 1] = day.split('-').map(Number);
+  return { year, month, day: date };
+};
+
+export const monthGridWeekKeys = (year: number, month1: number): string[][] => {
+  const first = `${year}-${String(month1).padStart(2, '0')}-01`;
+  let cursor = weekStartKey(first);
+  const weeks: string[][] = [];
+  for (let w = 0; w < 6; w++) {
+    const days: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      days.push(cursor);
+      cursor = addDaysKey(cursor, 1);
+    }
+    weeks.push(days);
+    const { year: yy, month: mm } = dateKeyParts(cursor);
+    if (mm > month1 && w >= 4) break;
+    if (yy > year) break;
+  }
+  return weeks;
+};
+
 export const isoDaysAgo = (days: number, hour: number, minute: number): string => {
   const date = new Date();
   date.setDate(date.getDate() - days);

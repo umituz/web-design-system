@@ -99,6 +99,23 @@ export const formatPercent = (
     maximumFractionDigits: options.fractionDigits ?? 0,
   }).format(value);
 
+export const monthName = (
+  month1: number,
+  locale = 'en-US',
+  style: 'long' | 'short' = 'long',
+): string =>
+  new Intl.DateTimeFormat(locale, { month: style, timeZone: 'UTC' }).format(
+    new Date(Date.UTC(2024, month1 - 1, 15)),
+  );
+
+export const weekdayNames = (locale = 'en-US', startMonday = true): string[] => {
+  const formatter = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' });
+  const names = Array.from({ length: 7 }, (_, i) => formatter.format(new Date(Date.UTC(2024, 0, 7 + i))));
+  if (!startMonday) return names;
+  const [sunday = ''] = names;
+  return [...names.slice(1), sunday];
+};
+
 export const formatDateRange = (
   start: string | Date,
   end: string | Date,
