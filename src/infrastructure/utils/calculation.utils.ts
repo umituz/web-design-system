@@ -6,6 +6,9 @@ export const sum = (values: readonly number[]): number =>
 export const sumBy = <T>(items: readonly T[], selector: (item: T) => number): number =>
   items.reduce((total, item) => total + selector(item), 0);
 
+export const percentOf = (part: number, whole: number): number =>
+  whole === 0 ? 0 : Math.round((part / whole) * 100);
+
 export const clampToRange = (value: number, min: number, max: number): number => {
   if (Number.isNaN(value)) return min;
   if (min > max) [min, max] = [max, min];

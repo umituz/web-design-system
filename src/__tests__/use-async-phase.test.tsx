@@ -1,6 +1,8 @@
-import { act, renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { act, cleanup, renderHook } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useAsyncPhase } from '../presentation/hooks/useAsyncPhase';
+
+afterEach(cleanup);
 
 describe('useAsyncPhase', () => {
   it('starts idle and walks loading → idle on success', async () => {
@@ -71,12 +73,16 @@ describe('useAsyncPhase', () => {
     expect(result.current.phase).toBe('idle');
   });
 
-  it('starts the task immediately', () => {
+  it('starts the task immediately', async () => {
     const { result } = renderHook(() => useAsyncPhase());
     const task = vi.fn(async () => 'late');
-    void act(() => {
-      void result.current.run(task);
+    let pending!: Promise<string | undefined>;
+    act(() => {
+      pending = result.current.run(task);
     });
     expect(task).toHaveBeenCalled();
+    await act(async () => {
+      await pending;
+    });
   });
 });

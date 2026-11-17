@@ -19,6 +19,7 @@ export {
 export {
   sum,
   sumBy,
+  percentOf,
   clampToRange,
   clampToNonNegative,
   clampToPositive,
@@ -57,6 +58,7 @@ export {
   addDaysKey,
   addMonthsKey,
   daysUntilDayKey,
+  daysBetweenKeys,
   isoDaysAgo,
   nowIso,
 } from './day-key.util';

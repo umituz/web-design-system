@@ -42,6 +42,9 @@ export const daysUntilDayKey = (day: string): number => {
   return Math.round((target - today) / 86400000);
 };
 
+export const daysBetweenKeys = (firstDay: string, secondDay: string): number =>
+  Math.round((parseDayKey(secondDay).getTime() - parseDayKey(firstDay).getTime()) / 86400000);
+
 export const isoDaysAgo = (days: number, hour: number, minute: number): string => {
   const date = new Date();
   date.setDate(date.getDate() - days);

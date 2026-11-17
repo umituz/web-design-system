@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { hashSeed } from '../infrastructure/utils/hash.util';
 import { pick, seededRandom } from '../infrastructure/utils/random.util';
 import { sum, sumBy } from '../infrastructure/utils/calculation.utils';
+import { percentOf } from '../infrastructure/utils/calculation.utils';
+import { daysBetweenKeys } from '../infrastructure/utils/day-key.util';
 import { formatDate, formatDateRange } from '../infrastructure/utils';
 
 describe('seededRandom', () => {
@@ -53,6 +55,20 @@ describe('sum and sumBy', () => {
   it('adds by selector', () => {
     expect(sumBy([{ v: 2 }, { v: 3 }], (item) => item.v)).toBe(5);
     expect(sumBy([] as Array<{ v: number }>, (item) => item.v)).toBe(0);
+  });
+});
+
+describe('percentOf and daysBetweenKeys', () => {
+  it('rounds the ratio and guards zero whole', () => {
+    expect(percentOf(1, 4)).toBe(25);
+    expect(percentOf(2, 3)).toBe(67);
+    expect(percentOf(0, 0)).toBe(0);
+  });
+
+  it('counts signed days between two day keys', () => {
+    expect(daysBetweenKeys('2026-03-01', '2026-03-08')).toBe(7);
+    expect(daysBetweenKeys('2026-03-08', '2026-03-01')).toBe(-7);
+    expect(daysBetweenKeys('2026-02-28', '2026-03-01')).toBe(1);
   });
 });
 
