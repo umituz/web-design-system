@@ -28,3 +28,9 @@ export type { SettingsLayoutProps, SettingsNavItem } from './SettingsLayout';
 
 export { CrudPageTemplate } from './CrudPageTemplate';
 export type { CrudPageTemplateProps } from './CrudPageTemplate';
+
+export { NotFoundPage, ErrorActions } from './NotFoundPage';
+export type { NotFoundPageProps, NotFoundAction } from './NotFoundPage';
+
+export { RouteErrorPage, describeRouteError } from './RouteErrorPage';
+export type { RouteErrorPageProps } from './RouteErrorPage';
