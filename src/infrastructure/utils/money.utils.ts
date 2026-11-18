@@ -1,4 +1,19 @@
 
+/* Invalid-currency fallback policy (6.39.0): a malformed currency code
+   (anything but three ASCII letters after trim+upper — '', 'TR', 'TOOLONG',
+   'US$') must never throw from Intl.NumberFormat, and it must never be
+   "repaired" into a real currency either (silently rendering ₺ for 'tl'
+   misrepresents money). It coerces to ISO 4217 'XXX' — the standard code
+   for "no currency" — so the output stays honest ("XXX 5.00") and render
+   stays alive when domain data carries a bad code. Well-formed but unknown
+   three-letter codes were already safe: Intl renders them verbatim. */
+const ISO_CURRENCY = /^[A-Z]{3}$/;
+
+export function safeCurrencyCode(currency: string): string {
+  const upper = currency.trim().toUpperCase();
+  return ISO_CURRENCY.test(upper) ? upper : 'XXX';
+}
+
 const FRACTION_DIGITS: Record<string, number> = {
   BHD: 3,
   IQD: 3,
@@ -30,21 +45,27 @@ export function currencyFractionDigits(currency: string): number {
 }
 
 export function formatMoney(amountMinor: number, currency: string, locale = 'en-US'): string {
-  const digits = currencyFractionDigits(currency);
+  const upper = safeCurrencyCode(currency);
+  const digits = currencyFractionDigits(upper);
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency,
+    currency: upper,
+    // XXX renders as the opaque ¤ sign otherwise — the code itself is the
+    // honest symbol for "no currency".
+    ...(upper === 'XXX' ? { currencyDisplay: 'code' as const } : {}),
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   }).format(amountMinor / 10 ** digits);
 }
 
 export function formatMoneyCompact(amountMinor: number, currency: string, locale = 'en-US'): string {
-  const digits = currencyFractionDigits(currency);
+  const upper = safeCurrencyCode(currency);
+  const digits = currencyFractionDigits(upper);
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency,
+    currency: upper,
     notation: 'compact',
+    ...(upper === 'XXX' ? { currencyDisplay: 'code' as const } : {}),
     maximumFractionDigits: 1,
   }).format(amountMinor / 10 ** digits);
 }
@@ -220,10 +241,13 @@ export function formatCurrency(
   currency: string,
   options: FormatCurrencyOptions = {},
 ): string {
-  const upper = currency.toUpperCase();
+  const upper = safeCurrencyCode(currency);
   const locale = options.locale ?? CURRENCY_LOCALES[upper] ?? 'en-US';
+  // Coerced codes default to code display ("XXX 5.00") — Intl would render
+  // the generic ¤ sign otherwise; an explicit caller choice always wins.
+  const display = options.currencyDisplay ?? (upper === 'XXX' ? 'code' : undefined);
   const { min, max } = resolveFractionRange(amount, upper, options);
-  const key = `${locale}|${upper}|${options.compact ? 'compact' : 'standard'}|${options.signed ? 'signed' : 'auto'}|${options.currencyDisplay ?? 'default'}|${min}|${max}`;
+  const key = `${locale}|${upper}|${options.compact ? 'compact' : 'standard'}|${options.signed ? 'signed' : 'auto'}|${display ?? 'default'}|${min}|${max}`;
   let formatter = currencyFormatterCache.get(key);
   if (!formatter) {
     formatter = new Intl.NumberFormat(locale, {
@@ -233,9 +257,7 @@ export function formatCurrency(
       minimumFractionDigits: min,
       maximumFractionDigits: max,
       signDisplay: options.signed ? 'always' : 'auto',
-      ...(options.currencyDisplay && options.currencyDisplay !== 'none'
-        ? { currencyDisplay: options.currencyDisplay }
-        : {}),
+      ...(display && display !== 'none' ? { currencyDisplay: display } : {}),
     });
     currencyFormatterCache.set(key, formatter);
   }

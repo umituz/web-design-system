@@ -146,6 +146,7 @@ export { uniqueId, randomUUID, isValidUUID } from './id.util';
 
 export {
   currencyFractionDigits,
+  safeCurrencyCode,
   formatMoney,
   formatMoneyCompact,
   toMinor,

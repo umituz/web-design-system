@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   formatCurrency,
   formatCurrencyCompact,
+  formatMoney,
+  safeCurrencyCode,
   CURRENCY_LOCALES,
 } from '../infrastructure/utils';
 
@@ -84,5 +86,36 @@ describe('CURRENCY_LOCALES', () => {
     expect(CURRENCY_LOCALES.USD).toBe('en-US');
     expect(CURRENCY_LOCALES.TRY).toBe('tr-TR');
     expect(CURRENCY_LOCALES.AED).toBe('en-AE');
+  });
+});
+
+describe('invalid-currency fallback (6.39.0)', () => {
+  it('coerces malformed codes to ISO 4217 XXX, never throws', () => {
+    // A bad code in domain data must not crash the render tree.
+    expect(() => formatCurrency(5, '')).not.toThrow();
+    expect(() => formatCurrency(5, 'TR')).not.toThrow();
+    expect(() => formatCurrency(5, 'TOOLONG')).not.toThrow();
+    expect(() => formatCurrency(5, 'US$')).not.toThrow();
+    expect(() => formatMoney(500, '   ')).not.toThrow();
+    // XXX defaults to code display ("XXX 5.00", NBSP-separated) instead of
+    // Intl's opaque ¤ sign.
+    expect(formatCurrency(5, 'TR')).toBe('XXX 5.00');
+    expect(formatMoney(500, 'TR')).toBe('XXX 5.00');
+  });
+
+  it('normalizes case and surrounding whitespace instead of falling back', () => {
+    // 'try'/' try ' are well-formed TRY — repairing FORM is safe; guessing
+    // currency IDENTITY from a malformed code is not (that stays XXX).
+    expect(safeCurrencyCode(' try ')).toBe('TRY');
+    expect(formatCurrency(1234.5, 'try')).toContain('1.234,50');
+  });
+
+  it('renders well-formed unknown three-letter codes verbatim (no fallback)', () => {
+    expect(safeCurrencyCode('XYZ')).toBe('XYZ');
+    expect(formatCurrency(5, 'XYZ')).toBe('XYZ 5.00');
+  });
+
+  it('keeps showCode consistent with the coerced code', () => {
+    expect(formatCurrency(5, 'TR', { showCode: true })).toBe('XXX 5.00 XXX');
   });
 });
