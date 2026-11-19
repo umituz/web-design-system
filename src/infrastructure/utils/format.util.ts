@@ -55,6 +55,32 @@ export const toSlug = (text: string): string =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+const FOLD_SPECIALS: Record<string, string> = {
+  ı: 'i',
+  ø: 'o',
+  đ: 'd',
+  ł: 'l',
+  ß: 'ss',
+  æ: 'ae',
+  œ: 'oe',
+  þ: 'th',
+};
+
+const ARABIC_HARAKAT = /[\u064B-\u065F\u0670]/g;
+const ARABIC_ALEFS = /[إأآٱ]/g;
+
+export const foldForSearch = (value: string): string =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[ıøđłßæœþ]/g, (ch) => FOLD_SPECIALS[ch] ?? ch)
+    .replace(ARABIC_HARAKAT, '')
+    .replace(ARABIC_ALEFS, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .normalize('NFC');
+
 const COMPACT_SUFFIXES = ['K', 'M', 'B'] as const;
 
 export const formatCompact = (value: number): string => {

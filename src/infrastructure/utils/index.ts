@@ -127,6 +127,7 @@ export {
   formatFileSize,
   truncateText,
   toSlug,
+  foldForSearch,
   formatCompact,
   formatBadgeCount,
   formatDateRange,
