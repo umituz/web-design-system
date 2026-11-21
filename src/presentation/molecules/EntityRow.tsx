@@ -66,7 +66,23 @@ export const EntityRow = forwardRef<HTMLLIElement, EntityRowProps>(
     }
 
     return (
-      <li ref={ref} className={rowClasses} onClick={onClick}>
+      <li
+        ref={ref}
+        className={rowClasses}
+        onClick={onClick}
+        role={onClick ? 'button' : undefined}
+        tabIndex={onClick ? 0 : undefined}
+        onKeyDown={
+          onClick
+            ? (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onClick();
+                }
+              }
+            : undefined
+        }
+      >
         {content}
       </li>
     );

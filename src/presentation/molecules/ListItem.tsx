@@ -128,6 +128,16 @@ export const ListItem = forwardRef<HTMLElement, ListItemProps>(
         id={id}
         role={onClick && !disabled ? 'button' : undefined}
         tabIndex={onClick && !disabled ? 0 : undefined}
+        onKeyDown={
+          onClick && !disabled
+            ? (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  event.currentTarget.click();
+                }
+              }
+            : undefined
+        }
       >
         {content}
       </div>

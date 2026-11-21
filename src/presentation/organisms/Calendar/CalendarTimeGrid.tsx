@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { CSSProperties, MouseEvent, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import {
   DEFAULT_CALENDAR_LABELS,
   type CalendarItem,
@@ -61,6 +61,21 @@ export const CalendarTimeGrid = ({
 
   const positionOf = (minute: number): string =>
     `${((minute - dayStartMin) / total) * 100}%`;
+
+  const anchorMinute = () => {
+    const now = new Date();
+    const raw = now.getHours() * 60 + now.getMinutes();
+    const clamped = Math.min(Math.max(raw, dayStartMin), dayEndMin - SLOT_QUANTUM_MIN);
+    return Math.floor(clamped / SLOT_QUANTUM_MIN) * SLOT_QUANTUM_MIN;
+  };
+
+  const handleLaneKeyDown = (dayKey: string, event: KeyboardEvent<HTMLDivElement>) => {
+    if (!onSlotClick) return;
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    onSlotClick(dayKey, anchorMinute());
+  };
 
   const handleLaneClick = (dayKey: string, event: MouseEvent<HTMLDivElement>) => {
     if (!onSlotClick) return;
@@ -133,6 +148,8 @@ export const CalendarTimeGrid = ({
               role="grid"
               aria-label={dayKey}
               onClick={(event) => handleLaneClick(dayKey, event)}
+              tabIndex={0}
+              onKeyDown={(event) => handleLaneKeyDown(dayKey, event)}
             >
               {hours.map((minute) => (
                 <div

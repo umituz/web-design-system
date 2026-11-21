@@ -5,6 +5,7 @@ import { cn } from '../../infrastructure/utils';
 import { Dialog, DialogContent, DialogTitle } from './Dialog';
 
 export interface LightboxProps {
+  zoomLabel?: string;
   open: boolean;
   onClose: () => void;
   alt: string;
@@ -14,7 +15,7 @@ export interface LightboxProps {
   className?: string;
 }
 
-export function Lightbox({ open, onClose, alt, caption, zoomable = true, children, className }: LightboxProps) {
+export function Lightbox({ open, onClose, alt, caption, zoomable = true, zoomLabel = 'Toggle zoom', children, className }: LightboxProps) {
   const [zoom, setZoom] = useState(false);
   return (
     <Dialog
@@ -30,6 +31,19 @@ export function Lightbox({ open, onClose, alt, caption, zoomable = true, childre
         <DialogTitle className="sr-only">{alt}</DialogTitle>
         <div
           onClick={zoomable ? () => setZoom((z) => !z) : undefined}
+          onKeyDown={
+            zoomable
+              ? (event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setZoom((z) => !z);
+                  }
+                }
+              : undefined
+          }
+          role={zoomable ? 'button' : undefined}
+          tabIndex={zoomable ? 0 : undefined}
+          aria-label={zoomable ? zoomLabel : undefined}
           className={cn(zoomable && (zoom ? 'cursor-zoom-out' : 'cursor-zoom-in'))}
           style={{ transform: zoom ? 'scale(1.6)' : undefined, transition: 'transform 0.2s' }}
         >

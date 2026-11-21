@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { CSSProperties, MouseEvent, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import {
   DEFAULT_CALENDAR_LABELS,
   type CalendarItem,
@@ -73,6 +73,21 @@ export const CalendarResourceTimeline = ({
   const fractionOf = (minute: number): number =>
     Math.max((minute - dayStartMin) / total, 0);
 
+  const anchorMinute = () => {
+    const now = new Date();
+    const raw = now.getHours() * 60 + now.getMinutes();
+    const clamped = Math.min(Math.max(raw, dayStartMin), dayEndMin - SLOT_QUANTUM_MIN);
+    return Math.floor(clamped / SLOT_QUANTUM_MIN) * SLOT_QUANTUM_MIN;
+  };
+
+  const handleLaneKeyDown = (resourceId: string, event: KeyboardEvent<HTMLDivElement>) => {
+    if (!onSlotClick) return;
+    if (event.target !== event.currentTarget) return;
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    onSlotClick(resourceId, anchorMinute());
+  };
+
   const handleLaneClick = (resourceId: string, event: MouseEvent<HTMLDivElement>) => {
     if (!onSlotClick) return;
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -107,7 +122,11 @@ export const CalendarResourceTimeline = ({
                   </div>
                   <div
                     className="ds-cal-res-lane"
+                    role="grid"
+                    aria-label={typeof resource.label === 'string' ? resource.label : resource.id}
                     onClick={(event) => handleLaneClick(resource.id, event)}
+                    tabIndex={0}
+                    onKeyDown={(event) => handleLaneKeyDown(resource.id, event)}
                   >
                     {hours.map((minute) => (
                       <span className="ds-cal-res-hour" style={axisStyle(minute)} key={minute} />
