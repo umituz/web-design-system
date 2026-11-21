@@ -80,6 +80,14 @@ export function minutesToLabel(minutes: number): string {
   return `${pad(Math.floor(normalized / 60))}:${pad(normalized % 60)}`;
 }
 
+export function timeToMinutes(timeStr: string): number {
+  const parts = timeStr.trim().split(':');
+  const h = Number(parts[0] ?? 0);
+  const m = Number(parts[1] ?? 0);
+  if (Number.isNaN(h) || Number.isNaN(m)) return 0;
+  return Math.min(Math.max(h * 60 + m, 0), DAY_MINUTES - 1);
+}
+
 export interface CalendarSpan {
   startMin: number;
   endMin: number;

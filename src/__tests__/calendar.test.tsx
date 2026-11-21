@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Calendar } from '../presentation/organisms/Calendar/Calendar';
 import { CalendarMonth } from '../presentation/organisms/Calendar/CalendarMonth';
 import { CalendarAgenda } from '../presentation/organisms/Calendar/CalendarAgenda';
+import { timeToMinutes } from '../presentation/organisms/Calendar/layout';
 import type { CalendarItem } from '../presentation/organisms/Calendar/calendar.types';
 import { todayKey } from '../infrastructure/utils/day-key.util';
 
@@ -215,5 +216,13 @@ describe('CalendarAgenda', () => {
   it('falls back to the default empty label', () => {
     render(<CalendarAgenda items={[]} anchorKey="2026-03-10" />);
     expect(screen.getByText('Nothing scheduled')).toBeTruthy();
+  });
+
+  it('parses time strings to minute numbers with bounds', () => {
+    expect(timeToMinutes('00:00')).toBe(0);
+    expect(timeToMinutes('08:30')).toBe(510);
+    expect(timeToMinutes('14:45')).toBe(885);
+    expect(timeToMinutes('23:59')).toBe(1439);
+    expect(timeToMinutes('invalid')).toBe(0);
   });
 });

@@ -61,7 +61,7 @@ export type { CachedValue, MemoryCache, MemoryCacheOptions } from './cache.util'
 
 export { initialsOf, nameHue, colorForName, NAME_COLOR_PALETTE, fullNameOf, mentionsAny } from './name.util';
 
-export { timeAgo, formatCountdown, formatDuration, formatUntil, formatClock } from './time.util';
+export { timeAgo, formatCountdown, formatDuration, formatUntil, formatClock, timeToMinutes } from './time.util';
 export type { TimeAgoOptions, FormatUntilOptions } from './time.util';
 
 export {
