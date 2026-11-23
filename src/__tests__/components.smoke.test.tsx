@@ -38,6 +38,7 @@ import { Checklist } from '../presentation/organisms/Checklist';
 import { FormModal } from '../presentation/organisms/FormModal';
 import { ConfirmDialog } from '../presentation/organisms/ConfirmDialog';
 import { StatusBadge } from '../presentation/organisms/StatusBadge';
+import { HintBubble } from '../presentation/molecules/HintBubble';
 import { Lightbox } from '../presentation/organisms/Lightbox';
 import { StatPill } from '../presentation/molecules/StatPill';
 import { BatteryPill } from '../presentation/atoms/BatteryPill';
@@ -1820,5 +1821,51 @@ describe('Table compound colSpan (4.29.4)', () => {
     expect(group.getAttribute('colspan')).toBe('2');
     expect(group.getAttribute('scope')).toBe('colgroup');
     expect(screen.getByText('Editor')).toBeTruthy();
+  });
+});
+
+describe('HintBubble (6.43)', () => {
+  it('renders as a polite live region with its heading linked', () => {
+    render(
+      <HintBubble title="Connect a network" body="Links feed the analytics." stepLabel="1 of 3" />,
+    );
+    const bubble = screen.getByRole('status');
+    expect(bubble.getAttribute('aria-live')).toBe('polite');
+    expect(bubble.textContent).toContain('Connect a network');
+    expect(bubble.textContent).toContain('1 of 3');
+  });
+
+  it('dismisses on Escape only while focus is inside the bubble', () => {
+    const onDismiss = vi.fn();
+    render(
+      <HintBubble title="Tip" onDismiss={onDismiss} />,
+    );
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onDismiss).not.toHaveBeenCalled();
+    // Focus lands on the in-bubble dismiss button — a plain div cannot hold
+    // focus, so the contained-Escape contract keys off real controls.
+    const dismiss = screen.getByRole('button', { name: 'Dismiss' });
+    act(() => {
+      dismiss.focus();
+    });
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders action and dismiss controls as ordinary buttons', () => {
+    const onClick = vi.fn();
+    const onDismiss = vi.fn();
+    render(
+      <HintBubble
+        title="Tour"
+        action={{ label: 'Next stop', onClick }}
+        onDismiss={onDismiss}
+        dismissLabel="Skip tour"
+      />,
+    );
+    fireEvent.click(screen.getByText('Next stop'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByText('Skip tour'));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 });

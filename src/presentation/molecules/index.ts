@@ -111,3 +111,6 @@ export type { OfflineBannerProps } from './OfflineBanner';
 
 export { LoadingOverlay } from './LoadingOverlay';
 export type { LoadingOverlayProps } from './LoadingOverlay';
+
+export { HintBubble } from './HintBubble';
+export type { HintBubbleProps, HintBubbleAction } from './HintBubble';
