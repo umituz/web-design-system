@@ -38,7 +38,8 @@ export { seededRandom, pick, pickWeighted, randInt } from './random.util';
 
 export { unique, groupBy, groupByRecord, moveItem, replaceWhere, sortBy } from './collections.util';
 
-export { debounce } from './fn.util';
+export { debounce, parseNumber } from './fn.util';
+export type { ParseNumberOptions } from './fn.util';
 
 export { toCsv, downloadCsv } from './csv.util';
 export type { CsvColumn } from './csv.util';

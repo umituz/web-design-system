@@ -5,6 +5,8 @@ export {
   DEFAULT_COLOR_SCHEME,
   DEFAULT_ORIENTATION,
   DEFAULT_DELAY_MS,
+  EMPTY_ARRAY,
+  EMPTY_OBJECT,
 } from './component.constants';
 
 export {
