@@ -11,6 +11,8 @@ export * from './presentation/providers';
 
 export type { ButtonProps } from './presentation/atoms/Button';
 export { Button, buttonVariants } from './presentation/atoms/Button';
+export type { PressableProps } from './presentation/atoms/Pressable';
+export { Pressable } from './presentation/atoms/Pressable';
 export type { StackProps, StackGap, StackAlign, StackJustify } from './presentation/atoms/Stack';
 export { Stack } from './presentation/atoms/Stack';
 export type { RowProps, RowGap, RowAlign, RowJustify } from './presentation/atoms/Row';

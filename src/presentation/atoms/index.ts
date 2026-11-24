@@ -1,6 +1,9 @@
 export { Button, buttonVariants } from './Button';
 export type { ButtonProps } from './Button';
 
+export { Pressable } from './Pressable';
+export type { PressableProps } from './Pressable';
+
 export { Badge } from './Badge';
 export type { BadgeProps, BadgeVariant } from './Badge';
 
