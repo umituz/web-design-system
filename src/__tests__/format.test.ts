@@ -7,6 +7,8 @@ import {
   formatDuration,
   formatCompact,
   formatBadgeCount,
+  getNumberFormatter,
+  getDateTimeFormatter,
 } from '../infrastructure/utils';
 
 describe('formatCount', () => {
@@ -133,6 +135,27 @@ describe('formatBadgeCount', () => {
   it('supports a custom cap', () => {
     expect(formatBadgeCount(100, 99)).toBe('99+');
     expect(formatBadgeCount(99, 99)).toBe('99');
+  });
+});
+
+describe('formatter caches', () => {
+  it('returns the same Intl.NumberFormat instance for an identical locale+options pair', () => {
+    const a = getNumberFormatter('tr-TR', { maximumFractionDigits: 0 });
+    const b = getNumberFormatter('tr-TR', { maximumFractionDigits: 0 });
+    expect(b).toBe(a);
+  });
+
+  it('builds a fresh formatter when locale or options differ', () => {
+    const base = getNumberFormatter('en-US', { maximumFractionDigits: 0 });
+    expect(getNumberFormatter('de-DE', { maximumFractionDigits: 0 })).not.toBe(base);
+    expect(getNumberFormatter('en-US', { maximumFractionDigits: 2 })).not.toBe(base);
+  });
+
+  it('caches Intl.DateTimeFormat the same way', () => {
+    const a = getDateTimeFormatter('tr-TR', { weekday: 'short' });
+    const b = getDateTimeFormatter('tr-TR', { weekday: 'short' });
+    expect(b).toBe(a);
+    expect(getDateTimeFormatter('tr-TR', { month: 'short' })).not.toBe(a);
   });
 });
 

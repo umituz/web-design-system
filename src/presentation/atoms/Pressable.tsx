@@ -16,6 +16,9 @@ export const Pressable = ({ children, className, onClick, disabled = false, onKe
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event);
     if (disabled || event.defaultPrevented) return;
+    /* IME composition (CJK input): Enter/Space are committing text, not
+     * activating the surface. */
+    if (event.nativeEvent.isComposing) return;
     /* Focus sitting on an inner interactive element (button, link) means that
      * element owns its activation keys — triggering ours would both navigate
      * twice and preventDefault away the inner element's native click. */

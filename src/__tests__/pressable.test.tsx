@@ -87,4 +87,11 @@ describe('Pressable', () => {
     fireEvent.keyDown(inner, { key: 'Enter' });
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  it('does not activate while an IME is composing', () => {
+    const onClick = vi.fn();
+    const { container } = render(<Pressable onClick={onClick}>Card</Pressable>);
+    fireEvent.keyDown(container.firstElementChild as HTMLElement, { key: 'Enter', isComposing: true });
+    expect(onClick).not.toHaveBeenCalled();
+  });
 });

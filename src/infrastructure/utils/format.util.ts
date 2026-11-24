@@ -6,7 +6,10 @@ import { formatDate } from './date.util';
  * discipline money.utils and date.util already follow). */
 const numberFormatters = new Map<string, Intl.NumberFormat>();
 
-const numberFormatter = (locale: string, options: Intl.NumberFormatOptions): Intl.NumberFormat => {
+/** Cached Intl.NumberFormat for an arbitrary locale+options pair — roots
+ *  with runtime locales call this instead of hand-rolling `new Intl.NumberFormat`
+ *  per render. First call constructs, every later call is a Map hit. */
+export const getNumberFormatter = (locale: string, options: Intl.NumberFormatOptions): Intl.NumberFormat => {
   const key = `${locale}|${JSON.stringify(options)}`;
   let formatter = numberFormatters.get(key);
   if (!formatter) {
@@ -18,7 +21,8 @@ const numberFormatter = (locale: string, options: Intl.NumberFormatOptions): Int
 
 const dateTimeFormatters = new Map<string, Intl.DateTimeFormat>();
 
-const dateTimeFormatter = (locale: string, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat => {
+/** Cached Intl.DateTimeFormat — same contract as getNumberFormatter. */
+export const getDateTimeFormatter = (locale: string, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat => {
   const key = `${locale}|${JSON.stringify(options)}`;
   let formatter = dateTimeFormatters.get(key);
   if (!formatter) {
@@ -37,7 +41,7 @@ export const formatCount = (
   value: number,
   locale: string,
   options: CountFormatOptions = {},
-): string => numberFormatter(locale, options).format(value);
+): string => getNumberFormatter(locale, options).format(value);
 
 export interface FileSizeFormatOptions {
   decimals?: number;
@@ -59,7 +63,7 @@ export const formatFileSize = (
     FILE_SIZE_UNITS.length - 1,
   );
   const size = bytes / Math.pow(FILE_SIZE_BASE, exponent);
-  return `${numberFormatter(locale, {
+  return `${getNumberFormatter(locale, {
     minimumFractionDigits: 0,
     maximumFractionDigits: exponent === 0 ? 0 : decimals,
   }).format(size)} ${FILE_SIZE_UNITS[exponent]}`;
@@ -146,7 +150,7 @@ export const formatPercent = (
   locale: string,
   options: PercentFormatOptions = {},
 ): string =>
-  numberFormatter(locale, {
+  getNumberFormatter(locale, {
     style: 'percent',
     minimumFractionDigits: options.fractionDigits ?? 0,
     maximumFractionDigits: options.fractionDigits ?? 0,
@@ -157,12 +161,12 @@ export const monthName = (
   locale = 'en-US',
   style: 'long' | 'short' = 'long',
 ): string =>
-  dateTimeFormatter(locale, { month: style, timeZone: 'UTC' }).format(
+  getDateTimeFormatter(locale, { month: style, timeZone: 'UTC' }).format(
     new Date(Date.UTC(2024, month1 - 1, 15)),
   );
 
 export const weekdayNames = (locale = 'en-US', startMonday = true): string[] => {
-  const formatter = dateTimeFormatter(locale, { weekday: 'short', timeZone: 'UTC' });
+  const formatter = getDateTimeFormatter(locale, { weekday: 'short', timeZone: 'UTC' });
   const names = Array.from({ length: 7 }, (_, i) => formatter.format(new Date(Date.UTC(2024, 0, 7 + i))));
   if (!startMonday) return names;
   const [sunday = ''] = names;

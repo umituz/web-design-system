@@ -122,7 +122,7 @@ export {
 } from './date-math.util';
 export type { WeekStartsOn, DateInterval, Timestamped } from './date-math.util';
 
-export { formatCount } from './format.util';
+export { formatCount, getNumberFormatter, getDateTimeFormatter } from './format.util';
 export type { CountFormatOptions } from './format.util';
 export {
   formatFileSize,
