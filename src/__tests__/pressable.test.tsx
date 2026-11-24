@@ -75,4 +75,16 @@ describe('Pressable', () => {
     expect(element.className).toBe('card');
     expect(element.getAttribute('title')).toBe('Open');
   });
+
+  it('lets an inner interactive element keep its own activation keys', () => {
+    const onClick = vi.fn();
+    const { container } = render(
+      <Pressable onClick={onClick}>
+        Card <button type="button">Inner</button>
+      </Pressable>,
+    );
+    const inner = container.querySelector('button') as HTMLElement;
+    fireEvent.keyDown(inner, { key: 'Enter' });
+    expect(onClick).not.toHaveBeenCalled();
+  });
 });

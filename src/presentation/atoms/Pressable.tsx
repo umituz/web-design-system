@@ -16,6 +16,10 @@ export const Pressable = ({ children, className, onClick, disabled = false, onKe
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event);
     if (disabled || event.defaultPrevented) return;
+    /* Focus sitting on an inner interactive element (button, link) means that
+     * element owns its activation keys — triggering ours would both navigate
+     * twice and preventDefault away the inner element's native click. */
+    if (event.target !== event.currentTarget) return;
     if (isActivationKey(event.key)) {
       event.preventDefault();
       onClick?.(event);
