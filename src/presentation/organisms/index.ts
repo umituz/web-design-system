@@ -1,5 +1,5 @@
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card';
-export type { CardProps, CardHeaderProps } from './Card';
+export type { CardProps, CardHeaderProps, CardDensity } from './Card';
 
 export { Alert, AlertTitle, AlertDescription } from './Alert';
 export type { AlertProps } from './Alert';
