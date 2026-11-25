@@ -5,7 +5,7 @@ export { Pressable } from './Pressable';
 export type { PressableProps } from './Pressable';
 
 export { Badge } from './Badge';
-export type { BadgeProps, BadgeVariant } from './Badge';
+export type { BadgeProps, BadgeVariant, BadgeSize } from './Badge';
 
 export { LiveBadge } from './LiveBadge';
 export type { LiveBadgeProps } from './LiveBadge';
