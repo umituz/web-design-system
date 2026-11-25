@@ -103,6 +103,9 @@ export interface DataTableProps<T> extends BaseProps {
     title: string;
     description?: string;
   };
+  /** Summary (e.g. totals) row rendered as a table footer under the body,
+   *  before the pagination footer. Pass a full TableRow of TableCells. */
+  summaryRow?: ReactNode;
   onRowClick?: (row: T) => void;
   rowLabel?: (row: T) => string;
   rowClass?: (row: T) => string | undefined;
@@ -296,6 +299,7 @@ export function DataTable<T>({
   pageSizeOptions,
   onPageSizeChange,
   emptyState,
+  summaryRow,
   onRowClick,
   rowLabel,
   rowClass,
@@ -611,6 +615,7 @@ export function DataTable<T>({
             );
           })}
         </TableBody>
+        {summaryRow != null && <TableFooter>{summaryRow}</TableFooter>}
         {paginated && (
           <TableFooter>
             <TableRow>

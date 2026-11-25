@@ -51,3 +51,26 @@ describe('DataTable pageSizeOptions', () => {
     expect(screen.getByText('Showing 1 to 25 of 25 results')).toBeDefined();
   });
 });
+
+describe('DataTable summaryRow', () => {
+  it('renders the summary row under the body', () => {
+    render(
+      <DataTable
+        data={rows.slice(0, 3)}
+        columns={columns}
+        summaryRow={
+          <tr>
+            <td>Total</td>
+          </tr>
+        }
+      />,
+    );
+    expect(screen.getByText('Total')).toBeTruthy();
+    expect(document.querySelector('tfoot')).toBeTruthy();
+  });
+
+  it('omits the footer when no summary row is given', () => {
+    render(<DataTable data={rows.slice(0, 3)} columns={columns} />);
+    expect(document.querySelector('tfoot')).toBeNull();
+  });
+});
