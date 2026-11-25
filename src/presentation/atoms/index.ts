@@ -118,4 +118,7 @@ export type { SectionLabelProps } from './SectionLabel';
 export { Eyebrow } from './Eyebrow';
 export type { EyebrowProps, EyebrowTone } from './Eyebrow';
 
+export { StreakBadge } from './StreakBadge';
+export type { StreakBadgeProps, StreakBadgeSize } from './StreakBadge';
+
 

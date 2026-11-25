@@ -126,3 +126,7 @@ export type { ActivityItemProps } from './ActivityItem';
 
 export { ActivityList } from './ActivityList';
 export type { ActivityListProps, ActivityListEntry } from './ActivityList';
+
+export { Banner } from './Banner';
+export type { BannerProps, BannerTone, BannerAction } from './Banner';
+
