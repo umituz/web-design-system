@@ -183,3 +183,18 @@ export const formatDateRange = (
 export const formatBadgeCount = (count: number, cap = 9): string =>
   count > cap ? `${cap}+` : String(count);
 
+export interface DimensionsInput {
+  height?: number | null;
+  width?: number | null;
+  depth?: number | null;
+  unit?: string;
+}
+
+export const formatDimensions = (d: DimensionsInput): string => {
+  const parts = [d.height, d.width, d.depth].filter((v) => v != null);
+  if (parts.length === 0) return '';
+  const unitSuffix = d.unit ? ` ${d.unit}` : '';
+  return `${parts.join(' × ')}${unitSuffix}`;
+};
+
+

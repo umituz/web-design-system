@@ -19,6 +19,8 @@ export type { RowProps, RowGap, RowAlign, RowJustify } from './presentation/atom
 export { Row } from './presentation/atoms/Row';
 export type { GridProps, GridCols, GridColsNumber, ResponsiveGridCols, GridGap } from './presentation/atoms/Grid';
 export { Grid } from './presentation/atoms/Grid';
+export type { SectionLabelProps } from './presentation/atoms/SectionLabel';
+export { SectionLabel } from './presentation/atoms/SectionLabel';
 
 export type { BadgeProps, BadgeVariant } from './presentation/atoms/Badge';
 export { Badge } from './presentation/atoms/Badge';

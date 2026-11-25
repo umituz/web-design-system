@@ -42,3 +42,28 @@
     text-align: left;
   }
 }
+
+.udb-section-label,
+.section-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3, 0.75rem);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--text-xs, 0.75rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground, #64748b);
+  margin-bottom: var(--space-4, 1rem);
+}
+.udb-section-label::after,
+.section-label::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  transform: translateY(-3px);
+}
+.udb-section-label__no,
+.section-label__no {
+  color: var(--accent, var(--color-primary, #3b82f6));
+  font-weight: 600;
+}

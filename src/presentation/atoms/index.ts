@@ -112,3 +112,7 @@ export type { RowProps, RowGap, RowAlign, RowJustify } from './Row';
 export { Grid } from './Grid';
 export type { GridProps, GridCols, GridColsNumber, ResponsiveGridCols, GridGap } from './Grid';
 
+export { SectionLabel } from './SectionLabel';
+export type { SectionLabelProps } from './SectionLabel';
+
+

@@ -138,8 +138,9 @@ export {
   formatPercent,
   monthName,
   weekdayNames,
+  formatDimensions,
 } from './format.util';
-export type { PercentFormatOptions } from './format.util';
+export type { PercentFormatOptions, DimensionsInput } from './format.util';
 export type { FileSizeFormatOptions } from './format.util';
 
 export { getErrorMessage } from './error.util';

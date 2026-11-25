@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { seriesColor } from './utils';
 
 export interface DonutSegment {
@@ -15,6 +15,8 @@ export interface DonutProps {
   centerValue?: string;
   centerLabel?: string;
   formatValue?: (v: number) => string;
+  center?: ReactNode;
+  className?: string;
 }
 
 export function Donut({
@@ -24,6 +26,8 @@ export function Donut({
   centerValue,
   centerLabel,
   formatValue = (v: number) => String(v),
+  center,
+  className,
 }: DonutProps) {
   const [active, setActive] = useState<number | null>(null);
   const total = segments.reduce((sum, seg) => sum + seg.value, 0) || 1;
@@ -39,8 +43,8 @@ export function Donut({
   });
 
   return (
-    <div className="udb-donut">
-      <div className="udb-donut__wrap" style={{ width: size, height: size }}>
+    <div className={`udb-donut donut${className ? ` ${className}` : ''}`}>
+      <div className="udb-donut__wrap donut__ring" style={{ width: size, height: size }}>
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
           <circle
             cx={size / 2}
@@ -69,14 +73,20 @@ export function Donut({
             />
           ))}
         </svg>
-        <div className="udb-donut__center">
-          <span className="udb-donut__value">
-            {active !== null ? formatValue(segments[active]!.value) : centerValue}
-          </span>
-          <span className="udb-donut__label">{active !== null ? segments[active]!.label : centerLabel}</span>
+        <div className="udb-donut__center donut__center">
+          {center !== undefined ? (
+            center
+          ) : (
+            <>
+              <span className="udb-donut__value">
+                {active !== null ? formatValue(segments[active]!.value) : centerValue}
+              </span>
+              <span className="udb-donut__label">{active !== null ? segments[active]!.label : centerLabel}</span>
+            </>
+          )}
         </div>
       </div>
-      <div className="udb-donut__list">
+      <div className="udb-donut__list donut__legend">
         {segments.map((seg, i) => (
           <div
             key={seg.label}
@@ -85,7 +95,7 @@ export function Donut({
             onMouseLeave={() => setActive(null)}
           >
             <span className="udb-donut__itemlabel">
-              <span className="udb-donut__dot" style={{ background: seg.tone ?? seg.color ?? seriesColor(i) }} />
+              <span className="udb-donut__dot donut__dot" style={{ background: seg.tone ?? seg.color ?? seriesColor(i) }} />
               {seg.label}
             </span>
             <span className="udb-donut__itemvalue">
@@ -98,3 +108,5 @@ export function Donut({
     </div>
   );
 }
+
+export { Donut as DonutChart };
