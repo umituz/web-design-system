@@ -115,4 +115,7 @@ export type { GridProps, GridCols, GridColsNumber, ResponsiveGridCols, GridGap }
 export { SectionLabel } from './SectionLabel';
 export type { SectionLabelProps } from './SectionLabel';
 
+export { Eyebrow } from './Eyebrow';
+export type { EyebrowProps, EyebrowTone } from './Eyebrow';
+
 

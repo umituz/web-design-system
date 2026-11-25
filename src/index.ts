@@ -21,6 +21,8 @@ export type { GridProps, GridCols, GridColsNumber, ResponsiveGridCols, GridGap }
 export { Grid } from './presentation/atoms/Grid';
 export type { SectionLabelProps } from './presentation/atoms/SectionLabel';
 export { SectionLabel } from './presentation/atoms/SectionLabel';
+export type { EyebrowProps, EyebrowTone } from './presentation/atoms/Eyebrow';
+export { Eyebrow } from './presentation/atoms/Eyebrow';
 
 export type { BadgeProps, BadgeVariant } from './presentation/atoms/Badge';
 export { Badge } from './presentation/atoms/Badge';
@@ -167,6 +169,14 @@ export { ConditionPips } from './presentation/molecules/ConditionPips';
 export type { ConditionPipsProps } from './presentation/molecules/ConditionPips';
 export { Countdown } from './presentation/molecules/Countdown';
 export type { CountdownProps } from './presentation/molecules/Countdown';
+export { InsightItem } from './presentation/molecules/InsightItem';
+export type { InsightItemProps, InsightTone, InsightVariant } from './presentation/molecules/InsightItem';
+export { InsightList } from './presentation/molecules/InsightList';
+export type { InsightListProps, InsightListEntry } from './presentation/molecules/InsightList';
+export { ActivityItem } from './presentation/molecules/ActivityItem';
+export type { ActivityItemProps } from './presentation/molecules/ActivityItem';
+export { ActivityList } from './presentation/molecules/ActivityList';
+export type { ActivityListProps, ActivityListEntry } from './presentation/molecules/ActivityList';
 export { useNow } from './presentation/hooks/useNow';
 export { useDocumentTitle } from './presentation/hooks/useDocumentTitle';
 export type { DocumentTitleOptions } from './presentation/hooks/useDocumentTitle';

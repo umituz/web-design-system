@@ -5,12 +5,16 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export type CardDensity = 'default' | 'compact';
+export type CardAccentSide = 'left' | 'top' | 'right' | 'none';
+export type CardAccentTone = 'primary' | 'destructive' | 'warning' | 'success' | 'info' | 'neutral';
 
 const CardDensityContext = createContext<CardDensity>('default');
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement>, BaseProps {
   variant?: 'default' | 'outlined' | 'elevated';
   density?: CardDensity;
+  accentSide?: CardAccentSide;
+  accentTone?: CardAccentTone;
   asChild?: boolean;
   interactive?: boolean;
 }
@@ -21,12 +25,62 @@ const variantStyles: Record<'default' | 'outlined' | 'elevated', string> = {
   elevated: 'border-0 shadow-lg bg-card text-card-foreground',
 };
 
+const accentSideStyles: Record<Exclude<CardAccentSide, 'none'>, string> = {
+  left: 'border-l-2 sm:border-l-4',
+  top: 'border-t-2 sm:border-t-4',
+  right: 'border-r-2 sm:border-r-4',
+};
+
+const accentToneStyles: Record<CardAccentTone, Record<Exclude<CardAccentSide, 'none'>, string>> = {
+  primary: {
+    left: '!border-l-primary',
+    top: '!border-t-primary',
+    right: '!border-r-primary',
+  },
+  destructive: {
+    left: '!border-l-destructive',
+    top: '!border-t-destructive',
+    right: '!border-r-destructive',
+  },
+  warning: {
+    left: '!border-l-warning',
+    top: '!border-t-warning',
+    right: '!border-r-warning',
+  },
+  success: {
+    left: '!border-l-success',
+    top: '!border-t-success',
+    right: '!border-r-success',
+  },
+  info: {
+    left: '!border-l-info',
+    top: '!border-t-info',
+    right: '!border-r-info',
+  },
+  neutral: {
+    left: '!border-l-muted-foreground',
+    top: '!border-t-muted-foreground',
+    right: '!border-r-muted-foreground',
+  },
+};
+
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   (
-    { className, variant = 'default', density = 'default', asChild = false, interactive = false, children, ...props },
+    {
+      className,
+      variant = 'default',
+      density = 'default',
+      accentSide = 'none',
+      accentTone = 'primary',
+      asChild = false,
+      interactive = false,
+      children,
+      ...props
+    },
     ref
   ) => {
     const Comp = asChild ? Slot : 'div';
+    const hasAccent = accentSide !== 'none';
     return (
       <CardDensityContext.Provider value={density}>
         <Comp
@@ -35,6 +89,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             'rounded-lg text-left',
             variantStyles[variant],
             density === 'compact' && 'shadow-sm',
+            hasAccent && accentSideStyles[accentSide],
+            hasAccent && accentToneStyles[accentTone][accentSide],
             interactive &&
               'cursor-pointer transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             className
