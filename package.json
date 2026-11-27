@@ -12,6 +12,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./app.css": "./src/styles/app.css",
+    "./console.css": "./src/styles/console.css",
     "./atoms": "./src/presentation/atoms/index.ts",
     "./bridge.css": "./src/styles/bridge.css",
     "./charts": "./src/presentation/organisms/charts/index.ts",

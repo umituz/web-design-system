@@ -17,6 +17,12 @@ bundler compiles the components. Styling is available two ways:
   hosts that theme via their own token names (see below).
 - `@umituz/web-design-system/theme.css` — the `@theme` layer alone. For
   Tailwind v4 hosts that compile the component classes themselves.
+- `@umituz/web-design-system/console.css` — the console chrome vocabulary
+  (96 plain-CSS classes: `page`/`card`/`form-grid`/`data-toolbar`/
+  `section-head`/`feed-*`/`gantt-*`/`cal-*`/`tag-chip`/`pedigree-*`/…),
+  opt-in per host. Expects a runtime theme providing the `ink`/`paper`/
+  `sp`/`r`/`status`/`primary` token vocabulary (the `field` theme does).
+  Plain CSS — no Tailwind processing, no scanner/safelist coupling.
 
 **Never use both** — a Tailwind host that adds the package source to its own
 `@source` scan must not also import the precompiled stylesheet (duplicate
