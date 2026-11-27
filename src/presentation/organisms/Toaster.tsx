@@ -10,11 +10,15 @@ export interface ToastOptions {
   kind: ToastKind;
   title: string;
   description?: string;
+  /** Per-toast duration override (ms) — wins over the kind policy. */
+  duration?: number;
 }
 
 export interface ToastShorthandOptions {
   tone?: ToastKind | 'danger' | 'neutral';
   message?: string;
+  /** Per-toast duration override (ms) — wins over the kind policy. */
+  duration?: number;
 }
 
 interface ToastApi {
@@ -55,8 +59,21 @@ const kindMeta: Record<ToastKind, { icon: typeof CheckCircle2; accent: string; i
 export interface ToastProviderProps {
   children: ReactNode;
   maxVisible?: number;
+  /** Global duration override (ms). Unset (default): the per-kind
+   * policy below decides — success fades fast, errors stick around
+   * long enough to be read. */
   duration?: number;
 }
+
+/* Faz 50 (1977): the duration policy — one tone system, one timing
+ * rule. A success is a confirmation glance, an error must survive
+ * being read. Every app toast inherits this; overrides are explicit. */
+const DURATION_BY_KIND: Record<ToastKind, number> = {
+  success: 3600,
+  info: 4200,
+  warning: 6000,
+  error: 8000,
+};
 
 const toneAliases: Record<NonNullable<ToastShorthandOptions['tone']>, ToastKind> = {
   success: 'success',
@@ -70,7 +87,7 @@ const toneAliases: Record<NonNullable<ToastShorthandOptions['tone']>, ToastKind>
 const normalizeTone = (tone?: ToastShorthandOptions['tone']): ToastKind =>
   tone === undefined ? 'info' : toneAliases[tone];
 
-export function ToastProvider({ children, maxVisible = 4, duration = 4200 }: ToastProviderProps) {
+export function ToastProvider({ children, maxVisible = 4, duration }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastEntry[]>([]);
   const counter = useRef(0);
 
@@ -86,11 +103,13 @@ export function ToastProvider({ children, maxVisible = 4, duration = 4200 }: Toa
               title: tOrTitle,
               kind: normalizeTone(shorthand?.tone),
               description: shorthand?.message,
+              duration: shorthand?.duration,
             }
           : tOrTitle;
       const id = ++counter.current;
       setToasts((list) => [...list.slice(-(maxVisible - 1)), { id, ...t }]);
-      setTimeout(() => dismiss(id), duration);
+      const ttl = t.duration ?? duration ?? DURATION_BY_KIND[t.kind];
+      setTimeout(() => dismiss(id), ttl);
     },
     [dismiss, maxVisible, duration],
   );

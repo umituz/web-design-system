@@ -4,12 +4,13 @@ import { cn } from '../../infrastructure/utils';
 import type { BaseProps } from '../../domain/types';
 
 export interface SkeletonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>, BaseProps {
-  variant?: 'text' | 'circular' | 'rectangular';
+  variant?: 'text' | 'title' | 'circular' | 'rectangular';
   rows?: number;
 }
 
-const variantStyles: Record<'text' | 'circular' | 'rectangular', string> = {
+const variantStyles: Record<'text' | 'title' | 'circular' | 'rectangular', string> = {
   text: 'h-4 w-full rounded',
+  title: 'h-6 w-2/5 rounded',
   circular: 'h-12 w-12 rounded-full',
   rectangular: 'h-24 w-full rounded',
 };
@@ -22,7 +23,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
           {Array.from({ length: rows }, (_, index) => (
             <div
               key={index}
-              className={cn('animate-pulse bg-muted h-4 w-full rounded', index === rows - 1 ? 'w-3/5' : undefined)}
+              className={cn('animate-pulse bg-muted h-4 w-full rounded motion-reduce:animate-none', index === rows - 1 ? 'w-3/5' : undefined)}
             />
           ))}
         </div>
@@ -32,7 +33,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
       <div
         ref={ref}
         className={cn(
-          'animate-pulse bg-muted',
+          'animate-pulse bg-muted motion-reduce:animate-none',
           variantStyles[variant],
           className
         )}
