@@ -210,6 +210,34 @@ export type {
 export { NextSteps } from './NextSteps';
 export type { NextStepsProps, NextStepLink } from './NextSteps';
 
+export { PipelineStrip, PipelineStep } from './PipelineStrip';
+export type {
+  PipelineStripProps,
+  PipelineStepProps,
+  PipelineStepItem,
+  PipelineStepTone,
+} from './PipelineStrip';
+
+export { ServiceCard } from './ServiceCard';
+export type { ServiceCardProps, ServiceCardFact } from './ServiceCard';
+
+export { HeatStrip } from './HeatStrip';
+export type { HeatStripProps } from './HeatStrip';
+
+export { ProgressionTimeline } from './ProgressionTimeline';
+export type {
+  ProgressionTimelineProps,
+  ProgressionStep,
+  ProgressionStatus,
+} from './ProgressionTimeline';
+
+export { ReceiptView } from './ReceiptView';
+export type {
+  ReceiptViewProps,
+  ReceiptLineItem,
+  ReceiptMetaField,
+} from './ReceiptView';
+
 // Visual Data Visualization & Charts
 export * from './charts';
 
