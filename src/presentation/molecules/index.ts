@@ -130,3 +130,8 @@ export type { ActivityListProps, ActivityListEntry } from './ActivityList';
 export { Banner } from './Banner';
 export type { BannerProps, BannerTone, BannerAction } from './Banner';
 
+
+export { DataToolbar, ToolbarSelect } from './DataToolbar';
+export type { DataToolbarProps } from './DataToolbar';
+
+export { SectionHead, DetailItem, DetailGrid } from './Section';

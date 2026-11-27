@@ -12,6 +12,21 @@ const COMPONENTS = [
   'SingleSelectFilterList',
   'TabNav',
   'NextSteps',
+  'ConsoleLabelsProvider',
+  'DEFAULT_CONSOLE_LABELS',
+  'useConsoleLabels',
+  'formatTemplate',
+  'mergeLabels',
+  'ErrorState',
+  'FormDrawer',
+  'validateForm',
+  'validateValue',
+  'NoResults',
+  'DataToolbar',
+  'ToolbarSelect',
+  'SectionHead',
+  'DetailItem',
+  'DetailGrid',
 ] as const;
 
 describe('page-kit barrel', () => {
@@ -38,5 +53,11 @@ describe('page-kit barrel', () => {
     expect(pageKit.FilterBar).toBe(organisms.FilterBar);
     expect(pageKit.FilterPanel).toBe(organisms.FilterPanel);
     expect(pageKit.NextSteps).toBe(organisms.NextSteps);
+    expect(pageKit.ErrorState).toBe(organisms.ErrorState);
+    expect(pageKit.FormDrawer).toBe(organisms.FormDrawer);
+    expect(pageKit.NoResults).toBe(organisms.NoResults);
+    expect(pageKit.DataToolbar).toBe(molecules.DataToolbar);
+    expect(pageKit.ToolbarSelect).toBe(molecules.ToolbarSelect);
+    expect(pageKit.SectionHead).toBe(molecules.SectionHead);
   });
 });
