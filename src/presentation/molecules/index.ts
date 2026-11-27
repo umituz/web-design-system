@@ -52,6 +52,9 @@ export type { ActiveFilterTagsProps } from './ActiveFilterTags';
 export { CodeBlock } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
 
+export { ShareLink } from './ShareLink';
+export type { ShareLinkProps } from './ShareLink';
+
 export { OptionCard } from './OptionCard';
 export type { OptionCardProps } from './OptionCard';
 export { OptionTile } from './OptionTile';

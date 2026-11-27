@@ -145,6 +145,9 @@ export { ActiveFilterTags } from './presentation/molecules/ActiveFilterTags';
 export type { ActiveFilterTagsProps } from './presentation/molecules/ActiveFilterTags';
 export { CodeBlock } from './presentation/molecules/CodeBlock';
 export type { CodeBlockProps } from './presentation/molecules/CodeBlock';
+
+export { ShareLink } from './presentation/molecules/ShareLink';
+export type { ShareLinkProps } from './presentation/molecules/ShareLink';
 export { OptionCard } from './presentation/molecules/OptionCard';
 export type { OptionCardProps } from './presentation/molecules/OptionCard';
 export { OptionTile } from './presentation/molecules/OptionTile';
